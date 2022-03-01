@@ -13,13 +13,14 @@ diets <- fread("Input/Diet_nutrient_compositions.csv")
 MCdiets <- merge(MC, diets, by = "Diet", all.x = TRUE)
 
 #calculate the intake of protein by diet 
-MCdiets[, Consumed_CP := Consumed*(Protein/100)]
+MCdiets[, Consumed_CP := Consumed_weight*(Protein/100)]
 #calculate the intake of fibre by diet
-MCdiets[, Consumed_NDF := Consumed*(NDF/100)]
+MCdiets[, Consumed_NDF := Consumed_weight*(NDF/100)]
+
 
 #calculate total protein and fibre consumed from all diets in one day
 MCtotals <- MCdiets[, .(sum(Consumed_CP), sum(Consumed_NDF)), by = ID]
-names(MCtotals) <- c("IC", "CP", "NDF")
+names(MCtotals) <- c("ID", "CP", "NDF")
 
 
 #create theme for ggplots
@@ -34,17 +35,22 @@ themerails<-theme(axis.title = element_text(size=13),
                   panel.background = element_blank())
 
 
-
 rails <- fread("Output/dietrails.rds")
 
 ggplot()+
-  geom_line(aes(x = F1I, y = P1I), color = "blue", data = rails)+
+  geom_line(aes(x = F1I, y = P1I), color = "black", data = rails)+
   geom_line(aes(x = F2I, y = P2I), color = "black", data = rails)+
-  geom_line(aes(x = F3I, y = P3I), color = "green3", data = rails)+
-  geom_line(aes(x = F4I, y = P4I), color = "red4", data = rails)+
-  geom_point(aes(x = NDF, y = CP), data = MCtotals)+
-  labs(x="Fibre intake (g/day)", y="Protein intake (g/day)")+
+  geom_line(aes(x = F3I, y = P3I), color = "black", data = rails)+
+  geom_line(aes(x = F4I, y = P4I), color = "black", data = rails)+
+  geom_point(aes(x = NDF, y = CP, color = ID), size = 2, data = MCtotals)+
+  labs(x="Fibre intake (g/kg/day)", y="Protein intake (g/kg/day)")+
   themerails
+
+ggplot(MCdiets)+
+  geom_boxplot(aes(x = Diet, y = Consumed_weight))+
+  themerails
+  
+
 
 ##good but 
 ##control for body mass
