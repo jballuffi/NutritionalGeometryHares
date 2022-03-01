@@ -26,6 +26,9 @@ names(MCtotals) <- c("ID", "CP", "NDF")
 #read in data for diet nutritional rails
 rails <- fread("Output/dietrails.rds")
 
+#get custom ggplot themes
+source("R/ggplot_themes.R")
+
 ggplot()+
   geom_line(aes(x = F1I, y = P1I), color = "black", data = rails)+
   geom_line(aes(x = F2I, y = P2I), color = "black", data = rails)+
