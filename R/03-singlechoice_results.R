@@ -64,6 +64,12 @@ ggplot()+
   geom_line(aes(x = F2I, y = P2I), color = "black", data = rails)+
   geom_line(aes(x = F3I, y = P3I), color = "black", data = rails)+
   geom_line(aes(x = F4I, y = P4I), color = "black", data = rails)+
-  geom_point(aes(x = Consumed_NDF, y = Consumed_CP), size = 2, data = SCdiets)+
+  geom_point(aes(x = Consumed_NDF, y = Consumed_CP, color = Individual), size = 4, data = SCdiets)+
   labs(x="Fibre intake (g/kg/day)", y="Protein intake (g/kg/day)")+
   themerails
+
+
+
+#save plots
+ggsave("Output/consumptionbarplot.jpeg", ConsumptionRates, width = 4, height = 3, unit = "in")
+ggsave("Output/weightboxplot.jpeg", WeightChange, width = 4, height = 3, unit = "in")
