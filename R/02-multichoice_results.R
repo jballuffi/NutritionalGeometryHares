@@ -21,7 +21,8 @@ MCdiets[, Consumed_NDF := Consumed_weight*(NDF/100)]
 #calculate total protein and fibre consumed from all diets in one day
 MCtotals <- MCdiets[, .(sum(Consumed_CP), sum(Consumed_NDF)), by = ID]
 names(MCtotals) <- c("ID", "CP", "NDF")
-
+#what is the mean target intake?
+MCtotals[, .(mean(CP), mean(NDF))]
 
 #read in data for diet nutritional rails
 rails <- fread("Output/dietrails.rds")
@@ -39,5 +40,6 @@ source("R/ggplot_themes.R")
   themerails)
 
 ggsave("Output/multichoicerails.jpeg", feedingchoice, width = 4, height = 3, units = "in")
-  
+
+saveRDS(MCtotals, "Output/multichoicemeans.rds")
 
