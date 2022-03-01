@@ -26,3 +26,19 @@ SCdiets[, Consumed_CP := TotalConsumption_weight*(Protein/100)]
 #calculate the intake of fibre (g/kg body mass/3 days) by diet
 SCdiets[, Consumed_NDF := TotalConsumption_weight*(NDF/100)]
 
+
+source("R/ggplot_themes.R")
+
+
+ggplot(SCdiets)+
+  geom_bar(aes(y = TotalConsumption_weight/3, x = Diet), width = .5, stat = "identity")+ #divide by three to get daily rate
+  geom_errorbarh(aes(x = Diet, y = TotalConsumption_weight/3))+
+  labs(y = "Total Consumption (g/kg/day)")+
+  themerails
+
+ggplot(SCdiets)+
+  geom_boxplot(aes(x = Diet, y = Weight_change/3))+
+  geom_jitter(aes(x = Diet, y = Weight_change/3))+
+  labs(y = "Weight change (%/Day)")+
+  themerails
+
