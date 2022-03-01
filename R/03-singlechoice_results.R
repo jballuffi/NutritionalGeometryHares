@@ -20,24 +20,50 @@ diets <- fread("Input/Diet_nutrient_compositions.csv")
 #merge feeding results with diet compositions by diet
 SCdiets <- merge(SC, diets, by = "Diet", all.x = TRUE)
 
+SCdiets <- SCdiets[!is.na(Consumed)]
+
 #calculate the intake of protein (g/kg body mass/3 days) by diet 
-SCdiets[, Consumed_CP := TotalConsumption_weight*(Protein/100)]
+SCdiets[, Consumed_CP := Consumed*(Protein/100)]
 #calculate the intake of fibre (g/kg body mass/3 days) by diet
-SCdiets[, Consumed_NDF := TotalConsumption_weight*(NDF/100)]
+SCdiets[, Consumed_NDF := Consumed*(NDF/100)]
+
+
+
+
+SCmeans <- SCdiets[, .(mean(Consumed), sd(Consumed)), by = Diet]
+names(SCmeans) <- c("Diet", "Mean", "SD")
+
+
+# Plots
 
 
 source("R/ggplot_themes.R")
 
 
-ggplot(SCdiets)+
-  geom_bar(aes(y = TotalConsumption_weight/3, x = Diet), width = .5, stat = "identity")+ #divide by three to get daily rate
-  geom_errorbarh(aes(x = Diet, y = TotalConsumption_weight/3))+
+(ConsumptionRates<-
+  ggplot(SCmeans)+
+  geom_bar(aes(y = Mean, x = Diet), width = .5, stat = "identity", fill = "grey70")+
+  geom_errorbar(aes(x = Diet, ymax = Mean + SD, ymin = Mean - SD), width = .2, color = "grey30")+
   labs(y = "Total Consumption (g/kg/day)")+
-  themerails
+  themerails)
 
-ggplot(SCdiets)+
-  geom_boxplot(aes(x = Diet, y = Weight_change/3))+
-  geom_jitter(aes(x = Diet, y = Weight_change/3))+
+
+(WeightChange<-
+  ggplot(SCdiets)+
+  geom_boxplot(aes(x = Diet, y = Weight_change), width = .75)+
+  geom_jitter(aes(x = Diet, y = Weight_change), size = 2, shape = 1, width = .3)+
   labs(y = "Weight change (%/Day)")+
-  themerails
+  themerails)
 
+
+#read in data for diet nutritional rails
+rails <- fread("Output/dietrails.rds")
+
+ggplot()+
+  geom_line(aes(x = F1I, y = P1I), color = "black", data = rails)+
+  geom_line(aes(x = F2I, y = P2I), color = "black", data = rails)+
+  geom_line(aes(x = F3I, y = P3I), color = "black", data = rails)+
+  geom_line(aes(x = F4I, y = P4I), color = "black", data = rails)+
+  geom_point(aes(x = Consumed_NDF, y = Consumed_CP), size = 2, data = SCdiets)+
+  labs(x="Fibre intake (g/kg/day)", y="Protein intake (g/kg/day)")+
+  themerails
