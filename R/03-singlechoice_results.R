@@ -12,7 +12,6 @@ SC[, D1 := D1offer_wet - D1end_wet] #day 1 of consumption
 SC[, D2 := D2offer_wet - D2end_wet] #day 2 of consumption
 SC[, D3 := D3offer_wet - D3end_wet] #day 3 of consumption
 SC[, TotalConsumption := D1 + D2 + D3] #total consumption for all days
-SC[, MeanConsumption := ((D1 + D2 + D3)/3)] #average consumption
 SC[, TotalConsumption_weight := TotalConsumption/(Weight_start/1000)] #consumption by kg bodyweight
 SC[, Weight_change := (Weight_end - Weight_start)/Weight_start]
 
@@ -21,4 +20,9 @@ diets <- fread("Input/Diet_nutrient_compositions.csv")
 
 #merge feeding results with diet compositions by diet
 SCdiets <- merge(SC, diets, by = "Diet", all.x = TRUE)
+
+#calculate the intake of protein (g/kg body mass/3 days) by diet 
+SCdiets[, Consumed_CP := TotalConsumption_weight*(Protein/100)]
+#calculate the intake of fibre (g/kg body mass/3 days) by diet
+SCdiets[, Consumed_NDF := TotalConsumption_weight*(NDF/100)]
 
