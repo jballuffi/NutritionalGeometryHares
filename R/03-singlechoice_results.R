@@ -11,9 +11,8 @@ SC <- SC[!is.na(Trial)] #remove space holders
 SC[, D1 := D1offer_wet - D1end_wet] #day 1 of consumption
 SC[, D2 := D2offer_wet - D2end_wet] #day 2 of consumption
 SC[, D3 := D3offer_wet - D3end_wet] #day 3 of consumption
-SC[, TotalConsumption := D1 + D2 + D3] #total consumption for all days
-SC[, TotalConsumption_weight := TotalConsumption/(Weight_start/1000)] #consumption by kg bodyweight
-SC[, Weight_change := (Weight_end - Weight_start)/Weight_start]
+SC[, Consumed := ((D1 + D2 + D3)/(Weight_start/1000))/3] #consumption by kg bodyweight
+SC[, Weight_change := ((Weight_end - Weight_start)/Weight_start)/3]
 
 #read in the nutritional compositions of each diet
 diets <- fread("Input/Diet_nutrient_compositions.csv")
