@@ -31,7 +31,7 @@ themerails<-theme(axis.title = element_text(size=13),
                   panel.background = element_blank())
 
 #create blank data frame with just intake rate
-data<- data.table(IR = seq(1,100, by = 1))
+data<- data.table(IR = seq(1,120, by = 1))
 
 #add in protein values (%)
 data[, P1 := .05]
