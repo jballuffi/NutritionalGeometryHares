@@ -90,10 +90,10 @@ data[, SASPfI := SASPf*IR]
 data[, BEGLfI := BEGLf*IR]
 
 (withforage <- ggplot(data)+
-  geom_line(aes(x = F1I, y = P1I), color = "blue")+
-  geom_line(aes(x = F2I, y = P2I), color = "black")+
-  geom_line(aes(x = F3I, y = P3I), color = "green3")+
-  geom_line(aes(x = F4I, y = P4I), color = "red4")+
+  geom_line(aes(x = F1I, y = P1I))+
+  geom_line(aes(x = F2I, y = P2I))+
+  geom_line(aes(x = F3I, y = P3I))+
+  geom_line(aes(x = F4I, y = P4I))+
   geom_line(aes(x = PIGLAfI, y = PIGLApI), linetype = 3)+
   geom_line(aes(x = PIGLJfI, y = PIGLJpI), linetype = 3)+
   geom_line(aes(x = SASPfI, y = SASPpI), linetype = 3)+
@@ -102,10 +102,10 @@ data[, BEGLfI := BEGLf*IR]
   themerails)
 
 (withoutforage <- ggplot(data2)+
-    geom_line(aes(x = F1I, y = P1I), color = "blue")+
-    geom_line(aes(x = F2I, y = P2I), color = "black")+
-    geom_line(aes(x = F3I, y = P3I), color = "green3")+
-    geom_line(aes(x = F4I, y = P4I), color = "red4")+
+    geom_line(aes(x = F1I, y = P1I))+
+    geom_line(aes(x = F2I, y = P2I))+
+    geom_line(aes(x = F3I, y = P3I))+
+    geom_line(aes(x = F4I, y = P4I))+
     labs(x="Fibre intake (g/day)", y="Protein intake (g/day)")+
     themerails)
 
