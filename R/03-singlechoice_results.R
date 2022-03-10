@@ -56,6 +56,13 @@ source("R/ggplot_themes.R")
   themerails)
 
 
+(proteinintake <-
+  ggplot(SCdiets)+
+  geom_point(aes(x = Consumed_CP, y = Weight_change,), size = 2)+
+  labs(y = "Weight change (%/Day)", x = "Protein intake (g/kg/day)")+
+  themerails)
+
+
 #read in data for diet nutritional rails
 rails <- fread("Output/dietrails.rds")
 
@@ -65,7 +72,7 @@ rails <- fread("Output/dietrails.rds")
   geom_line(aes(x = F2I, y = P2I), color = "black", data = rails)+
   geom_line(aes(x = F3I, y = P3I), color = "black", data = rails)+
   geom_line(aes(x = F4I, y = P4I), color = "black", data = rails)+
-  geom_point(aes(x = Consumed_NDF, y = Consumed_CP, color = ID), size = 2.5, data = SCdiets)+
+  geom_point(aes(x = Consumed_NDF, y = Consumed_CP, color = Weight_change), size = 3, data = SCdiets)+
   labs(x="Fibre intake (g/kg/day)", y="Protein intake (g/kg/day)")+
   themerails)
 
@@ -75,3 +82,4 @@ rails <- fread("Output/dietrails.rds")
 ggsave("Output/consumptionbarplot.jpeg", ConsumptionRates, width = 4, height = 3, unit = "in")
 ggsave("Output/weightboxplot.jpeg", WeightChange, width = 4, height = 3, unit = "in")
 ggsave("Output/singlechoicerails.jpeg", feedingratesrails, width = 5, height = 3, unit = "in")
+ggsave("Output/proteinintake.jpeg", proteinintake, width = 5, height = 3, unit = "in")
