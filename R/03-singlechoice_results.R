@@ -30,8 +30,8 @@ SCdiets[, Consumed_NDF := Consumed*(NDF/100)]
 
 
 
-SCmeans <- SCdiets[, .(mean(Consumed), sd(Consumed)), by = Diet]
-names(SCmeans) <- c("Diet", "Mean", "SD")
+SCmeans <- SCdiets[, .(mean(Consumed), sd(Consumed), mean(Weight_change), sd(Weight_change)), by = Diet]
+names(SCmeans) <- c("Diet", "Consumed_mean", "Consumed_SD", "Weight_mean", "Weight_SD")
 
 
 # Plots
@@ -42,8 +42,8 @@ source("R/ggplot_themes.R")
 
 (ConsumptionRates<-
   ggplot(SCmeans)+
-  geom_bar(aes(y = Mean, x = Diet), width = .5, stat = "identity", fill = "grey70")+
-  geom_errorbar(aes(x = Diet, ymax = Mean + SD, ymin = Mean - SD), width = .2, color = "grey30")+
+  geom_bar(aes(y = Consumed_mean, x = Diet), width = .5, stat = "identity", fill = "grey70")+
+  geom_errorbar(aes(x = Diet, ymax = Consumed_mean + Consumed_SD, ymin = Consumed_mean - Consumed_SD), width = .2, color = "grey30")+
   labs(y = "Total Consumption (g/kg/day)")+
   themerails)
 
