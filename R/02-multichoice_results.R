@@ -6,6 +6,9 @@ library(data.table)
 
 #read in feeding trials results
 MC <- fread("Input/Multichoice_results.csv")
+
+MC[, Consumed_weight := Consumed/(Start_weight/1000)]
+
 #read in the nutritional compositions of each diet
 diets <- fread("Input/Diet_nutrient_compositions.csv")
 
@@ -36,10 +39,10 @@ source("R/ggplot_themes.R")
   geom_line(aes(x = F3I, y = P3I), color = "black", data = rails)+
   geom_line(aes(x = F4I, y = P4I), color = "black", data = rails)+
   geom_point(aes(x = NDF, y = CP), size = 2, data = MCtotals)+
+  geom_point(aes(x = mean(NDF), y = mean(CP)), shape = 12, size = 3, data = MCtotals)+
   labs(x="Fibre intake (g/kg/day)", y="Protein intake (g/kg/day)")+
   themerails)
 
 ggsave("Output/multichoicerails.jpeg", feedingchoice, width = 4, height = 3, units = "in")
-
 saveRDS(MCtotals, "Output/multichoicemeans.rds")
 
