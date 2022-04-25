@@ -7,10 +7,18 @@ library(data.table)
 #read in feeding trials results
 MC <- fread("Input/Multichoice_results.csv")
 
-MC[, Consumed_weight := Consumed/(Start_weight/1000)]
-
 #read in the nutritional compositions of each diet
 diets <- fread("Input/Diet_nutrient_compositions.csv")
+
+#read in data for diet nutritional rails
+rails <- fread("Output/dietrails.rds")
+
+#get custom ggplot themes
+source("R/ggplot_themes.R")
+
+
+#calculate consumption rates on a per kg basis
+MC[, Consumed_weight := Consumed/(Start_weight/1000)]
 
 #merge feeding results with diet compositions by diet
 MCdiets <- merge(MC, diets, by = "Diet", all.x = TRUE)
@@ -27,11 +35,6 @@ names(MCtotals) <- c("ID", "CP", "NDF")
 #what is the mean target intake?
 MCtotals[, .(mean(CP), mean(NDF))]
 
-#read in data for diet nutritional rails
-rails <- fread("Output/dietrails.rds")
-
-#get custom ggplot themes
-source("R/ggplot_themes.R")
 
 (feedingchoice<-ggplot()+
   geom_line(aes(x = F1I, y = P1I), color = "black", data = rails)+
@@ -42,6 +45,7 @@ source("R/ggplot_themes.R")
   geom_point(aes(x = mean(NDF), y = mean(CP)), shape = 12, size = 3, data = MCtotals)+
   labs(x="Fibre intake (g/kg/day)", y="Protein intake (g/kg/day)")+
   themerails)
+
 
 ggsave("Output/multichoicerails.jpeg", feedingchoice, width = 4, height = 3, units = "in")
 saveRDS(MCtotals, "Output/multichoicemeans.rds")
