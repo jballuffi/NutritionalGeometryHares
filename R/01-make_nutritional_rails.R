@@ -3,21 +3,16 @@
 library(data.table)
 library(ggplot2)
 
-wp<- fread("Input/plants_winter2021_composition_clean.csv")
-wp[, CP := CP/100]
-wp<- wp[!is.na(CP)]
+wp<- fread("Input/Plants_winter2021_compositions_cleaned.csv")
 
-PIGLAf<- wp[Species == "Picea gluaca adult", mean(NDF)]
-PIGLAp<- wp[Species == "Picea gluaca adult", mean(CP)]
+PIGLf<- wp[Species == "Picea glauca", mean(NDF_DM)]
+PIGLp<- wp[Species == "Picea glauca", mean(CP_DM)]
 
-PIGLJf<- wp[Species == "Picea glauca juvenile", mean(NDF)]
-PIGLJp<- wp[Species == "Picea glauca juvenile", mean(CP)]
+SASPf<- wp[Species == "Salix spp", mean(NDF_DM)]
+SASPp<- wp[Species == "Salix spp", mean(CP_DM)]
 
-SASPf<- wp[Species == "Salix", mean(NDF)]
-SASPp<- wp[Species == "Salix", mean(CP)]
-
-BEGLf<- wp[Species == "Betula glandulosa", mean(NDF)]
-BEGLp<- wp[Species == "Betula glandulosa", mean(CP)]
+BEGLf<- wp[Species == "Betula glandulosa", mean(NDF_DM)]
+BEGLp<- wp[Species == "Betula glandulosa", mean(CP_DM)]
 
 
 themerails<-theme(axis.title = element_text(size=13),
@@ -31,7 +26,7 @@ themerails<-theme(axis.title = element_text(size=13),
                   panel.background = element_blank())
 
 #create blank data frame with just intake rate
-data<- data.table(IR = seq(1,120, by = 1))
+data<- data.table(IR = seq(1, 120, by = 1))
 
 #add in protein values (%)
 data[, P1 := .05]
@@ -66,26 +61,22 @@ data2 <- data
 #adding in values of natural browse/forage species
 
 #protein compositions
-data[, PIGLAp := PIGLAp]
-data[, PIGLJp := PIGLJp]
-data[, SASPp := SASPp]
-data[, BEGLp := BEGLp]
+data[, PIGLp := PIGLp/100]
+data[, SASPp := SASPp/100]
+data[, BEGLp := BEGLp/100]
 
 #NDF compositions
-data[, PIGLAf := PIGLAf]
-data[, PIGLJf := PIGLJf]
-data[, SASPf := SASPf]
-data[, BEGLf := BEGLf]
+data[, PIGLf := PIGLf/100]
+data[, SASPf := SASPf/100]
+data[, BEGLf := BEGLf/100]
 
 #proteinintake
-data[, PIGLApI := PIGLAp*IR]
-data[, PIGLJpI := PIGLJp*IR]
+data[, PIGLpI := PIGLp*IR]
 data[, SASPpI := SASPp*IR]
 data[, BEGLpI := BEGLp*IR]
 
 #NDF intake
-data[, PIGLAfI := PIGLAf*IR]
-data[, PIGLJfI := PIGLJf*IR]
+data[, PIGLfI := PIGLf*IR]
 data[, SASPfI := SASPf*IR]
 data[, BEGLfI := BEGLf*IR]
 
@@ -94,8 +85,7 @@ data[, BEGLfI := BEGLf*IR]
   geom_line(aes(x = F2I, y = P2I))+
   geom_line(aes(x = F3I, y = P3I))+
   geom_line(aes(x = F4I, y = P4I))+
-  geom_line(aes(x = PIGLAfI, y = PIGLApI), linetype = 3)+
-  geom_line(aes(x = PIGLJfI, y = PIGLJpI), linetype = 3)+
+  geom_line(aes(x = PIGLfI, y = PIGLpI), linetype = 3)+
   geom_line(aes(x = SASPfI, y = SASPpI), linetype = 3)+
   geom_line(aes(x = BEGLfI, y = BEGLpI), linetype = 3)+
   labs(x="Fibre intake (g/day)", y="Protein intake (g/day)")+
