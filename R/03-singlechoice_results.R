@@ -98,6 +98,15 @@ source("R/ggplot_themes.R")
   labs(y = "Weight change (%/Day)", x = "Protein intake (g/kg/day)")+
   themerails)
 
+#exploratory plots with temp data 
+ggplot(SCdiets)+
+  geom_point(aes(x = Temp, y = Weight_change, color = Diet))+
+  theme_minimal()
+
+ggplot(SCdiets)+
+  geom_point(aes(x = Temp, y = Consumed, color = Diet))+
+  theme_minimal()
+
 
 #read in data for diet nutritional rails
 rails <- fread("Output/dietrails.rds")
