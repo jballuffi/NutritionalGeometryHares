@@ -29,8 +29,17 @@ ggplot(temp)+
 #create a daily start and end time for feeding trials
 SC[, Time_start := "10:00:00"][, Time_end := "10:00:00"]
 
+#create a datetime for feeding trial starts and ends
 SC[, DateTime_start := as_datetime(paste0(Date_start, " ", Time_start))]
 SC[, DateTime_end := as_datetime(paste0(Date_end, " ", Time_end))]
+
+#function that calculates mean temperature between start and end date-times of feeding trials
+tempcalc <- function(start, end) {
+  avgtemp <- temp[DateTime > start & DateTime < end, mean(Temp)]
+}
+
+#run the tempcalc function by feeding trial (i.e., ID and trial number)
+SC[, Temp := tempcalc(start = DateTime_start, end = DateTime_end), by = .(ID, Trial)]
 
 
 #Calculate intake rates and weight loss
