@@ -2,10 +2,36 @@
 
 library(ggplot2)
 library(data.table)
+library(lubridate)
 
 #read in feeding trial data
 SC <- fread("Input/Singlechoice_results.csv")
 SC <- SC[!is.na(Trial)] #remove space holders
+
+#read in the nutritional compositions of each diet
+diets <- fread("Input/Diet_nutrient_compositions.csv")
+
+#read in temp data
+temp <- fread("Input/temperatures_SW_2022.csv")
+
+#merge date and time into a datetime
+temp[, DateTime := as_datetime(paste0(Date, " ", Time, " ", TimeStamp))]
+
+#cut for only dates in which feeding trials occurred
+temp <- temp[Date > '2022-02-08' & Date < '2022-03-15']
+
+#plot that shows temp over time for the whole study period
+ggplot(temp)+
+  geom_line(aes(y = Temp, x = DateTime))+
+  labs(x = "Date", y = "Temperature (C)")+
+  theme_minimal()
+
+#create a daily start and end time for feeding trials
+SC[, Time_start := "10:00:00"][, Time_end := "10:00:00"]
+
+SC[, DateTime_start := as_datetime(paste0(Date_start, " ", Time_start))]
+SC[, DateTime_end := as_datetime(paste0(Date_end, " ", Time_end))]
+
 
 #Calculate intake rates and weight loss
 SC[, D1 := D1offer_wet - D1end_wet] #day 1 of consumption
@@ -14,8 +40,7 @@ SC[, D3 := D3offer_wet - D3end_wet] #day 3 of consumption
 SC[, Consumed := ((D1 + D2 + D3)/(Weight_start/1000))/3] #consumption by kg bodyweight
 SC[, Weight_change := (((Weight_end - Weight_start)/Weight_start)*100)/3]
 
-#read in the nutritional compositions of each diet
-diets <- fread("Input/Diet_nutrient_compositions.csv")
+
 
 #merge feeding results with diet compositions by diet
 SCdiets <- merge(SC, diets, by = "Diet", all.x = TRUE)
