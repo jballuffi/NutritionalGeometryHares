@@ -6,13 +6,22 @@ library(ggplot2)
 
 #read in feeding trial data
 SC <- fread("Input/Results_singlechoice.csv")
-SC <- SC[!is.na(Trial)] #remove space holders
+#SC <- SC[!is.na(Trial)] #remove space holders
 
 #read in the nutritional compositions of each diet
 diets <- fread("Input/Diet_compositions.csv")
 
 #read in temp data
 temp <- fread("Input/temperatures_SW_2022.csv")
+
+#read in daily dry matter measures
+DM <- fread("Input/Daily_DryMatter.csv")
+
+#read in any food remainder data (leftover food that fell and mixed in with feces)
+Rem <- fread("Input/Daily_food_remainders.csv")
+
+
+
 
 #merge date and time into a datetime
 temp[, DateTime := as_datetime(paste0(Date, " ", Time, " ", TimeStamp))]
