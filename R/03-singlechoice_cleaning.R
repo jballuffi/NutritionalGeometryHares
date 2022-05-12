@@ -18,8 +18,10 @@ temp <- fread("Input/temperatures_SW_2022.csv")
 DM <- fread("Input/Daily_DryMatter.csv")
 
 #read in any food remainder data (leftover food that fell and mixed in with feces)
-Rem <- fread("Input/Daily_food_remainders.csv")
+rem <- fread("Input/Daily_food_remainders.csv")
 
+#read in fecal response data
+feces <- fread("Input/Results_feces.csv")
 
 
 
