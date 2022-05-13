@@ -40,23 +40,23 @@ trials[, D3 := D3offer_wet - D3end_wet] #day 3 of consumption
 trials[, Weight_change := (((Weight_end - Weight_start)/Weight_start)*100)/3]
 
 #calculate average intake rate (IR) for entire trial per kg of body weight
-trials[, IR := ((D1 + D2 + D3)/(Weight_start/1000))/3] 
+trials[, IR_trial := ((D1 + D2 + D3)/(Weight_start/1000))/3] 
 
 #subset data to just be those intake rates and overall weight change
-SC <- trials[, .(Diet, ID, Trial, Enclosure, Date_start, Date_end, D1, D2, D3, IR, Weight_change)]
+SC <- trials[, .(Diet, ID, Trial, Enclosure, Date_start, Date_end, D1, D2, D3, IR_trial, Weight_change)]
 
 #melt into one day of feeding trial per row
 SC <- melt(SC, measure.vars = c("D1", "D2", "D3"), variable.name = "Day", value.name = "IR_daily" )
 
 
-
-
-
-
 # specify dates and times of feeding trials -------------------------------
 
-#create a date for each day of the feeding trials. Date 1 is the end of the first day, etc. 
-SC[, Date1 := Date_start + 1][, Date2 := Date_start + 2][, Date3 := Date_start + 3]
+#create a date for each day of the feeding trials based on the "day" column
+SC[Day == "D1", Date := Date_start + 1][Day == "D2", Date := Date_start + 2][Day == "D3", Date := Date_start + 3]
+
+#paste enclosure and date together to create a 'sample id' that can be merged with lab results
+SC[, Sample := paste0(Enclosure, "_", Date)]
+
 
 #create a daily start and end time for feeding trials
 SC[, Time_start := "10:00:00"][, Time_end := "10:00:00"]
