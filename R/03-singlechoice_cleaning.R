@@ -4,8 +4,12 @@ library(data.table)
 library(lubridate)
 library(ggplot2)
 
+
+
+# read in data ------------------------------------------------------------
+
 #read in feeding trial data
-SC <- fread("Input/Results_singlechoice.csv")
+trials <- fread("Input/Results_singlechoice.csv")
 #SC <- SC[!is.na(Trial)] #remove space holders
 
 #read in the nutritional compositions of each diet
@@ -25,6 +29,46 @@ feces <- fread("Input/Results_feces.csv")
 
 
 
+# Melt feeding trial data -------------------------------------------------
+
+#Calculate intake rates for each day
+trials[, D1 := D1offer_wet - D1end_wet] #day 1 of consumption
+trials[, D2 := D2offer_wet - D2end_wet] #day 2 of consumption
+trials[, D3 := D3offer_wet - D3end_wet] #day 3 of consumption
+
+#calculate weight change per day for the entire trial
+trials[, Weight_change := (((Weight_end - Weight_start)/Weight_start)*100)/3]
+
+#calculate average intake rate (IR) for entire trial per kg of body weight
+trials[, IR := ((D1 + D2 + D3)/(Weight_start/1000))/3] 
+
+#subset data to just be those intake rates and overall weight change
+SC <- trials[, .(Diet, ID, Trial, Enclosure, Date_start, Date_end, D1, D2, D3, IR, Weight_change)]
+
+#melt into one day of feeding trial per row
+SC <- melt(SC, measure.vars = c("D1", "D2", "D3"), variable.name = "Day", value.name = "IR_daily" )
+
+
+
+
+
+
+# specify dates and times of feeding trials -------------------------------
+
+#create a date for each day of the feeding trials. Date 1 is the end of the first day, etc. 
+SC[, Date1 := Date_start + 1][, Date2 := Date_start + 2][, Date3 := Date_start + 3]
+
+#create a daily start and end time for feeding trials
+SC[, Time_start := "10:00:00"][, Time_end := "10:00:00"]
+
+#create a datetime for feeding trial starts and ends
+SC[, DateTime_start := as_datetime(paste0(Date_start, " ", Time_start))]
+SC[, DateTime_end := as_datetime(paste0(Date_end, " ", Time_end))]
+
+
+
+# merge temperature data --------------------------------------------------
+
 #merge date and time into a datetime
 temp[, DateTime := as_datetime(paste0(Date, " ", Time, " ", TimeStamp))]
 
@@ -37,13 +81,6 @@ ggplot(temp)+
   labs(x = "Date", y = "Temperature (C)")+
   theme_minimal()
 
-#create a daily start and end time for feeding trials
-SC[, Time_start := "10:00:00"][, Time_end := "10:00:00"]
-
-#create a datetime for feeding trial starts and ends
-SC[, DateTime_start := as_datetime(paste0(Date_start, " ", Time_start))]
-SC[, DateTime_end := as_datetime(paste0(Date_end, " ", Time_end))]
-
 #function that calculates mean temperature between start and end date-times of feeding trials
 tempcalc <- function(start, end) {
   avgtemp <- temp[DateTime > start & DateTime < end, mean(Temp)]
@@ -53,12 +90,16 @@ tempcalc <- function(start, end) {
 SC[, Temp := tempcalc(start = DateTime_start, end = DateTime_end), by = .(ID, Trial)]
 
 
-#Calculate intake rates and weight loss
-SC[, D1 := D1offer_wet - D1end_wet] #day 1 of consumption
-SC[, D2 := D2offer_wet - D2end_wet] #day 2 of consumption
-SC[, D3 := D3offer_wet - D3end_wet] #day 3 of consumption
-SC[, Consumed := ((D1 + D2 + D3)/(Weight_start/1000))/3] #consumption by kg bodyweight
-SC[, Weight_change := (((Weight_end - Weight_start)/Weight_start)*100)/3]
+
+
+# merge daily dry matter measures -----------------------------------------
+
+
+
+
+
+
+
 
 
 
