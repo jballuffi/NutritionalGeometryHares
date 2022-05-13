@@ -20,6 +20,7 @@ temp <- fread("Input/temperatures_SW_2022.csv")
 
 #read in daily dry matter measures
 DM <- fread("Input/Daily_DryMatter.csv")
+avgDietDM <- mean(diets$DM, na.rm =TRUE) #calculate avg dry matter for all diets
 
 #read in any food remainder data (leftover food that fell and mixed in with feces)
 rem <- fread("Input/Daily_food_remainders.csv")
@@ -31,10 +32,69 @@ feces <- fread("Input/Results_feces.csv")
 
 # Melt feeding trial data -------------------------------------------------
 
+#make lists of columns for the starting food masses and the ending food masses 
+offercols <- grep("offer_wet", names(trials),value = TRUE)
+endcols <- grep("end_wet", names(trials),value = TRUE)
+
+#melt into one day of feeding trial per row
+mtrials <- melt(trials, measure.vars = offercols, variable.name = "DayOffer", value.name = "OfferWet" )
+mtrials <- melt(mtrials, measure.vars = endcols, variable.name = "DayEnd", value.name = "EndWet")
+
+#cut out the words within the DayOffer and DayEnd columns
+mtrials[, DayOffer := gsub("offer_wet", "", DayOffer)]
+mtrials[, DayEnd := gsub("end_wet", "", DayEnd)]
+
+
+test <- mtrials[ID == "B63448"]
+
+
+cutmismatch <- function( ){
+  
+}
+
+
+
+
 #Calculate intake rates for each day
 trials[, D1 := D1offer_wet - D1end_wet] #day 1 of consumption
 trials[, D2 := D2offer_wet - D2end_wet] #day 2 of consumption
 trials[, D3 := D3offer_wet - D3end_wet] #day 3 of consumption
+
+#list of useless columns
+#todelete <- list(grep("wet", names(trials), value = TRUE))
+
+#melt into one day of feeding trial per row
+mtrials <- melt(trials, measure.vars = c("D1", "D2", "D3"), variable.name = "Day", value.name = "IR_daily" )
+
+#create a date for each day of the feeding trials based on the "day" column
+mtrials[Day == "D1", Date := Date_start + 1][Day == "D2", Date := Date_start + 2][Day == "D3", Date := Date_start + 3]
+
+#paste enclosure and date together to create a 'sample id' that can be merged with lab results
+mtrials[, Sample := paste0(Enclosure, "_", Date)]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #calculate weight change per day for the entire trial
 trials[, Weight_change := (((Weight_end - Weight_start)/Weight_start)*100)/3]
@@ -49,13 +109,6 @@ SC <- trials[, .(Diet, ID, Trial, Enclosure, Date_start, Date_end, D1, D2, D3, I
 SC <- melt(SC, measure.vars = c("D1", "D2", "D3"), variable.name = "Day", value.name = "IR_daily" )
 
 
-# specify dates and times of feeding trials -------------------------------
-
-#create a date for each day of the feeding trials based on the "day" column
-SC[Day == "D1", Date := Date_start + 1][Day == "D2", Date := Date_start + 2][Day == "D3", Date := Date_start + 3]
-
-#paste enclosure and date together to create a 'sample id' that can be merged with lab results
-SC[, Sample := paste0(Enclosure, "_", Date)]
 
 
 #create a daily start and end time for feeding trials
