@@ -47,6 +47,8 @@ mtrials[, DayEnd := gsub("end_wet", "", DayEnd)]
 
 test <- mtrials[ID == "B63448"]
 
+test[(DayOffer == "D1" & DayEnd == "D1") | (DayOffer == "D2" & DayOffer == "D2")]
+
 
 cutmismatch <- function( ){
   
