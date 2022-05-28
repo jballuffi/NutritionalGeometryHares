@@ -10,17 +10,18 @@ library(ggplot2)
 
 #read in feeding trial data
 trials <- fread("Input/Results_singlechoice.csv")
-#SC <- SC[!is.na(Trial)] #remove space holders
 
 #read in the nutritional compositions of each diet
 diets <- fread("Input/Diet_compositions.csv")
+avgDietDM <- mean(diets$DM, na.rm =TRUE) #cal avg DM for all diets
+diets[is.na(DM), DM := avgDietDM] #one diet is missing DM, replace with avg for now
 
 #read in temp data
 temp <- fread("Input/temperatures_SW_2022.csv")
 
 #read in daily dry matter measures
 DM <- fread("Input/Daily_DryMatter.csv")
-avgDietDM <- mean(diets$DM, na.rm =TRUE) #calculate avg dry matter for all diets
+avgSampleDM <- mean(DM$DM, na.rm =TRUE) #calculate avg dry matter for all samples
 
 #read in any food remainder data (leftover food that fell and mixed in with feces)
 rem <- fread("Input/Daily_food_remainders.csv")
@@ -44,56 +45,51 @@ mtrials <- melt(mtrials, measure.vars = endcols, variable.name = "DayEnd", value
 mtrials[, DayOffer := gsub("offer_wet", "", DayOffer)]
 mtrials[, DayEnd := gsub("end_wet", "", DayEnd)]
 
+#create a new column that shows whether or not DayOffer and DayEnd are the same
+mtrials$test <- ifelse(mtrials$DayOffer == mtrials$DayEnd, "equal", "not equal")
 
-test <- mtrials[ID == "B63448"]
+#subset data to only include cases where DayOffer and Dayend are he same
+DT <- mtrials[test == "equal"]
 
-test[(DayOffer == "D1" & DayEnd == "D1") | (DayOffer == "D2" & DayOffer == "D2")]
-
-
-cutmismatch <- function( ){
-  
-}
-
+#clean up useless columns, rename day offer to just show day
+#D1 is results after 24 hours, D2 is after 48, D3 is after 72
+DT[, test := NULL][, DayEnd := NULL]
+setnames(DT, "DayOffer", "Day")
 
 
 
-#Calculate intake rates for each day
-trials[, D1 := D1offer_wet - D1end_wet] #day 1 of consumption
-trials[, D2 := D2offer_wet - D2end_wet] #day 2 of consumption
-trials[, D3 := D3offer_wet - D3end_wet] #day 3 of consumption
-
-#list of useless columns
-#todelete <- list(grep("wet", names(trials), value = TRUE))
-
-#melt into one day of feeding trial per row
-mtrials <- melt(trials, measure.vars = c("D1", "D2", "D3"), variable.name = "Day", value.name = "IR_daily" )
+# create date column and unique sample IDs ------------------------
 
 #create a date for each day of the feeding trials based on the "day" column
-mtrials[Day == "D1", Date := Date_start + 1][Day == "D2", Date := Date_start + 2][Day == "D3", Date := Date_start + 3]
+DT[Day == "D1", Date := Date_start + 1][Day == "D2", Date := Date_start + 2][Day == "D3", Date := Date_start + 3]
 
 #paste enclosure and date together to create a 'sample id' that can be merged with lab results
-mtrials[, Sample := paste0(Enclosure, "_", Date)]
+DT[, Sample := paste0(Enclosure, "_", Date)]
+DT[, Sample := gsub("2022", "22", Sample)]
 
 
 
+# merge with dry matter and food remainder data --------------------------------
 
+#make just a DM table
+DM <- DM[, .(Sample, DM)]
 
+#make just a total remainder table (this is food that fell and mixed with poop)
+rem <- rem[, .(Sample, Total_DM)]
 
+#make just a diet DM table
+dietDM <- diets[, .(Diet, DM)]
 
+#merge feeding data (wet weights) with DM data
+DT <- merge(DT, DM, by = "Sample", all.x = TRUE)
 
+#any lines with missing DM get the average
+DT[is.na(DM), DM := avgSampleDM]
 
-
-
-
-
-
-
-
-
-
-
-
-
+#merge in the mass of food that fell in with poop
+DT <- merge(DT, rem, by = "Sample", all.x = TRUE)
+setnames(DT, "Total_DM", "Rem_DM") #rename to be specific about remainders
+DT[is.na(Rem_DM), Rem_DM := 0] #fill in cases where no food was dumped
 
 
 
@@ -106,9 +102,6 @@ trials[, IR_trial := ((D1 + D2 + D3)/(Weight_start/1000))/3]
 
 #subset data to just be those intake rates and overall weight change
 SC <- trials[, .(Diet, ID, Trial, Enclosure, Date_start, Date_end, D1, D2, D3, IR_trial, Weight_change)]
-
-#melt into one day of feeding trial per row
-SC <- melt(SC, measure.vars = c("D1", "D2", "D3"), variable.name = "Day", value.name = "IR_daily" )
 
 
 
