@@ -13,14 +13,14 @@ trials <- fread("Input/Results_singlechoice.csv")
 
 #read in the nutritional compositions of each diet
 diets <- fread("Input/Diet_compositions.csv")
-avgDietDM <- mean(diets$DM, na.rm =TRUE) #cal avg DM for all diets
-diets[is.na(DM), DM := avgDietDM] #one diet is missing DM, replace with avg for now
+diets[is.na(DM), DM := mean(diets$DM, na.rm =TRUE)] #one diet is missing DM, replace with avg for now
 
 #read in temp data
 temp <- fread("Input/temperatures_SW_2022.csv")
 
 #read in daily dry matter measures
 DM <- fread("Input/Daily_DryMatter.csv")
+DM[, DM := DM/100]
 avgSampleDM <- mean(DM$DM, na.rm =TRUE) #calculate avg dry matter for all samples
 
 #read in any food remainder data (leftover food that fell and mixed in with feces)
@@ -47,6 +47,7 @@ mtrials[, DayEnd := gsub("end_wet", "", DayEnd)]
 
 #create a new column that shows whether or not DayOffer and DayEnd are the same
 mtrials$test <- ifelse(mtrials$DayOffer == mtrials$DayEnd, "equal", "not equal")
+mtrials[, test := ifelse(DayOffer == DayEnd, 'equal', 'not equal')]
 
 #subset data to only include cases where DayOffer and Dayend are he same
 DT <- mtrials[test == "equal"]
@@ -74,22 +75,32 @@ DT[, Sample := gsub("2022", "22", Sample)]
 #make just a DM table
 DM <- DM[, .(Sample, DM)]
 
+
 #make just a total remainder table (this is food that fell and mixed with poop)
 rem <- rem[, .(Sample, Total_DM)]
 
 #make just a diet DM table
 dietDM <- diets[, .(Diet, DM)]
+setnames(dietDM, "DM", "DietDM") 
 
 #merge feeding data (wet weights) with DM data
 DT <- merge(DT, DM, by = "Sample", all.x = TRUE)
 
-#any lines with missing DM get the average
+#any lines with missing DM get the average DM
 DT[is.na(DM), DM := avgSampleDM]
 
 #merge in the mass of food that fell in with poop
 DT <- merge(DT, rem, by = "Sample", all.x = TRUE)
 setnames(DT, "Total_DM", "Rem_DM") #rename to be specific about remainders
 DT[is.na(Rem_DM), Rem_DM := 0] #fill in cases where no food was dumped
+
+#calculate start DM based on diet DM
+DT <- merge(DT, dietDM, by = "Diet", all.x = TRUE)
+
+DT[, OfferDM := OfferWet*DietDM]
+DT[, EndDM := (EndWet*DM) + Rem_DM]
+
+
 
 
 
