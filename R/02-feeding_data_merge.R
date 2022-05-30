@@ -15,23 +15,20 @@ trials <- fread("Input/Results_singlechoice.csv")
 diets <- fread("Input/Diet_compositions.csv")
 diets[is.na(DM), DM := mean(diets$DM, na.rm =TRUE)] #one diet is missing DM, replace with avg for now
 
-#read in temp data
-temp <- fread("Input/temperatures_SW_2022.csv")
-
 #read in daily dry matter measures
 DM <- fread("Input/Daily_DryMatter.csv")
 DM[, DM := DM/100]
 avgSampleDM <- mean(DM$DM, na.rm =TRUE) #calculate avg dry matter for all samples
 
-#read in any food remainder data (leftover food that fell and mixed in with feces)
-rem <- fread("Input/Daily_food_remainders.csv")
+#read in amounts and DMs of spilled food (leftover food that fell and mixed in with feces)
+spill <- fread("Input/Daily_food_remainders.csv")
 
 #read in fecal response data
 feces <- fread("Input/Results_feces.csv")
 
 
 
-# Melt feeding trial data -------------------------------------------------
+# Melt feeding trial data into individual days-------------------------------------------------
 
 #make lists of columns for the starting food masses and the ending food masses 
 offercols <- grep("offer_wet", names(trials),value = TRUE)
@@ -70,14 +67,10 @@ DT[, Sample := gsub("2022", "22", Sample)]
 
 
 
-# merge with dry matter and food remainder data --------------------------------
+# merge with daily dry matter --------------------------------
 
 #make just a DM table
 DM <- DM[, .(Sample, DM)]
-
-
-#make just a total remainder table (this is food that fell and mixed with poop)
-rem <- rem[, .(Sample, Total_DM)]
 
 #make just a diet DM table
 dietDM <- diets[, .(Diet, DM)]
@@ -89,97 +82,83 @@ DT <- merge(DT, DM, by = "Sample", all.x = TRUE)
 #any lines with missing DM get the average DM
 DT[is.na(DM), DM := avgSampleDM]
 
-#merge in the mass of food that fell in with poop
-DT <- merge(DT, rem, by = "Sample", all.x = TRUE)
-setnames(DT, "Total_DM", "Rem_DM") #rename to be specific about remainders
-DT[is.na(Rem_DM), Rem_DM := 0] #fill in cases where no food was dumped
+
+
+# merge in spilled food data --------------------------------------------
+
+#food that got knocked out of dishes and fell in with poop
+
+#make just a total remainder/spilled table
+spill <- spill[, .(Sample, Total_DM)]
+
+#merge in the mass of spilled food
+DT <- merge(DT, spill, by = "Sample", all.x = TRUE)
+setnames(DT, "Total_DM", "Spilled_DM") #rename to be specific to spilled food
+DT[is.na(Spilled_DM), Spilled_DM := 0] #fill in cases where no food was dumped
 
 #calculate start DM based on diet DM
 DT <- merge(DT, dietDM, by = "Diet", all.x = TRUE)
 
+
+
+# merge in fecal data ------------------------------------------------------
+
+#calculate fecal outputs
+feces[, Total_out := Total_dried*DM] #total dry matter
+feces[, NDF_out := Total_out*NDF_DM/100] #total NDF on DM basis
+feces[, ADF_out := Total_out*ADF_DM/100] #total ADF on DM basis
+feces[, CP_out := Total_out*CP_DM/100] #total CP on DM basis
+
+#cut the fecal data down to just fecal output columns
+fecaloutput <- feces[, .(Sample, Total_out, NDF_out, ADF_out, CP_out)]
+
+#merge intake rates and DMs with fecal output data
+DT <- merge(DT, fecaloutput, by = "Sample", all.x = TRUE)
+
+
+# Calculate intake measures  --------------------------------------
+
+#cut diet compositions to just be DM
+dietDM <- diets[, .(Diet, CP_DM_pred, NDF_DM_pred, ADF_DM_pred, ADL_DM_pred)]
+names(dietDM) <- c("Diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet")
+
+#merge DT with diet compositions in terms of DM 
+DT <- merge(DT, dietDM, by = "Diet", all.x = TRUE)
+
+#calculate start and end food weights in terms of dry matter
 DT[, OfferDM := OfferWet*DietDM]
-DT[, EndDM := (EndWet*DM) + Rem_DM]
+DT[, EndDM := (EndWet*DM) + Spilled_DM] #end weight adds in the dry matter of spilled food
+
+#calculate daily itake rate in DM
+DT[, Intake := OfferDM - EndDM]
+
+#calculate intake rates of each nutrient
+DT[, CP_in := Intake*CP_diet]
+DT[, NDF_in := Intake*NDF_diet]
+DT[, ADF_in := Intake*ADF_diet]
+DT[, ADL_in := Intake*ADL_diet]
 
 
 
+# create final, simplified datasheet --------------------------------------
+
+#cut out a datasheet of just key feeding trial info and results
+Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Date_start, Date_start, Day, #info
+                   Intake, CP_in, NDF_in, ADF_in, ADL_in, #intakes
+                   Weight_start, Weight_end, #weight change
+                   Total_out, CP_out, NDF_out, ADF_out)] #fecal outputs
 
 
-
-#calculate weight change per day for the entire trial
-trials[, Weight_change := (((Weight_end - Weight_start)/Weight_start)*100)/3]
-
-#calculate average intake rate (IR) for entire trial per kg of body weight
-trials[, IR_trial := ((D1 + D2 + D3)/(Weight_start/1000))/3] 
-
-#subset data to just be those intake rates and overall weight change
-SC <- trials[, .(Diet, ID, Trial, Enclosure, Date_start, Date_end, D1, D2, D3, IR_trial, Weight_change)]
+saveRDS(Dailyresults, "Output/dailyresultscleaned.rds")
 
 
-
-
-#create a daily start and end time for feeding trials
-SC[, Time_start := "10:00:00"][, Time_end := "10:00:00"]
-
-#create a datetime for feeding trial starts and ends
-SC[, DateTime_start := as_datetime(paste0(Date_start, " ", Time_start))]
-SC[, DateTime_end := as_datetime(paste0(Date_end, " ", Time_end))]
-
-
-
-# merge temperature data --------------------------------------------------
-
-#merge date and time into a datetime
-temp[, DateTime := as_datetime(paste0(Date, " ", Time, " ", TimeStamp))]
-
-#cut for only dates in which feeding trials occurred
-temp <- temp[Date > '2022-02-08' & Date < '2022-03-15']
-
-#plot that shows temp over time for the whole study period
-ggplot(temp)+
-  geom_line(aes(y = Temp, x = DateTime))+
-  labs(x = "Date", y = "Temperature (C)")+
-  theme_minimal()
-
-#function that calculates mean temperature between start and end date-times of feeding trials
-tempcalc <- function(start, end) {
-  avgtemp <- temp[DateTime > start & DateTime < end, mean(Temp)]
-}
-
-#run the tempcalc function by feeding trial (i.e., ID and trial number)
-SC[, Temp := tempcalc(start = DateTime_start, end = DateTime_end), by = .(ID, Trial)]
-
-
-
-
-# merge daily dry matter measures -----------------------------------------
-
-
-
-
-
-
-
-
-
-
-#merge feeding results with diet compositions by diet
-SCdiets <- merge(SC, diets, by = "Diet", all.x = TRUE)
-
-SCdiets <- SCdiets[!is.na(Consumed)]
-
-#calculate the intake of protein (g/kg body mass/3 days) by diet 
-SCdiets[, Consumed_CP := Consumed*(Protein/100)]
-#calculate the intake of fibre (g/kg body mass/3 days) by diet
-SCdiets[, Consumed_NDF := Consumed*(NDF/100)]
-
-
-
-
-SCmeans <- SCdiets[, .(mean(Consumed), sd(Consumed), mean(Weight_change), sd(Weight_change)), by = Diet]
-names(SCmeans) <- c("Diet", "Consumed_mean", "Consumed_SD", "Weight_mean", "Weight_SD")
-
-Macromeans <- SCdiets[, .(mean(Consumed_CP), sd(Consumed_CP), mean(Consumed_NDF), sd(Consumed_NDF)), by = Diet]
-names(Macromeans) <- c("Diet", "CP_mean", "CP_SD", "NDF_mean", "NDF_SD")
-
-
-
+# #calculate the intake of protein (g/kg body mass/3 days) by diet 
+# SCdiets[, Consumed_CP := Consumed*(Protein/100)]
+# #calculate the intake of fibre (g/kg body mass/3 days) by diet
+# SCdiets[, Consumed_NDF := Consumed*(NDF/100)]
+# 
+# SCmeans <- SCdiets[, .(mean(Consumed), sd(Consumed), mean(Weight_change), sd(Weight_change)), by = Diet]
+# names(SCmeans) <- c("Diet", "Consumed_mean", "Consumed_SD", "Weight_mean", "Weight_SD")
+# 
+# Macromeans <- SCdiets[, .(mean(Consumed_CP), sd(Consumed_CP), mean(Consumed_NDF), sd(Consumed_NDF)), by = Diet]
+# names(Macromeans) <- c("Diet", "CP_mean", "CP_SD", "NDF_mean", "NDF_SD")
