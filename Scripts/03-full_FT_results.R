@@ -1,8 +1,8 @@
-#script that merges and cleans all feeding trial results
+#script that calculates final responses by feeding trial, merged with temp data
 
-library(data.table)
-library(lubridate)
-library(ggplot2)
+#source the R folder to load any packages and functions
+lapply(dir('R', '*.R', full.names = TRUE), source)
+
 
 #read in temp data
 temp <- fread("Input/temperatures_SW_2022.csv")
@@ -10,10 +10,6 @@ temp <- fread("Input/temperatures_SW_2022.csv")
 #read in cleaned daily feeding trial results
 day <- readRDS("Output/dailyresultscleaned.rds")
 
-#function that calculates mean temperature between start and end date-times of feeding trials
-tempcalc <- function(start, end) {
-  avgtemp <- temp[DateTime > start & DateTime < end, mean(Temp)]
-}
 
 
 #average results by feeding trial
