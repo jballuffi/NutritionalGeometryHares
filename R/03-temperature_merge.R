@@ -4,17 +4,13 @@ library(data.table)
 library(lubridate)
 library(ggplot2)
 
-
-
 #read in temp data
 temp <- fread("Input/temperatures_SW_2022.csv")
 
+#read in cleaned daily feeding trial results
+day <- readRDS("Output/dailyresultscleaned.rds")
 
-
-
-
-
-
+#average results by feeding trial
 
 
 
