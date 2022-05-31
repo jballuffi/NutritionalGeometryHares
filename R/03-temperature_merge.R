@@ -10,6 +10,12 @@ temp <- fread("Input/temperatures_SW_2022.csv")
 #read in cleaned daily feeding trial results
 day <- readRDS("Output/dailyresultscleaned.rds")
 
+#function that calculates mean temperature between start and end date-times of feeding trials
+tempcalc <- function(start, end) {
+  avgtemp <- temp[DateTime > start & DateTime < end, mean(Temp)]
+}
+
+
 #average results by feeding trial
 
 
@@ -49,10 +55,7 @@ ggplot(temp)+
   labs(x = "Date", y = "Temperature (C)")+
   theme_minimal()
 
-#function that calculates mean temperature between start and end date-times of feeding trials
-tempcalc <- function(start, end) {
-  avgtemp <- temp[DateTime > start & DateTime < end, mean(Temp)]
-}
+
 
 #run the tempcalc function by feeding trial (i.e., ID and trial number)
 SC[, Temp := tempcalc(start = DateTime_start, end = DateTime_end), by = .(ID, Trial)]
