@@ -67,38 +67,36 @@ DT[, Sample := gsub("2022", "22", Sample)]
 
 
 
-# merge with daily dry matter --------------------------------
+# merge with daily dry matter and diet dry matter --------------------------------
 
-#make just a DM table
+#remove excess columns in daily DM table
 DM <- DM[, .(Sample, DM)]
 
 #make just a diet DM table
 dietDM <- diets[, .(Diet, DM)]
 setnames(dietDM, "DM", "DietDM") 
 
-#merge feeding data (wet weights) with DM data
+#merge feeding data (wet weights) with daily DM data
 DT <- merge(DT, DM, by = "Sample", all.x = TRUE)
 
 #any lines with missing DM get the average DM
 DT[is.na(DM), DM := avgSampleDM]
 
+#merge diet DM into datasheet
+DT <- merge(DT, dietDM, by = "Diet", all.x = TRUE)
 
 
 # merge in spilled food data --------------------------------------------
+#this is food that got knocked out of dishes and fell in with poop
+#has a mass and a unique DM
 
-#food that got knocked out of dishes and fell in with poop
-
-#make just a total remainder/spilled table
+#remove excess columns from remainder/spilled food table
 spill <- spill[, .(Sample, Total_DM)]
 
-#merge in the mass of spilled food
+#merge in the mass of spilled food with full datasheet
 DT <- merge(DT, spill, by = "Sample", all.x = TRUE)
 setnames(DT, "Total_DM", "Spilled_DM") #rename to be specific to spilled food
 DT[is.na(Spilled_DM), Spilled_DM := 0] #fill in cases where no food was dumped
-
-#calculate start DM based on diet DM
-DT <- merge(DT, dietDM, by = "Diet", all.x = TRUE)
-
 
 
 # merge in fecal data ------------------------------------------------------
