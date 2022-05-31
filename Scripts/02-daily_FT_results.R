@@ -1,9 +1,7 @@
 #script that merges and cleans all feeding trial results
 
-library(data.table)
-library(lubridate)
-library(ggplot2)
-
+#source the R folder to load any packages and functions
+lapply(dir('R', '*.R', full.names = TRUE), source)
 
 
 # read in data ------------------------------------------------------------
@@ -137,6 +135,12 @@ DT[, ADF_in := Intake*ADF_diet]
 DT[, ADL_in := Intake*ADL_diet]
 
 
+# Calculate digestabilities -----------------------------------------------
+
+DT[, CP_dig := (CP_in - CP_out)/CP_in]
+DT[, NDF_dig := (NDF_in - NDF_out)/NDF_in]
+DT[, ADF_dig := (ADF_in - ADF_out)/ADF_in]
+
 
 # create final, simplified datasheet --------------------------------------
 
@@ -144,7 +148,11 @@ DT[, ADL_in := Intake*ADL_diet]
 Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Date_start, Date_end, Day, #info
                    Intake, CP_in, NDF_in, ADF_in, ADL_in, #intakes
                    Weight_start, Weight_end, #weight change
-                   Total_out, CP_out, NDF_out, ADF_out)] #fecal outputs
+                   Total_out, CP_out, NDF_out, ADF_out, #fecal outputs
+                   CP_dig, NDF_dig, ADF_dig #digestability
+                   )] 
+
+
 
 
 saveRDS(Dailyresults, "Output/dailyresultscleaned.rds")
