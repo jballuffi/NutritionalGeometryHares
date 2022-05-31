@@ -119,7 +119,7 @@ DT <- merge(DT, fecaloutput, by = "Sample", all.x = TRUE)
 # Calculate intake measures  --------------------------------------
 
 #cut diet compositions to just be DM
-dietDM <- diets[, .(Diet, CP_DM_pred, NDF_DM_pred, ADF_DM_pred, ADL_DM_pred)]
+dietDM <- diets[, .(Diet, CP_DM_pred/100, NDF_DM_pred/100, ADF_DM_pred/100, ADL_DM_pred/100)]
 names(dietDM) <- c("Diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet")
 
 #merge DT with diet compositions in terms of DM 
@@ -143,7 +143,7 @@ DT[, ADL_in := Intake*ADL_diet]
 # create final, simplified datasheet --------------------------------------
 
 #cut out a datasheet of just key feeding trial info and results
-Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Date_start, Date_start, Day, #info
+Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Date_start, Date_end, Day, #info
                    Intake, CP_in, NDF_in, ADF_in, ADL_in, #intakes
                    Weight_start, Weight_end, #weight change
                    Total_out, CP_out, NDF_out, ADF_out)] #fecal outputs
