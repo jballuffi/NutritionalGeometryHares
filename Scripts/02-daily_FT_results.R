@@ -32,8 +32,8 @@ temp <- fread("Input/temperatures_SW_2022.csv")
 # Melt feeding trial data into individual days-------------------------------------------------
 
 #make lists of columns for the starting food masses and the ending food masses 
-offercols <- grep("offer_wet", names(trials),value = TRUE)
-endcols <- grep("end_wet", names(trials),value = TRUE)
+offercols <- grep("offer_wet", names(trials), value = TRUE)
+endcols <- grep("end_wet", names(trials), value = TRUE)
 
 #melt into one day of feeding trial per row
 mtrials <- melt(trials, measure.vars = offercols, variable.name = "DayOffer", value.name = "OfferWet" )
@@ -63,8 +63,7 @@ setnames(DT, "DayOffer", "Day")
 DT[Day == "D1", Date := Date_start + 1][Day == "D2", Date := Date_start + 2][Day == "D3", Date := Date_start + 3]
 
 #paste enclosure and date together to create a 'sample id' that can be merged with lab results
-DT[, Sample := paste0(Enclosure, "_", Date)]
-DT[, Sample := gsub("2022", "22", Sample)]
+DT[, Sample := paste0(Enclosure, "_", substring(Date, 3))] #remove the first two characters from year
 
 
 
@@ -104,9 +103,9 @@ DT[is.na(Spilled_DM), Spilled_DM := 0] #fill in cases where no food was dumped
 
 #calculate fecal outputs
 feces[, Total_out := Total_dried*DM] #total dry matter
-feces[, NDF_out := Total_out*NDF_DM/100] #total NDF on DM basis
-feces[, ADF_out := Total_out*ADF_DM/100] #total ADF on DM basis
-feces[, CP_out := Total_out*CP_DM/100] #total CP on DM basis
+feces[, NDF_out := Total_out*(NDF_DM/100)] #total NDF on DM basis
+feces[, ADF_out := Total_out*(ADF_DM/100)] #total ADF on DM basis
+feces[, CP_out := Total_out*(CP_DM/100)] #total CP on DM basis
 
 #cut the fecal data down to just fecal output columns
 fecaloutput <- feces[, .(Sample, Total_out, NDF_out, ADF_out, CP_out)]
@@ -138,11 +137,15 @@ DT[, ADF_in := Intake*ADF_diet]
 DT[, ADL_in := Intake*ADL_diet]
 
 #calculate intake rates by weight
-DT[, Intake_bw := Intake/Weight_start/1000]
-DT[, CP_in_bw := CP_in/Weight_start/1000]
-DT[, NDF_in_bw := NDF_in/Weight_start/1000]
-DT[, ADF_in_bw := ADF_in/Weight_start/1000]
-DT[, ADL_in_bw := ADF_in/Weight_start/1000]
+DT[, Weight_start := Weight_start/1000]
+DT[, Weight_end := Weight_end/1000]
+
+
+DT[, Intake_bw := Intake/Weight_start]
+DT[, CP_in_bw := CP_in/Weight_start]
+DT[, NDF_in_bw := NDF_in/Weight_start]
+DT[, ADF_in_bw := ADF_in/Weight_start]
+DT[, ADL_in_bw := ADF_in/Weight_start]
 
 # Calculate digestabilities -----------------------------------------------
 
@@ -184,15 +187,3 @@ Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Day, Date_start, Date_end, Date,
 
 
 saveRDS(Dailyresults, "Output/dailyresultscleaned.rds")
-
-
-# #calculate the intake of protein (g/kg body mass/3 days) by diet 
-# SCdiets[, Consumed_CP := Consumed*(Protein/100)]
-# #calculate the intake of fibre (g/kg body mass/3 days) by diet
-# SCdiets[, Consumed_NDF := Consumed*(NDF/100)]
-# 
-# SCmeans <- SCdiets[, .(mean(Consumed), sd(Consumed), mean(Weight_change), sd(Weight_change)), by = Diet]
-# names(SCmeans) <- c("Diet", "Consumed_mean", "Consumed_SD", "Weight_mean", "Weight_SD")
-# 
-# Macromeans <- SCdiets[, .(mean(Consumed_CP), sd(Consumed_CP), mean(Consumed_NDF), sd(Consumed_NDF)), by = Diet]
-# names(Macromeans) <- c("Diet", "CP_mean", "CP_SD", "NDF_mean", "NDF_SD")
