@@ -24,6 +24,9 @@ spill <- fread("Input/Daily_food_remainders.csv")
 #read in fecal response data
 feces <- fread("Input/Results_feces.csv")
 
+#read in temp data
+temp <- fread("Input/temperatures_SW_2022.csv")
+
 
 
 # Melt feeding trial data into individual days-------------------------------------------------
@@ -142,14 +145,32 @@ DT[, NDF_dig := (NDF_in - NDF_out)/NDF_in]
 DT[, ADF_dig := (ADF_in - ADF_out)/ADF_in]
 
 
+# Merge in daily temperatures ---------------------------------------------
+
+#create a daily start and end time for feeding trials
+DT[, Time_start := "10:00:00"][, Time_end := "10:00:00"]
+
+#create a datetime for feeding trial starts and ends
+DT[, DayTime_start := as_datetime(paste0(Date-1, " ", Time_start))]
+DT[, DayTime_end := as_datetime(paste0(Date, " ", Time_end))]
+
+#in temp data, merge date and time into a datetime
+temp[, DateTime := as_datetime(paste0(Date, " ", Time, " ", TimeStamp))]
+
+#run the tempcalc function (in R folder) by day and ID
+DT[, Temp := tempcalc(start = DayTime_start, end = DayTime_end), by = .(ID, Trial, Day)]
+
+
+
 # create final, simplified datasheet --------------------------------------
 
 #cut out a datasheet of just key feeding trial info and results
-Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Date_start, Date_end, Day, #info
+Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Day, Date_start, Date_end, Date, #info
                    Intake, CP_in, NDF_in, ADF_in, ADL_in, #intakes
                    Weight_start, Weight_end, #weight change
                    Total_out, CP_out, NDF_out, ADF_out, #fecal outputs
-                   CP_dig, NDF_dig, ADF_dig #digestability
+                   CP_dig, NDF_dig, ADF_dig, #digestability
+                   Temp
                    )] 
 
 
