@@ -7,19 +7,10 @@ lapply(dir('R', '*.R', full.names = TRUE), source)
 day <- readRDS("Output/dailyresultscleaned.rds")
 
 
+#run the trialavg function (in R folder) by ID and Diet (trial is extra, same as diet)
+#trials is a spreadsheet with results for whole trials
+trials <- day[, trialavg(.SD), by = c("ID", "Diet", "Trial")]
 
-#average results by feeding trial
-
-
-
-#calculate weight change per day for the entire trial
+#calculate weight change per day for each trial (% change/day)
 trials[, Weight_change := (((Weight_end - Weight_start)/Weight_start)*100)/3]
-
-#calculate average intake rate (IR) for entire trial per kg of body weight
-trials[, IR_trial := ((D1 + D2 + D3)/(Weight_start/1000))/3] 
-
-#subset data to just be those intake rates and overall weight change
-SC <- trials[, .(Diet, ID, Trial, Enclosure, Date_start, Date_end, D1, D2, D3, IR_trial, Weight_change)]
-
-
 
