@@ -14,3 +14,5 @@ trials <- day[, trialavg(.SD), by = c("ID", "Diet", "Trial")]
 #calculate weight change per day for each trial (% change/day)
 trials[, Weight_change := (((Weight_end - Weight_start)/Weight_start)*100)/3]
 
+#save trial format of results
+saveRDS(trials, "Output/trialresultscleaned.rds")
