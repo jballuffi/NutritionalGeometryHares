@@ -137,6 +137,12 @@ DT[, NDF_in := Intake*NDF_diet]
 DT[, ADF_in := Intake*ADF_diet]
 DT[, ADL_in := Intake*ADL_diet]
 
+#calculate intake rates by weight
+DT[, Intake_bw := Intake/Weight_start/1000]
+DT[, CP_in_bw := CP_in/Weight_start/1000]
+DT[, NDF_in_bw := NDF_in/Weight_start/1000]
+DT[, ADF_in_bw := ADF_in/Weight_start/1000]
+DT[, ADL_in_bw := ADF_in/Weight_start/1000]
 
 # Calculate digestabilities -----------------------------------------------
 
@@ -168,6 +174,7 @@ DT[, Temp := tempcalc(start = DayTime_start, end = DayTime_end), by = .(ID, Tria
 Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Day, Date_start, Date_end, Date, #info
                    Intake, CP_in, NDF_in, ADF_in, ADL_in, #intakes
                    Weight_start, Weight_end, #weight change
+                   Intake_bw, CP_in_bw, NDF_in_bw, ADF_in_bw, ADL_in_bw, #intakes by weight
                    Total_out, CP_out, NDF_out, ADF_out, #fecal outputs
                    CP_dig, NDF_dig, ADF_dig, #digestability
                    Temp
