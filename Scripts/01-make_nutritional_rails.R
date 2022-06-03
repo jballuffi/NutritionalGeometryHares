@@ -1,9 +1,18 @@
 #exploring different diet formulations for feeding trials
 
-library(data.table)
-library(ggplot2)
+#source the R folder to load any packages and functions
+lapply(dir('R', '*.R', full.names = TRUE), source)
 
-wp<- fread("Input/Plants_winter2021_compositions_cleaned.csv")
+
+#read in formulated diet compositions
+diets <- fread("Input/Diet_compositions.csv")
+
+#read in winter plant compositions
+wp <- fread("Input/Plants_winter2021_compositions_cleaned.csv")
+
+diets[Diet == "A", return(CP_DM_pred)]
+
+
 
 PIGLf<- wp[Species == "Picea glauca", mean(NDF_DM)]
 PIGLp<- wp[Species == "Picea glauca", mean(CP_DM)]
@@ -15,43 +24,34 @@ BEGLf<- wp[Species == "Betula glandulosa", mean(NDF_DM)]
 BEGLp<- wp[Species == "Betula glandulosa", mean(CP_DM)]
 
 
-themerails<-theme(axis.title = element_text(size=13),
-                  axis.text = element_text(size=10),
-                  axis.line.x.top = element_blank(),
-                  axis.line.y.right = element_blank(),
-                  axis.line.x.bottom = element_line(size=.5),
-                  axis.line.y.left = element_line(size=.5),
-                  legend.key = element_blank(),
-                  legend.text = element_text(size=13),
-                  panel.background = element_blank())
 
 #create blank data frame with just intake rate
-data<- data.table(IR = seq(1, 120, by = 1))
 
-#add in protein values (%)
-data[, P1 := .05]
-data[, P2 := .0833]
-data[, P3 := 0.117]
-data[, P4 := 0.15]
+DA <- data.table(IR = seq(1, 120, by = 1), 
+                 CP = diets[Diet == "A", return(CP_DM_pred)]/100,
+                 NDF = diets[Diet == "A", return(NDF_DM_pred)]/100)
 
-#add in NDF values (%)
-data[, F1 := .60241]
-data[, F2 := .365] 
-data[, F3 := .321] 
-data[, F4 := .3]
+DA[, c("CP_IR", "NDF_IR") := .(IR*CP, IR*NDF)]
 
-#calculate protein intake rates
-data[, P1I := P1*IR]
-data[, P2I := P2*IR]
-data[, P3I := P3*IR]
-data[, P4I := P4*IR]
+DB <- data.table(IR = seq(1, 120, by = 1), 
+                 CP = diets[Diet == "B", return(CP_DM_pred)]/100,
+                 NDF = diets[Diet == "B", return(NDF_DM_pred)]/100)
+
+DB[, c("CP_IR", "NDF_IR") := .(IR*CP, IR*NDF)]
+
+DC <- data.table(IR = seq(1, 120, by = 1), 
+                 CP = diets[Diet == "C", return(CP_DM_pred)]/100,
+                 NDF = diets[Diet == "C", return(NDF_DM_pred)]/100)
+
+DC[, c("CP_IR", "NDF_IR") := .(IR*CP, IR*NDF)]
+
+DD <- data.table(IR = seq(1, 120, by = 1), 
+                 CP = diets[Diet == "D", return(CP_DM_pred)]/100,
+                 NDF = diets[Diet == "D", return(NDF_DM_pred)]/100)
+
+DD[, c("CP_IR", "NDF_IR") := .(IR*CP, IR*NDF)]
 
 
-#calculate NDF intake rates
-data[, F1I := F1*IR]
-data[, F2I := F2*IR]
-data[, F3I := F3*IR]
-data[, F4I := F4*IR]
 
 
 #save diet formulas at this stage
