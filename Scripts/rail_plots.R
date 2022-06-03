@@ -19,9 +19,19 @@ trials <- readRDS("Output/trialresultscleaned.rds")
     labs(x="NDF intake (g DM/kg/day)", y="CP intake (g DM/kg/day)")+
     themerails)
 
+ggplot()+
+  geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet), color = "black", data = rails)+
+  geom_point(aes(x = NDF_in_bw, y = CP_in_bw, color = CP_dig), size = 4, alpha = .7, data = trials)+
+  scale_color_gradient(low = "yellow2", high = "Blue3", name = "CP Digestability")+
+  labs(x="NDF intake (g DM/kg/day)", y="CP intake (g DM/kg/day)")+
+  themerails
 
 
-
-
+ggplot()+
+  geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet), color = "black", data = rails)+
+  geom_point(aes(x = NDF_in_bw, y = CP_in_bw, color = NDF_dig), size = 4, alpha = .7, data = trials)+
+  scale_color_gradient(low = "yellow2", high = "Blue3", name = "NDF Digestability")+
+  labs(x="NDF intake (g DM/kg/day)", y="CP intake (g DM/kg/day)")+
+  themerails
 
 ggsave("Output/singlechoicerails.jpeg", feedingratesrails, width = 5, height = 3, unit = "in")
