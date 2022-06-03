@@ -10,98 +10,109 @@ diets <- fread("Input/Diet_compositions.csv")
 #read in winter plant compositions
 wp <- fread("Input/Plants_winter2021_compositions_cleaned.csv")
 
-diets[Diet == "A", return(CP_DM_pred)]
 
 
+# create diet rails -------------------------------------------------------
 
-PIGLf<- wp[Species == "Picea glauca", mean(NDF_DM)]
-PIGLp<- wp[Species == "Picea glauca", mean(CP_DM)]
+#create list of intake rates and nutritional values for each diet
+dietintakes<- list(
 
-SASPf<- wp[Species == "Salix spp", mean(NDF_DM)]
-SASPp<- wp[Species == "Salix spp", mean(CP_DM)]
+#diet A
+  data.table(IR = seq(1, 120, by = 1), 
+                CP = diets[Diet == "A", return(CP_DM_pred)]/100,
+                NDF = diets[Diet == "A", return(NDF_DM_pred)]/100,
+                Diet = "A"),
+#diet B
+  data.table(IR = seq(1, 120, by = 1), 
+                CP = diets[Diet == "B", return(CP_DM_pred)]/100,
+                NDF = diets[Diet == "B", return(NDF_DM_pred)]/100,
+                Diet = "B"),
+#diet c
+  data.table(IR = seq(1, 120, by = 1), 
+                CP = diets[Diet == "C", return(CP_DM_pred)]/100,
+                NDF = diets[Diet == "C", return(NDF_DM_pred)]/100,
+                Diet = "C"),
+#diet D
+  data.table(IR = seq(1, 120, by = 1), 
+                CP = diets[Diet == "D", return(CP_DM_pred)]/100,
+                NDF = diets[Diet == "D", return(NDF_DM_pred)]/100,
+                Diet = "D")
+)
 
-BEGLf<- wp[Species == "Betula glandulosa", mean(NDF_DM)]
-BEGLp<- wp[Species == "Betula glandulosa", mean(CP_DM)]
+#combine all diet intake rates into one table
+dietrails <- rbindlist(dietintakes)
 
+#calculate the intake rates of CP and NDF
+dietrails[, c("CP_IR", "NDF_IR") := .(IR*CP, IR*NDF)]
 
-
-#create blank data frame with just intake rate
-
-DA <- data.table(IR = seq(1, 120, by = 1), 
-                 CP = diets[Diet == "A", return(CP_DM_pred)]/100,
-                 NDF = diets[Diet == "A", return(NDF_DM_pred)]/100)
-
-DA[, c("CP_IR", "NDF_IR") := .(IR*CP, IR*NDF)]
-
-DB <- data.table(IR = seq(1, 120, by = 1), 
-                 CP = diets[Diet == "B", return(CP_DM_pred)]/100,
-                 NDF = diets[Diet == "B", return(NDF_DM_pred)]/100)
-
-DB[, c("CP_IR", "NDF_IR") := .(IR*CP, IR*NDF)]
-
-DC <- data.table(IR = seq(1, 120, by = 1), 
-                 CP = diets[Diet == "C", return(CP_DM_pred)]/100,
-                 NDF = diets[Diet == "C", return(NDF_DM_pred)]/100)
-
-DC[, c("CP_IR", "NDF_IR") := .(IR*CP, IR*NDF)]
-
-DD <- data.table(IR = seq(1, 120, by = 1), 
-                 CP = diets[Diet == "D", return(CP_DM_pred)]/100,
-                 NDF = diets[Diet == "D", return(NDF_DM_pred)]/100)
-
-DD[, c("CP_IR", "NDF_IR") := .(IR*CP, IR*NDF)]
+#create columnn indicating that this is a diet
+dietrails[, Type := "Diet"]
 
 
 
 
-#save diet formulas at this stage
-data2 <- data
+# forage rails ------------------------------------------------------------
+
+#collect avg nutritional compositions by species
+wp_means <- wp[, .((mean(CP_DM))/100,(mean(NDF_DM))/100), by = Species]
+names(wp_means) <- c("Species", "CP", "NDF")
+
+#create list of intake rates and nutritional values for each species
+forageintakes <- list(
+#BEGL
+data.table(IR = seq(1, 120, by = 1), 
+           CP = wp_means[Species == "Betula glandulosa", return(CP)],
+           NDF = wp_means[Species == "Betula glandulosa", return(NDF)],
+           Diet = "BEGL"),
+#PIGL
+data.table(IR = seq(1, 120, by = 1), 
+           CP = wp_means[Species == "Picea glauca", return(CP)],
+           NDF = wp_means[Species == "Picea glauca", return(NDF)],
+           Diet = "PIGL"),
+#SASP
+data.table(IR = seq(1, 120, by = 1), 
+           CP = wp_means[Species == "Salix spp", return(CP)],
+           NDF = wp_means[Species == "Salix spp", return(NDF)],
+           Diet = "SASP")
+
+)
+
+#combine all intake rates of browse species
+foragerails <- rbindlist(forageintakes)
+
+#calculate the intake rates of CP and NDF
+foragerails[, c("CP_IR", "NDF_IR") := .(IR*CP, IR*NDF)]
+
+#create column indicating that this is values from natural browse
+foragerails[, Type := "Forage"]
 
 
-#adding in values of natural browse/forage species
 
-#protein compositions
-data[, PIGLp := PIGLp/100]
-data[, SASPp := SASPp/100]
-data[, BEGLp := BEGLp/100]
 
-#NDF compositions
-data[, PIGLf := PIGLf/100]
-data[, SASPf := SASPf/100]
-data[, BEGLf := BEGLf/100]
+# collect all intakes and plot rails --------------------------------------
 
-#proteinintake
-data[, PIGLpI := PIGLp*IR]
-data[, SASPpI := SASPp*IR]
-data[, BEGLpI := BEGLp*IR]
+#rbindlist the diet and forage rails in one
+allrails <- rbind(foragerails, dietrails)
 
-#NDF intake
-data[, PIGLfI := PIGLf*IR]
-data[, SASPfI := SASPf*IR]
-data[, BEGLfI := BEGLf*IR]
-
-(withforage <- ggplot(data)+
-  geom_line(aes(x = F1I, y = P1I))+
-  geom_line(aes(x = F2I, y = P2I))+
-  geom_line(aes(x = F3I, y = P3I))+
-  geom_line(aes(x = F4I, y = P4I))+
-  geom_line(aes(x = PIGLfI, y = PIGLpI), linetype = 3)+
-  geom_line(aes(x = SASPfI, y = SASPpI), linetype = 3)+
-  geom_line(aes(x = BEGLfI, y = BEGLpI), linetype = 3)+
-  labs(x="Fibre intake (g/day)", y="Protein intake (g/day)")+
+#plot just the diet rails
+(dietrailplot <-
+  ggplot(dietrails)+
+  geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
+  labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)")+
   themerails)
 
-(withoutforage <- ggplot(data2)+
-    geom_line(aes(x = F1I, y = P1I))+
-    geom_line(aes(x = F2I, y = P2I))+
-    geom_line(aes(x = F3I, y = P3I))+
-    geom_line(aes(x = F4I, y = P4I))+
-    labs(x="Fibre intake (g/day)", y="Protein intake (g/day)")+
-    themerails)
+#plot diet and forage rails
+(foragerailplot <- 
+  ggplot(allrails)+
+  geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet, linetype = Type))+
+  labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)")+
+  themerails)
+#how do I add labels to these lines???
 
-ggsave("Output/dietrailswithforage.jpeg", withforage, width = 4, height = 3, unit = "in")
-ggsave("Output/dietrailswithoutforage.jpeg", withoutforage, width = 4, height = 3, unit = "in")
 
-fwrite(data, "Output/dietrailsandforage.rds")
-fwrite(data2, "Output/dietrails.rds")
+ggsave("Output/dietrailswithforage.jpeg", foragerailplot, width = 4.5, height = 3, unit = "in")
+ggsave("Output/dietrails.jpeg", dietrailplot, width = 4, height = 3, unit = "in")
+
+fwrite(allrails, "Output/dietrailsandforage.rds")
+fwrite(dietrails, "Output/dietrails.rds")
 
