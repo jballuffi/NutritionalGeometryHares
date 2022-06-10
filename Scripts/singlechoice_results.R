@@ -5,17 +5,18 @@ lapply(dir('R', '*.R', full.names = TRUE), source)
 
 #read in cleaned feeding trial data
 trials <- readRDS("Output/data/trialresultscleaned.rds")
+day <- readRDS("Output/data/dailyresultscleaned.rds")
 
 #calculate mean intakes and weight change
-FTmeans <- trials[, .(mean(Intake_bw), sd(Intake_bw), mean(Weight_change), sd(Weight_change)), by = Diet]
-names(FTmeans) <-  c("Diet", "Intake_mean", "Intake_SD", "Weight_mean", "Weight_SD")
+Intakemeans <- day[, .(mean(Intake_bw), sd(Intake_bw)), by = Diet]
+names(Intakemeans) <-  c("Diet", "Intake_mean", "Intake_SD")
 
 
 
 # intake rate and weight change in response to diet -----------------------
 
 (ConsumptionRates<-
-  ggplot(FTmeans)+
+  ggplot(Intakemeans)+
   geom_bar(aes(y = Intake_mean, x = Diet), width = .75, stat = "identity", fill = "grey70")+
   geom_errorbar(aes(x = Diet, ymax = Intake_mean + Intake_SD, ymin = Intake_mean - Intake_SD), width = .2, color = "grey30")+
   labs(y = "Total Consumption (g DM/kg/day)", x = "")+
@@ -33,27 +34,34 @@ names(FTmeans) <-  c("Diet", "Intake_mean", "Intake_SD", "Weight_mean", "Weight_
 IntakeWeight <- ggarrange(ConsumptionRates, WeightChange, nrow = 2, ncol = 1)
 
 
+# CP and NDF digestion in response to diet --------------------------------
 
+(CPdigestion<-
+   ggplot(day)+
+   geom_boxplot(aes(x = Diet, y = CP_dig*100), outlier.shape = NA, width = .75)+
+   labs(y = "Protein Digested (%)", x ="")+
+   themerails+
+   theme(axis.text.x = element_blank(),
+         axis.ticks.x = element_blank()))
 
+(NDFdigestion<-
+    ggplot(day)+
+    geom_boxplot(aes(x = Diet, y = NDF_dig*100), outlier.shape = NA, width = .75)+
+    labs(y = "NDF Digested (%)", x = "")+
+    themerails+
+    theme(axis.text.x = element_blank(),
+          axis.ticks.x = element_blank()))
 
-# wieght change in response to nutrient intake ----------------------------
-
-
-(proteinintake <-
-  ggplot(trials)+
-  geom_point(aes(x = CP_in_bw, y = Weight_change), size = 1.75, color = "grey20")+
-  labs(y = "Weight change (%/Day)", x = "Protein intake (g DM/kg/day)")+
-  themerails)
-
-(NDFintake <-
-    ggplot(trials)+
-    geom_point(aes(x = NDF_in_bw, y = Weight_change), size = 1.75, color = "grey20")+
-    labs(y = "Weight change (%/Day)", x = "NDF intake (g DM/kg/day)")+
+(ADFdigestion<-
+    ggplot(day)+
+    geom_boxplot(aes(x = Diet, y = ADF_dig*100), outlier.shape = NA, width = .75)+
+    labs(y = "ADF Digested (%)")+
     themerails)
 
+
+digestion <- ggarrange(CPdigestion, NDFdigestion, ADFdigestion, ncol = 1, nrow = 3)
 
 
 #save plots
 ggsave("Output/figures/intakeandweightchange.jpeg", IntakeWeight, width = 4, height = 7, unit = "in")
-ggsave("Output/figures/proteinintake.jpeg", proteinintake, width = 5, height = 3, unit = "in")
-ggsave("Output/figures/NDFintake.jpeg", NDFintake, width = 5, height = 3, unit = "in")
+ggsave("Output/figures/ntrientdigestion.jpeg", digestion, width = 3, height = 7, unit = "in")
