@@ -187,4 +187,4 @@ Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Day, Date_start, Date_end, Date,
 
 
 
-saveRDS(Dailyresults, "Output/dailyresultscleaned.rds")
+saveRDS(Dailyresults, "Output/data/dailyresultscleaned.rds")
