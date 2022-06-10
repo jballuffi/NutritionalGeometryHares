@@ -9,8 +9,14 @@ rails <- fread("Output/dietrails.rds")
 
 #read in single choice results
 trials <- readRDS("Output/trialresultscleaned.rds")
+days <- readRDS("Output/dailyresultscleaned.rds")
 
-#plot showing individual responses
+
+
+# using results by trial --------------------------------------------------
+
+
+#plot showing weight change response
 (feedingratesrails<-
     ggplot()+
     geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet), color = "black", data = rails)+
@@ -19,19 +25,27 @@ trials <- readRDS("Output/trialresultscleaned.rds")
     labs(x="NDF intake (g DM/kg/day)", y="CP intake (g DM/kg/day)")+
     themerails)
 
+
+
+# using results by day ----------------------------------------------------
+
+
+#protein digestibility
 ggplot()+
   geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet), color = "black", data = rails)+
-  geom_point(aes(x = NDF_in_bw, y = CP_in_bw, color = CP_dig), size = 4, alpha = .7, data = trials)+
+  geom_point(aes(x = NDF_in_bw, y = CP_in_bw, color = CP_dig), size = 4, alpha = .7, data = day)+
   scale_color_gradient(low = "yellow2", high = "Blue3", name = "CP Digestability")+
   labs(x="NDF intake (g DM/kg/day)", y="CP intake (g DM/kg/day)")+
   themerails
 
-
+#NDF digestibility
 ggplot()+
   geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet), color = "black", data = rails)+
-  geom_point(aes(x = NDF_in_bw, y = CP_in_bw, color = NDF_dig), size = 4, alpha = .7, data = trials)+
+  geom_point(aes(x = NDF_in_bw, y = CP_in_bw, color = NDF_dig), size = 4, alpha = .7, data = day)+
   scale_color_gradient(low = "yellow2", high = "Blue3", name = "NDF Digestability")+
   labs(x="NDF intake (g DM/kg/day)", y="CP intake (g DM/kg/day)")+
   themerails
+
+
 
 ggsave("Output/singlechoicerails.jpeg", feedingratesrails, width = 5, height = 3, unit = "in")
