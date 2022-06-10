@@ -110,8 +110,8 @@ allrails <- rbind(foragerails, dietrails)
 #how do I add labels to these lines???
 
 
-ggsave("Output/dietrailswithforage.jpeg", foragerailplot, width = 4.5, height = 3, unit = "in")
-ggsave("Output/dietrails.jpeg", dietrailplot, width = 4, height = 3, unit = "in")
+ggsave("Output/figures/dietrailswithforage.jpeg", foragerailplot, width = 4.5, height = 3, unit = "in")
+ggsave("Output/figures/dietrails.jpeg", dietrailplot, width = 4, height = 3, unit = "in")
 
 fwrite(allrails, "Output/data/dietrailsandforage.rds")
 fwrite(dietrails, "Output/data/dietrails.rds")
