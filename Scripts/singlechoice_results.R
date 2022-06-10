@@ -4,7 +4,7 @@
 lapply(dir('R', '*.R', full.names = TRUE), source)
 
 #read in cleaned feeding trial data
-trials <- readRDS("Output/trialresultscleaned.rds")
+trials <- readRDS("Output/data/trialresultscleaned.rds")
 
 
 FTmeans <- trials[, .(mean(Intake_bw), sd(Intake_bw), mean(Weight_change), sd(Weight_change)), by = Diet]
@@ -46,6 +46,6 @@ ggplot(trials)+
 
 
 #save plots
-ggsave("Output/consumptionbarplot.jpeg", ConsumptionRates, width = 4, height = 3, unit = "in")
-ggsave("Output/weightboxplot.jpeg", WeightChange, width = 4, height = 3, unit = "in")
-ggsave("Output/proteinintake.jpeg", proteinintake, width = 5, height = 3, unit = "in")
+ggsave("Output/figures/consumptionbarplot.jpeg", ConsumptionRates, width = 4, height = 3, unit = "in")
+ggsave("Output/figures/weightboxplot.jpeg", WeightChange, width = 4, height = 3, unit = "in")
+ggsave("Output/figures/proteinintake.jpeg", proteinintake, width = 5, height = 3, unit = "in")
