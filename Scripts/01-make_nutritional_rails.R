@@ -113,6 +113,6 @@ allrails <- rbind(foragerails, dietrails)
 ggsave("Output/dietrailswithforage.jpeg", foragerailplot, width = 4.5, height = 3, unit = "in")
 ggsave("Output/dietrails.jpeg", dietrailplot, width = 4, height = 3, unit = "in")
 
-fwrite(allrails, "Output/dietrailsandforage.rds")
-fwrite(dietrails, "Output/dietrails.rds")
+fwrite(allrails, "Output/data/dietrailsandforage.rds")
+fwrite(dietrails, "Output/data/dietrails.rds")
 
