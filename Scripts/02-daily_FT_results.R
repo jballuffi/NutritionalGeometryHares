@@ -175,6 +175,7 @@ DT[, Temp := tempcalc(start = DayTime_start, end = DayTime_end), by = .(ID, Tria
 
 #cut out a datasheet of just key feeding trial info and results
 Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Day, Date_start, Date_end, Date, #info
+                   CP_diet, NDF_diet, ADF_diet, ADL_diet, #diet compositions
                    Intake, CP_in, NDF_in, ADF_in, ADL_in, #intakes
                    Weight_start, Weight_end, #weight change
                    Intake_bw, CP_in_bw, NDF_in_bw, ADF_in_bw, ADL_in_bw, #intakes by weight

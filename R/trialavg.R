@@ -6,7 +6,8 @@
 
 
 trialavg <- function(dt){
-  cols <- c("Intake_bw", "CP_in_bw", "NDF_in_bw", "ADF_in_bw", 
+  cols <- c("CP_diet", "NDF_diet", "ADF_diet", "ADL_diet",
+            "Intake_bw", "CP_in_bw", "NDF_in_bw", "ADF_in_bw", 
             "Weight_start", "Weight_end", #weights are the same for every day because we only took a measure at the start and end of trital
             "Total_out", "CP_dig", "NDF_dig", "ADF_dig", 
             "Temp")
