@@ -5,8 +5,8 @@ lapply(dir('R', '*.R', full.names = TRUE), source)
 
 
 #read in results
-trials <- readRDS("Output/trialresultscleaned.rds")
-days <- readRDS("Output/dailyresultscleaned.rds")
+trials <- readRDS("Output/data/trialresultscleaned.rds")
+days <- readRDS("Output/data/dailyresultscleaned.rds")
 
 
 fitweight <- Tps(trials[, .(NDF_in_bw, CP_in_bw)], trials$Weight_change, scale.type = "range")
@@ -20,3 +20,7 @@ surface(fitdigNDF)
 
 fitdigADF <- Tps(day[, .(NDF_in_bw, CP_in_bw)], day$ADF_dig, scale.type = "range")
 surface(fitdigADF)
+
+
+
+ggplot(data = fitdigCP, mapping = aes(x = NDF_in_bw, y = ADF_in_bw, color = Z))
