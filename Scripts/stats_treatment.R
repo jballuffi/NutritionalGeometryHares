@@ -51,3 +51,13 @@ anova(NDFdig)
 aNDF <- aov(NDFdig)
 posthocNDF <- TukeyHSD(x = aNDF, 'day$Diet', conf.level = 0.95)
 posthocNDF
+
+
+#ADF digestion by day
+
+ADFdig <- lm(day$ADF_dig ~ day$Diet)
+summary(ADFdig)
+anova(ADFdig)
+aADF <- aov(ADFdig)
+posthocADF <- TukeyHSD(x = aADF, 'day$Diet', conf.level = 0.95)
+posthocADF
