@@ -55,6 +55,7 @@ IntakeWeight <- ggarrange(ConsumptionRates, WeightChange, nrow = 2, ncol = 1)
 (ADFdigestion<-
     ggplot(day)+
     geom_boxplot(aes(x = Diet, y = ADF_dig*100), outlier.shape = NA, width = .75)+
+    geom_jitter(aes(x = Diet, y = ADF_dig*100))+
     labs(y = "ADF Digested (%)")+
     themerails)
 
