@@ -12,13 +12,13 @@ days <- readRDS("Output/data/dailyresultscleaned.rds")
 fitweight <- Tps(trials[, .(NDF_in_bw, CP_in_bw)], trials$Weight_change, scale.type = "range")
 surface(fitweight)
 
-fitdigCP <- Tps(day[, .(NDF_in_bw, CP_in_bw)], day$CP_dig, scale.type = "range")
-surface(fitdigCP)
+fitdigCP <- Tps(days[, .(NDF_in_bw, CP_in_bw)], days$CP_dig, scale.type = "range")
+CPdig <- surface(fitdigCP)
 
-fitdigNDF <- Tps(day[, .(NDF_in_bw, CP_in_bw)], day$NDF_dig, scale.type = "range")
+fitdigNDF <- Tps(days[, .(NDF_in_bw, CP_in_bw)], days$NDF_dig, scale.type = "range")
 surface(fitdigNDF)
 
-fitdigADF <- Tps(day[, .(NDF_in_bw, CP_in_bw)], day$ADF_dig, scale.type = "range")
+fitdigADF <- Tps(days[, .(NDF_in_bw, CP_in_bw)], days$ADF_dig, scale.type = "range")
 surface(fitdigADF)
 
 
