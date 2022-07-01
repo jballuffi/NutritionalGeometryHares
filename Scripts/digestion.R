@@ -4,7 +4,7 @@
 lapply(dir('R', '*.R', full.names = TRUE), source)
 
 #read in daily feeding trial results
-days <- readRDS("Output/dailyresultscleaned.rds")
+days <- readRDS("Output/data/dailyresultscleaned.rds")
 
 days[, Weight_start := Weight_start/1000]
 
@@ -30,7 +30,7 @@ ggplot(days)+
   themerails
 
 ggplot(days)+
-  geom_point(aes(x = NDF_in, y = NDF_out, color = Diet))+
+  geom_point(aes(x = NDF_in_bw, y = NDF_out/Weight_start, color = Diet))+
   labs(x = "NDF Intake (g DM/day)", y = "NDF Excretion (g DM/day")+
   themerails
 
@@ -39,7 +39,10 @@ ggplot(days)+
   labs(x = "ADF Intake (g DM/day", y = "ADF Extretion (g DM/day)")+
   themerails
 
-
+ggplot(days)+
+  geom_point(aes(x = C_in, C_out, color = Diet))+
+  labs(x = "C Intake (g DM/day", y = "C Extretion (g DM/day)")+
+  themerails
 
 
 # Digestability by diet ---------------------------------------------------
@@ -60,4 +63,5 @@ ggplot(digmelt)+
   geom_boxplot(aes(x = Diet, y = digestability))+
   facet_wrap(~nutrient, nrow = 1, ncol = 3)+
   themerails
+
 
