@@ -101,14 +101,18 @@ DT[is.na(Spilled_DM), Spilled_DM := 0] #fill in cases where no food was dumped
 
 # merge in fecal data ------------------------------------------------------
 
+#calculate C 
+
 #calculate fecal outputs
 feces[, Total_out := Total_dried*DM] #total dry matter
 feces[, NDF_out := Total_out*(NDF_DM/100)] #total NDF on DM basis
 feces[, ADF_out := Total_out*(ADF_DM/100)] #total ADF on DM basis
 feces[, CP_out := Total_out*(CP_DM/100)] #total CP on DM basis
+feces[, C_out := Total_out*(C_DM/100)] #total CP on DM basis
+
 
 #cut the fecal data down to just fecal output columns
-fecaloutput <- feces[, .(Sample, Total_out, NDF_out, ADF_out, CP_out)]
+fecaloutput <- feces[, .(Sample, Total_out, NDF_out, ADF_out, CP_out, C_out)]
 
 #merge intake rates and DMs with fecal output data
 DT <- merge(DT, fecaloutput, by = "Sample", all.x = TRUE)
@@ -117,8 +121,8 @@ DT <- merge(DT, fecaloutput, by = "Sample", all.x = TRUE)
 # Calculate intake measures  --------------------------------------
 
 #cut diet compositions to just be DM
-dietDM <- diets[, .(Diet, CP_DM_pred/100, NDF_DM_pred/100, ADF_DM_pred/100, ADL_DM_pred/100)]
-names(dietDM) <- c("Diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet")
+dietDM <- diets[, .(Diet, CP_DM_pred/100, NDF_DM_pred/100, ADF_DM_pred/100, ADL_DM_pred/100, C_DM/100)]
+names(dietDM) <- c("Diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet") #C isnt predicted it was measured after (not for paper)
 
 #merge DT with diet compositions in terms of DM 
 DT <- merge(DT, dietDM, by = "Diet", all.x = TRUE)
@@ -127,7 +131,7 @@ DT <- merge(DT, dietDM, by = "Diet", all.x = TRUE)
 DT[, OfferDM := OfferWet*DietDM]
 DT[, EndDM := (EndWet*DM) + Spilled_DM] #end weight adds in the dry matter of spilled food
 
-#calculate daily itake rate in DM
+#calculate daily intake rate in DM
 DT[, Intake := OfferDM - EndDM]
 
 #calculate intake rates of each nutrient
@@ -135,6 +139,7 @@ DT[, CP_in := Intake*CP_diet]
 DT[, NDF_in := Intake*NDF_diet]
 DT[, ADF_in := Intake*ADF_diet]
 DT[, ADL_in := Intake*ADL_diet]
+DT[, C_in := Intake*C_diet]
 
 #calculate intake rates by weight
 DT[, Weight_start := Weight_start/1000]
@@ -146,12 +151,14 @@ DT[, CP_in_bw := CP_in/Weight_start]
 DT[, NDF_in_bw := NDF_in/Weight_start]
 DT[, ADF_in_bw := ADF_in/Weight_start]
 DT[, ADL_in_bw := ADF_in/Weight_start]
+DT[, C_in_bw:= C_in/Weight_start]
 
 # Calculate digestabilities -----------------------------------------------
 
 DT[, CP_dig := (CP_in - CP_out)/CP_in]
 DT[, NDF_dig := (NDF_in - NDF_out)/NDF_in]
 DT[, ADF_dig := (ADF_in - ADF_out)/ADF_in]
+DT[, C_dig := (C_in - C_out)/C_in]
 
 
 # Merge in daily temperatures ---------------------------------------------
@@ -175,12 +182,12 @@ DT[, Temp := tempcalc(start = DayTime_start, end = DayTime_end), by = .(ID, Tria
 
 #cut out a datasheet of just key feeding trial info and results
 Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Day, Date_start, Date_end, Date, #info
-                   CP_diet, NDF_diet, ADF_diet, ADL_diet, #diet compositions
-                   Intake, CP_in, NDF_in, ADF_in, ADL_in, #intakes
+                   CP_diet, NDF_diet, ADF_diet, ADL_diet, C_diet, #diet compositions
+                   Intake, CP_in, NDF_in, ADF_in, ADL_in, C_in, #intakes
                    Weight_start, Weight_end, #weight change
-                   Intake_bw, CP_in_bw, NDF_in_bw, ADF_in_bw, ADL_in_bw, #intakes by weight
-                   Total_out, CP_out, NDF_out, ADF_out, #fecal outputs
-                   CP_dig, NDF_dig, ADF_dig, #digestability
+                   Intake_bw, CP_in_bw, NDF_in_bw, ADF_in_bw, ADL_in_bw, C_in_bw, #intakes by weight
+                   Total_out, CP_out, NDF_out, ADF_out, C_out,#fecal outputs
+                   CP_dig, NDF_dig, ADF_dig, C_dig, #digestability
                    Temp
                    )] 
 
