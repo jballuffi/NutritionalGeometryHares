@@ -5,11 +5,11 @@
 lapply(dir('R', '*.R', full.names = TRUE), source)
 
 #read in data for diet nutritional rails
-rails <- fread("Output/dietrails.rds")
+rails <- fread("Output/data/dietrails.rds")
 
 #read in single choice results
-trials <- readRDS("Output/trialresultscleaned.rds")
-days <- readRDS("Output/dailyresultscleaned.rds")
+trials <- readRDS("Output/data/trialresultscleaned.rds")
+days <- readRDS("Output/data/dailyresultscleaned.rds")
 
 
 
