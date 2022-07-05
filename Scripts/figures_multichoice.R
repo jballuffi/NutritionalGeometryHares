@@ -9,6 +9,8 @@ rails <- fread("Output/data/dietrails.rds")
 sums <- readRDS("Output/data/multichoicesums.rds")
 
 
+
+#target intake according to naiive multi choice trials
 (feedingchoice <-
     ggplot(rails)+
     geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
@@ -16,6 +18,16 @@ sums <- readRDS("Output/data/multichoicesums.rds")
     geom_point(aes(x = mean(NDF), y = mean(CP)), shape = 12, size = 3, data = sums)+
     labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)")+
     themerails)
+
+#add sd lines?
+ggplot(rails)+
+  geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
+  geom_point(aes(x = mean(NDF), y = mean(CP)), shape = 12, size = 3, data = sums)+
+  geom_point(aes(x = NDF, y = CP), size = 3, data = meanday)+
+  labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)")+
+  themerails
+
+
 
 
 ggsave("Output/figures/multichoicerails.jpeg", feedingchoice, width = 4, height = 3, units = "in")
