@@ -1,4 +1,4 @@
-#script to plot results from naiive multi-choice trials
+#script to prep data from naiive multi-choice trials
 
 
 #source the R folder to load any packages and functions
@@ -17,16 +17,12 @@ DM <- fread("Input/Habituation_DryMatter.csv")
 #read in the nutritional compositions of each diet
 diets <- fread("Input/Diet_compositions.csv")
 
-#read in data for diet nutritional rails
-rails <- fread("Output/data/dietrails.rds")
-
-
 
 # merge data together -----------------------------------------------------
 
 #cut diet compositions to just be DM
-dietDM <- diets[, .(Diet, CP_DM_pred/100, NDF_DM_pred/100, ADF_DM_pred/100, ADL_DM_pred/100, C_DM/100)]
-names(dietDM) <- c("Diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet") #C isnt predicted it was measured after (not for paper)
+dietDM <- diets[, .(Diet, DM, CP_DM_pred/100, NDF_DM_pred/100, ADF_DM_pred/100, ADL_DM_pred/100, C_DM/100)]
+names(dietDM) <- c("Diet", "DM_diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet") #C isnt predicted it was measured after (not for paper)
 
 #subset DM data
 DM <- DM[, .(Sample, DM)]
@@ -46,42 +42,53 @@ DT <- merge(MC, DM, by = c("Enclosure", "Date", "Diet"), all.x = TRUE)
 #merge results with diet compositions
 DT <- merge(DT, dietDM, by = "Diet", all.x = TRUE)
 
+#missing DM gets mean DM
+avgSampleDM <- mean(DT$DM, na.rm =TRUE)
+DT[is.na(DM), DM := avgSampleDM]
 
 
-# Calculations ------------------------------------------------------------
+# Intake rates in DM ------------------------------------------------------------
 
-DT[, Offer_DM := ]
+DT[, OfferDM := Offer_wet*DM_diet]
+DT[, EndDM := End_wet*(DM/100)]
 
-#calculate consumption rates on a per kg basis
-MC[,  := Consumed/(Start_weight/1000)]
+#calculate daily intake rate in DM
+DT[, Intake := OfferDM - EndDM]
 
-#merge feeding results with diet compositions by diet
-MCdiets <- merge(MC, diets, by = "Diet", all.x = TRUE)
+#calculate intake rates of each nutrient
+DT[, CP_in := Intake*CP_diet]
+DT[, NDF_in := Intake*NDF_diet]
+DT[, ADF_in := Intake*ADF_diet]
+DT[, ADL_in := Intake*ADL_diet]
+DT[, C_in := Intake*C_diet]
 
-#calculate the intake of protein by diet 
-MCdiets[, Consumed_CP := Consumed_weight*(Protein/100)]
-#calculate the intake of fibre by diet
-MCdiets[, Consumed_NDF := Consumed_weight*(NDF/100)]
 
+
+# DM intakes by body weight ----------------------------------------------------
+
+
+#calculate intake rates by weight
+DT[, Weight_start := Weight_start/1000]
+
+DT[, Intake_bw := Intake/Weight_start]
+DT[, CP_in_bw := CP_in/Weight_start]
+DT[, NDF_in_bw := NDF_in/Weight_start]
+DT[, ADF_in_bw := ADF_in/Weight_start]
+DT[, ADL_in_bw := ADF_in/Weight_start]
+DT[, C_in_bw:= C_in/Weight_start]
+
+
+
+
+# Sum nutrient intakes by individual------------------------------------------------------------
 
 #calculate total protein and fibre consumed from all diets in one day
-MCtotals <- MCdiets[, .(sum(Consumed_CP), sum(Consumed_NDF)), by = ID]
-names(MCtotals) <- c("ID", "CP", "NDF")
-#what is the mean target intake?
-MCtotals[, .(mean(CP), mean(NDF))]
+totals <- DT[, .(sum(CP_in_bw), sum(NDF_in_bw)), by = ID]
+
+names(totals) <- c("ID", "CP", "NDF")
 
 
-(feedingchoice<-ggplot()+
-  geom_line(aes(x = F1I, y = P1I), color = "black", data = rails)+
-  geom_line(aes(x = F2I, y = P2I), color = "black", data = rails)+
-  geom_line(aes(x = F3I, y = P3I), color = "black", data = rails)+
-  geom_line(aes(x = F4I, y = P4I), color = "black", data = rails)+
-  geom_point(aes(x = NDF, y = CP), size = 2, data = MCtotals)+
-  geom_point(aes(x = mean(NDF), y = mean(CP)), shape = 12, size = 3, data = MCtotals)+
-  labs(x="Fibre intake (g/kg/day)", y="Protein intake (g/kg/day)")+
-  themerails)
 
-
-ggsave("Output/multichoicerails.jpeg", feedingchoice, width = 4, height = 3, units = "in")
-saveRDS(MCtotals, "Output/multichoicemeans.rds")
+saveRDS(totals, "Output/data/multichoicesums.rds")
+saveRDS(DT, "Output/data/multichoiceresults.rds")
 
