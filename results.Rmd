@@ -1,0 +1,48 @@
+---
+title: "Results"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r naive trials, include = FALSE}
+#read in multichoice trial sums
+sums <- readRDS("Output/data/multichoicesums.rds")
+
+#read in daily feeding results
+day <- readRDS("Output/data/dailyresultscleaned.rds")
+
+#mean intake rates
+meanNI <- round(mean(sums$Intake), digits = 2)
+sdNI <- round(sd(sums$Intake), digits = 2)
+
+#mean intake rates of CP and NDF during naive trials
+meanNCP <- round(mean(sums$CP), digits = 2)
+sdNCP <- round(sd(sums$CP), digits = 2)
+meanNNDF <- round(mean(sums$NDF), digits = 2)
+sdNNDF <- round(sd(sums$NDF), digits = 2)
+
+
+```
+
+## Naiive trials
+
+During the naive multi-choice feeding trial phases of the experiment, snowshoe hares ate an average of `r meanNI` ± `r sdNI` g DM/day across all diets. Hares ate on average of `r meanNCP` ± `r sdNCP` and `r meanNNDF` ± `r sdNNDF` g DM/day of CP and NDF, respectively (Figure 2).
+
+![Figure 2](Output/figures/targetintake.jpeg)
+
+
+## Feeding trial results
+
+
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
