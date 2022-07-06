@@ -83,9 +83,9 @@ DT[, C_in_bw:= C_in/Weight_start]
 # Sum nutrient intakes by individual------------------------------------------------------------
 
 #calculate total protein and fibre consumed from all diets in one day
-totals <- DT[, .(sum(CP_in_bw), sum(NDF_in_bw)), by = ID]
+totals <- DT[, .(sum(Intake_bw), sum(CP_in_bw), sum(NDF_in_bw)), by = ID]
 
-names(totals) <- c("ID", "CP", "NDF")
+names(totals) <- c("ID","Intake", "CP", "NDF")
 
 
 
