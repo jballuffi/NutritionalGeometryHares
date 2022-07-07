@@ -76,5 +76,5 @@ ggplot(rails)+
 
 
 
-ggsave("Output/figures/targetintake.jpeg", naivechoice, width = 4, height = 3, units = "in")
+ggsave("Output/figures/targetintake.jpeg", naivechoice, width = 4, height = 7, units = "in")
 ggsave("Output/figures/compromiseintake.jpeg", compromise, width = 4, height = 3, units = "in")
