@@ -54,6 +54,8 @@ DT[, EndDM := End_wet*(DM/100)]
 
 #calculate daily intake rate in DM
 DT[, Intake := OfferDM - EndDM]
+#if intake is neg make zero 
+DT[Intake < 0, Intake := 0]
 
 #calculate intake rates of each nutrient
 DT[, CP_in := Intake*CP_diet]
