@@ -18,20 +18,13 @@ sdNCP <- round(sd(sums$CP), digits = 2)
 meanNNDF <- round(mean(sums$NDF), digits = 2)
 sdNNDF <- round(sd(sums$NDF), digits = 2)
 
+#collect mean intake rates by diet for naive hares
+NIdient <- MC[, mean(Intake_bw), Diet]
 
 
-
-means <- MC[, mean(Intake_bw), Diet]
-
-
-
-
-intake <- lm(MC$Intake_bw ~ MC$Diet)
-summary(intake)
-anova(intake)
-aI <- aov(intake)
-posthocI <- TukeyHSD(x = aI, 'MC$Diet', conf.level = 0.95)
-posthocI
-
+#ANOVA testing for significance between treatments
+lmMC <- lm(MC$Intake_bw ~ MC$Diet)
+aMC <- anova(lmMC)
+aMC$`Pr(>F)`[1]
 
 
