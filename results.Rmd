@@ -1,41 +1,25 @@
 ---
 title: "Results"
-output: word_document
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-
-
-```{r naive trials, include = FALSE}
+```{r naivetrials, include = FALSE}
 
 #source the multichoice script
 
-source("Scripts/05-stats_multichoice.R")
-
-
+source("Scripts/05-stats_treatment.R")
 ```
 
+## Naive trials
 
-## Naiive trials
-
-During the naive multi-choice feeding trial phases of the experiment, snowshoe hares ate an average of `r meanNI` ± `r sdNI` g DM/day across all diets. There was no significant effect of diet on intake rate during naive multi-choice trials (p = `r aMCpval`; Figure 2). Intake rates by diet translated to average intakes of `r meanNCP` ± `r sdNCP` and `r meanNNDF` ± `r sdNNDF` g DM/day of CP and NDF, respectively (Figure 2). The target intake of naive hares fell between the nutritional rails of Diets B and C.
+During the naive multi-choice feeding trial phase of the experiment, snowshoe hares ate an average of `r round(mean(sums$Intake), digits = 2)` ± `r round(sd(sums$Intake), digits = 2)` g DM/day across all diets. There was no significant effect of diet on intake rate during naive multi-choice trials (p = `r aMCpval`; Figure 2). Intake rates by diet translated to average intakes of `r round(mean(sums$CP), digits = 2)` ± `r round(sd(sums$CP), digits = 2)` and `r round(mean(sums$NDF), digits = 2)` ± `r round(sd(sums$NDF), digits = 2)` g DM/day of CP and NDF, respectively (Figure 2). The target intake of naive hares fell between the nutritional rails of Diets B and C.
 
 ![Figure 2](Output/figures/targetintake.jpeg)
 
+## Feeding trials
 
-
-
-## Feeding trial results
-
-```{r feeding trials, include = FALSE}
-
-#source the multichoice script
-
-
-
-```
-
-<!-- We conducted `r length(trials)` single-choice feeding trials on `r length(unique(trials$ID)` individuals. All but one individual we tested on all diets. Hares ate on average `r mean(trials$Intake_bw)` g DM/kg/day of food across all diets.  -->
+We conducted `r length(trials)` single-choice feeding trials on `r length(unique(trials$ID))` individuals. One individual only recieved one diet. Hares ate on average `r round(mean(trials$Intake_bw), digits = 2)` g DM/kg/day of food across all diets.
