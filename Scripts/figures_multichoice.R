@@ -21,14 +21,14 @@ day<- readRDS("Output/data/dailyresultscleaned.rds")
 
 
 
-# bar graph of intake rate by diet ----------------------------------------
+# plot a bar graph and rail plot for intake rates  ----------------------------------------
 
 
 #calculate mean intakes and weight change
 Intakemeans <- MC[, .(mean(Intake_bw), sd(Intake_bw)), by = Diet]
 names(Intakemeans) <-  c("Diet", "Intake_mean", "Intake_SD")
 
-
+#bar graph
 (NaiveIntakes<-
     ggplot(Intakemeans)+
     geom_bar(aes(y = Intake_mean, x = Diet), width = .75, stat = "identity", fill = "grey70")+
@@ -39,10 +39,7 @@ names(Intakemeans) <-  c("Diet", "Intake_mean", "Intake_SD")
 
 
 
-# target intake with only naive hares -------------------------------------
-
-
-#target intake according to naiive multi choice trials
+#rail plot for target intake according to naiive multi choice trials
 (target <-
     ggplot(rails)+
     geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
@@ -51,30 +48,7 @@ names(Intakemeans) <-  c("Diet", "Intake_mean", "Intake_SD")
     labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)")+
     themerails)
 
-
-
 (naivechoice <- ggarrange(NaiveIntakes, target, nrow = 2, ncol = 1))
-
-# target intake with compromise -------------------------------------------
-
-
-#calculate mean intake rates by diet
-meanday <- day[, .(mean(CP_in_bw), sd(CP_in_bw), mean(NDF_in_bw), sd(CP_in_bw)), Diet]
-names(meanday) <- c("Diet", "CP", "CPsd", "NDF", "NDFsd")
-
-#investigating rule of compromise
-(compromise <-
-ggplot(rails)+
-  geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
-  geom_point(aes(x = mean(NDF), y = mean(CP)), shape = 12, size = 3, data = sums)+
-  geom_point(aes(x = NDF, y = CP), size = 3, data = meanday)+
-  geom_errorbar(aes(x = NDF, y = CP, ymin = CP - CPsd, ymax = CP + CPsd), width = .5, data = meanday)+
-  geom_errorbar(aes(x = NDF, y = CP,xmin = NDF - NDFsd, xmax = NDF + NDFsd), width = .5, data = meanday)+
-  labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)")+
-  themerails)
-
-
 
 
 ggsave("Output/figures/targetintake.jpeg", naivechoice, width = 4, height = 7, units = "in")
-ggsave("Output/figures/compromiseintake.jpeg", compromise, width = 4, height = 3, units = "in")
