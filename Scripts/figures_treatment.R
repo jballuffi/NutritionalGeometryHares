@@ -92,5 +92,5 @@ digestion <- ggarrange(CPdigestion, NDFdigestion, ADFdigestion, ncol = 1, nrow =
 
 #save plots
 ggsave("Output/figures/intakeandweightchange.jpeg", IntakeWeight, width = 4, height = 7, unit = "in")
-ggsave("Output/figures/weightchangebar.jpeg", WeightChange, width = 4, height = 7, unit = "in")
+ggsave("Output/figures/weightchangebar.jpeg", WeightChange, width = 4, height = 4, unit = "in")
 ggsave("Output/figures/nutrientdigestion.jpeg", digestion, width = 3, height = 7, unit = "in")
