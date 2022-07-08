@@ -27,3 +27,11 @@ rates closest to the average intake rates of hares offered all diets
 (Figure 3, panel B).
 
 ![Figure 3](Output/figures/intakebarandrail.jpeg)
+
+There was an overall significant effect of diet on weight change during
+feeding trials (p = 0.02; trial measures). Diet A yielded the highest
+weight loss over the three-day long trials (-1.32 %/day), while diets B
+and C allowed hares to maintain their original weight over feeding
+trials (Figure 4).
+
+![Figure 4](Output/figures/weightchangebar.jpeg)
