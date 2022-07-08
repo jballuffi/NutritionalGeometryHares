@@ -15,6 +15,15 @@ between the nutritional rails of Diets B and C.
 
 ## Feeding trials
 
-We conducted 19 single-choice feeding trials on 9 individuals. One
-individual only recieved one diet. Hares ate on average 81.4771193 g
-DM/kg/day of food across all diets.
+We conducted 19 single-choice feeding trials on 9 individuals. Hares ate
+on average 81.48 g DM/kg/day of food across all diets. There was an
+overall significant effect of diet on intake rate (p = 1.7^{-4}; daily
+measure), but this varied between diets (Figure 3, panel A). The tukey
+test on this ANOVA shows that intake rates for diets C and D differ
+significantly from diet A, while all other diets did not differ
+significantly in intake rate (add stars to Figure 3). This pattern of
+intake rate resulted in hares on diets B and C to have CP and NDF intake
+rates closest to the average intake rates of hares offered all diets
+(Figure 3, panel B).
+
+![Figure 3](Output/figures/intakebarandrail.jpeg)
