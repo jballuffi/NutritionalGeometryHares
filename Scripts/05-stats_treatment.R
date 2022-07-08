@@ -29,29 +29,36 @@ day<- readRDS("Output/data/dailyresultscleaned.rds") # by day
 #ANOVA testing for significance between treatments
 lmMC <- lm(MC$Intake_bw ~ MC$Diet)
 aMC <- anova(lmMC)
-aMCpval <- round(aMC$`Pr(>F)`[1], 2)
+MCpval <- round(aMC$`Pr(>F)`[1], 2)
 
 
 
-# stats for feeding trials; treatment analysis -----------------------------
+# intake rate for normal feeding trials -----------------------------
 
 
 #Intake rate by day
-intake <- lm(day$Intake_bw ~ day$Diet)
-summary(intake)
-anova(intake)
-aI <- aov(intake)
-posthocI <- TukeyHSD(x = aI, 'day$Diet', conf.level = 0.95)
-posthocI
+IR <- lm(day$Intake_bw ~ day$Diet) #make model
+aIR <- anova(IR) #take ANOVA table from linear regression
+IRpval <- round(aIR$`Pr(>F)`[1], 5) #pull out pvalue from ANOVA
+#tukey test on ANOVA
+aI <- aov(IR)
+posthocIR <- TukeyHSD(x = aI, 'day$Diet', conf.level = 0.95)
+posthocIR
+
+
+# weight change for feeding trials ----------------------------------------
 
 
 #Weight change by trial 
-weight <- lm(trials$Weight_change ~ trials$Diet)
-summary(weight)
-anova(weight)
-aW <- aov(weight)
-posthocW <- TukeyHSD(x = aW, 'trials$Diet', conf.level = 0.95)
-posthocW
+WC <- lm(trials$Weight_change ~ trials$Diet)
+summary(WC)
+anova(WC)
+aWC <- aov(WC)
+posthocWC <- TukeyHSD(x = aWC, 'trials$Diet', conf.level = 0.95)
+posthocWC
+
+
+# CP digestion for feeding trials -----------------------------------------
 
 
 #CP digestion by day
@@ -63,6 +70,9 @@ posthocCP <- TukeyHSD(x = aCP, 'day$Diet', conf.level = 0.95)
 posthocCP
 
 
+# NDF digestion for feeding trials ----------------------------------------
+
+
 #NDF digestion by day
 NDFdig <- lm(day$NDF_dig ~ day$Diet)
 summary(NDFdig)
@@ -70,6 +80,9 @@ anova(NDFdig)
 aNDF <- aov(NDFdig)
 posthocNDF <- TukeyHSD(x = aNDF, 'day$Diet', conf.level = 0.95)
 posthocNDF
+
+
+# ADF digestion for feeding trials ----------------------------------------
 
 
 #ADF digestion by day
