@@ -26,7 +26,7 @@ names(Intakemeans) <-  c("Diet", "Intake_mean", "Intake_SD")
   ggplot(Intakemeans)+
   geom_bar(aes(y = Intake_mean, x = Diet), width = .75, stat = "identity", fill = "grey70")+
   geom_errorbar(aes(x = Diet, ymax = Intake_mean + Intake_SD, ymin = Intake_mean - Intake_SD), width = .2, color = "grey30")+
-  labs(y = "Total Consumption (g DM/kg/day)", x = "")+
+  labs(y = "Total Consumption (g DM/kg/day)", x = "", title = "A")+
   themerails+
   theme(axis.text.x = element_blank(),
         axis.ticks.x = element_blank()))
@@ -44,7 +44,7 @@ names(meanday) <- c("Diet", "CP", "CPsd", "NDF", "NDFsd")
     geom_point(aes(x = NDF, y = CP), size = 3, data = meanday)+
     geom_errorbar(aes(x = NDF, y = CP, ymin = CP - CPsd, ymax = CP + CPsd), width = .5, data = meanday)+
     geom_errorbar(aes(x = NDF, y = CP,xmin = NDF - NDFsd, xmax = NDF + NDFsd), width = .5, data = meanday)+
-    labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)")+
+    labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)", title = "B")+
     themerails)
 
 IntakeWeight <- ggarrange(IntakeBar, IntakeRails, nrow = 2, ncol = 1)
@@ -67,7 +67,7 @@ IntakeWeight <- ggarrange(IntakeBar, IntakeRails, nrow = 2, ncol = 1)
 (CPdigestion<-
    ggplot(day)+
    geom_boxplot(aes(x = Diet, y = CP_dig*100), outlier.shape = NA, width = .75)+
-   labs(y = "Protein Digested (%)", x ="")+
+   labs(y = "Protein Digested (%)", x ="", title = "A")+
    themerails+
    theme(axis.text.x = element_blank(),
          axis.ticks.x = element_blank()))
@@ -75,7 +75,7 @@ IntakeWeight <- ggarrange(IntakeBar, IntakeRails, nrow = 2, ncol = 1)
 (NDFdigestion<-
     ggplot(day)+
     geom_boxplot(aes(x = Diet, y = NDF_dig*100), outlier.shape = NA, width = .75)+
-    labs(y = "NDF Digested (%)", x = "")+
+    labs(y = "NDF Digested (%)", x = "", title = "B")+
     themerails+
     theme(axis.text.x = element_blank(),
           axis.ticks.x = element_blank()))
@@ -83,7 +83,7 @@ IntakeWeight <- ggarrange(IntakeBar, IntakeRails, nrow = 2, ncol = 1)
 (ADFdigestion<-
     ggplot(day)+
     geom_boxplot(aes(x = Diet, y = ADF_dig*100), outlier.shape = NA, width = .75)+
-    labs(y = "ADF Digested (%)")+
+    labs(y = "ADF Digested (%)", title = "C")+
     themerails)
 
 
