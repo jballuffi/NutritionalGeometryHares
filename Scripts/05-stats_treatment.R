@@ -41,8 +41,8 @@ IR <- lm(day$Intake_bw ~ day$Diet) #make model
 aIR <- anova(IR) #take ANOVA table from linear regression
 IRpval <- round(aIR$`Pr(>F)`[1], 5) #pull out pvalue from ANOVA
 #tukey test on ANOVA
-aI <- aov(IR)
-posthocIR <- TukeyHSD(x = aI, 'day$Diet', conf.level = 0.95)
+aovIR <- aov(IR)
+posthocIR <- TukeyHSD(x = aovIR, 'day$Diet', conf.level = 0.95)
 posthocIR
 
 
@@ -51,10 +51,10 @@ posthocIR
 
 #Weight change by trial 
 WC <- lm(trials$Weight_change ~ trials$Diet)
-summary(WC)
-anova(WC)
-aWC <- aov(WC)
-posthocWC <- TukeyHSD(x = aWC, 'trials$Diet', conf.level = 0.95)
+aWC <- anova(WC)
+WCpval <- round(aWC$`Pr(>F)`[1], 2)
+aovWC <- aov(WC)
+posthocWC <- TukeyHSD(x = aovWC, 'trials$Diet', conf.level = 0.95)
 posthocWC
 
 
