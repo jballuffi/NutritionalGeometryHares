@@ -7,24 +7,17 @@ lapply(dir('R', '*.R', full.names = TRUE), source)
 
 
 #read in cleaned multi-choice results
-MC <- readRDS("Output/data/multichoiceresults.rds")
+MC <- readRDS("Output/data/multichoiceresults.rds") #all results by diet
+sums <- readRDS("Output/data/multichoicesums.rds") #sums of nutrient intakes per trial
 
-#read in multi-choice trial sums
-sums <- readRDS("Output/data/multichoicesums.rds")
-
-#read in feeding trial results
+#read in cleaned feeding trial results
 trials <- readRDS("Output/data/trialresultscleaned.rds") #by trial
 day<- readRDS("Output/data/dailyresultscleaned.rds") # by day
 
 
 
 
-# multi-choice results ----------------------------------------------------
-
-
-#mean intake rate across all diets
-meanNI <- round(mean(sums$Intake), digits = 2)
-sdNI <- round(sd(sums$Intake), digits = 2)
+# stats for multi-choice trials ----------------------------------------------------
 
 # #mean intake rates by diet
 # NIA <- MC[Diet == "A", round(mean(Intake_bw), digits = 2)]
@@ -32,22 +25,15 @@ sdNI <- round(sd(sums$Intake), digits = 2)
 # NIC <- MC[Diet == "C", round(mean(Intake_bw), digits = 2)]
 # NID <- MC[Diet == "D", round(mean(Intake_bw), digits = 2)]
 
-#mean intake rates of CP and NDF when summing all diets
-meanNCP <- round(mean(sums$CP), digits = 2)
-sdNCP <- round(sd(sums$CP), digits = 2)
-meanNNDF <- round(mean(sums$NDF), digits = 2)
-sdNNDF <- round(sd(sums$NDF), digits = 2)
-
 
 #ANOVA testing for significance between treatments
 lmMC <- lm(MC$Intake_bw ~ MC$Diet)
 aMC <- anova(lmMC)
-#setnames(aMC, "Pr(>F)", "pval", skip_absent=TRUE)
 aMCpval <- round(aMC$`Pr(>F)`[1], 2)
 
 
 
-# stats for feeding trial; treatment analysis -----------------------------
+# stats for feeding trials; treatment analysis -----------------------------
 
 
 #Intake rate by day
