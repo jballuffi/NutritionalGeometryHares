@@ -63,10 +63,12 @@ posthocWC
 
 #CP digestion by day
 CPdig <- lm(day$CP_dig ~ day$Diet)
-summary(CPdig)
-anova(CPdig)
-aCP <- aov(CPdig)
-posthocCP <- TukeyHSD(x = aCP, 'day$Diet', conf.level = 0.95)
+
+aCPdig <- anova(CPdig)
+CPdigpval <- round(aCPdig$`Pr(>F)`[1], 2)
+
+aovCP <- aov(CPdig)
+posthocCP <- TukeyHSD(x = aovCP, 'day$Diet', conf.level = 0.95)
 posthocCP
 
 
@@ -75,10 +77,12 @@ posthocCP
 
 #NDF digestion by day
 NDFdig <- lm(day$NDF_dig ~ day$Diet)
-summary(NDFdig)
-anova(NDFdig)
-aNDF <- aov(NDFdig)
-posthocNDF <- TukeyHSD(x = aNDF, 'day$Diet', conf.level = 0.95)
+
+aNDFdig <- anova(NDFdig)
+NDFdigpval <- round(aNDFdig$`Pr(>F)`[1], 2)
+
+aovNDF <- aov(NDFdig)
+posthocNDF <- TukeyHSD(x = aovNDF, 'day$Diet', conf.level = 0.95)
 posthocNDF
 
 
@@ -87,9 +91,11 @@ posthocNDF
 
 #ADF digestion by day
 ADFdig <- lm(day$ADF_dig ~ day$Diet)
-summary(ADFdig)
-anova(ADFdig)
-aADF <- aov(ADFdig)
-posthocADF <- TukeyHSD(x = aADF, 'day$Diet', conf.level = 0.95)
+
+aADFdig <- anova(ADFdig)
+ADFdigpval <- round(aADFdig$`Pr(>F)`[1], 2)
+
+aovADF <- aov(ADFdig)
+posthocADF <- TukeyHSD(x = aovADF, 'day$Diet', conf.level = 0.95)
 posthocADF
 

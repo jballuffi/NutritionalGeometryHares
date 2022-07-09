@@ -1,7 +1,7 @@
 Results
 ================
 
-## Naive trials
+## Naive multi-choice trials
 
 During the naive multi-choice feeding trial phase of the experiment,
 snowshoe hares ate an average of 51.6 ± 20.78 g DM/day across all diets.
@@ -13,7 +13,7 @@ between the nutritional rails of Diets B and C.
 
 ![Figure 2](Output/figures/targetintake.jpeg)
 
-## Feeding trials
+## Single-choice feeding trials: treatment-level analysis
 
 We conducted 19 single-choice feeding trials on 9 individuals. Hares ate
 on average 81.48 g DM/kg/day of food across all diets. There was an
@@ -32,6 +32,19 @@ There was an overall significant effect of diet on weight change during
 feeding trials (p = 0.02; trial measures). Diet A yielded the highest
 weight loss over the three-day long trials (-1.32 %/day), while diets B
 and C allowed hares to maintain their original weight over feeding
-trials (Figure 4).
+trials (Figure 4). The tukey test showed that weight change differed
+significantly between diet A and diets B and C (add stars to Figure 4).
 
 ![Figure 4](Output/figures/weightchangebar.jpeg)
+
+Based on fecal composition, diet treatment significantly affected daily
+CP (p = 0), NDF (p = 0), and ADF (p = 0) digestion rates. Across
+treatments, hares digested more CP as diet CP:NDF increased (from A to
+D), and CP digestion differed significantly between all combinations of
+diet except for diets C and B (Figure 5). NDF and ADF digestion rates
+decreased as CP:NDF increased until diet C, after which NDF and ADF
+digestion did not change significantly between diet C and D (Figure 5).
+
+![Figure 5](Output/figures/dietdigestion.jpeg)
+
+##Single-choice feeding trials: geometric analysis
