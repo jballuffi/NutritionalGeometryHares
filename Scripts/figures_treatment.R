@@ -62,35 +62,36 @@ IntakeWeight <- ggarrange(IntakeBar, IntakeRails, nrow = 2, ncol = 1)
 
 
 
-# CP and NDF digestion in response to diet --------------------------------
-
-(CPdigestion<-
-   ggplot(day)+
-   geom_boxplot(aes(x = Diet, y = CP_dig*100), outlier.shape = NA, width = .75)+
-   labs(y = "Protein Digested (%)", x ="", title = "A")+
-   themerails+
-   theme(axis.text.x = element_blank(),
-         axis.ticks.x = element_blank()))
-
-(NDFdigestion<-
-    ggplot(day)+
-    geom_boxplot(aes(x = Diet, y = NDF_dig*100), outlier.shape = NA, width = .75)+
-    labs(y = "NDF Digested (%)", x = "", title = "B")+
-    themerails+
-    theme(axis.text.x = element_blank(),
-          axis.ticks.x = element_blank()))
-
-(ADFdigestion<-
-    ggplot(day)+
-    geom_boxplot(aes(x = Diet, y = ADF_dig*100), outlier.shape = NA, width = .75)+
-    labs(y = "ADF Digested (%)", title = "C")+
-    themerails)
+# Digestability by diet ---------------------------------------------------
 
 
-digestion <- ggarrange(CPdigestion, NDFdigestion, ADFdigestion, ncol = 1, nrow = 3)
+#subset to just digestability columns
+dig <- day[, .(Diet, CP_dig, NDF_dig, ADF_dig)]
+
+#melt columns to have nutrient as a new variable
+digmelt <- melt(dig, measure.vars = c("CP_dig", "NDF_dig", "ADF_dig"), 
+                variable.name = "nutrient", 
+                value.name = "digestability")
+
+#remove the "_dig" from the nutrient values (for label in facet wrap)
+digmelt[, nutrient := gsub("_dig", "", nutrient)]
+
+#re-order the nutrients for facet wrap
+digmelt[, nutrient := factor(nutrient, levels = c("CP", "NDF", "ADF"))]
+
+#ggplot digestability against diet
+(dietdigest <- 
+    ggplot(digmelt)+
+    geom_boxplot(aes(x = Diet, y = digestability))+
+    labs(y = "Digestability (%)", x = "Diet")+
+    facet_wrap(~nutrient, nrow = 1, ncol = 3)+
+    themepoints+
+    theme(strip.background = element_blank()))
+
+
 
 
 #save plots
 ggsave("Output/figures/intakebarandrail.jpeg", IntakeWeight, width = 4, height = 7, unit = "in")
 ggsave("Output/figures/weightchangebar.jpeg", WeightChange, width = 4, height = 4, unit = "in")
-ggsave("Output/figures/nutrientdigestion.jpeg", digestion, width = 3, height = 7, unit = "in")
+ggsave("Output/figures/dietdigestion.jpeg", dietdigest, width = 7.5, height = 3 )

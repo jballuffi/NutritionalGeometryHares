@@ -11,17 +11,8 @@ days[, Weight_start := Weight_start/1000]
 
 
 
-# Total intake and excretion ----------------------------------------------
 
-ggplot(days)+
-  geom_point(aes(x = Intake_bw, y = Total_out/Weight_start, color = Diet))+
-  themerails
-
-ggplot(days)+
-  geom_boxplot(aes(x = Diet, y = Total_out/Weight_start))
-
-
-# Nutrient tntake and excretion rates ----------------------------------------------
+# Nutrient intake and excretion rates ----------------------------------------------
 
 
 ggplot(days)+
@@ -42,26 +33,6 @@ ggplot(days)+
 ggplot(days)+
   geom_point(aes(x = C_in, C_out, color = Diet))+
   labs(x = "C Intake (g DM/day", y = "C Extretion (g DM/day)")+
-  themerails
-
-
-# Digestability by diet ---------------------------------------------------
-
-
-#subset to just digestability columns
-dig <- days[, .(Diet, CP_dig, NDF_dig, ADF_dig)]
-
-#melt columns to have nutrient as a new variable
-digmelt <- melt(dig, measure.vars = c("CP_dig", "NDF_dig", "ADF_dig"), 
-                variable.name = "nutrient", 
-                value.name = "digestability")
-
-#remove the "_dig" from the nutrient values (for label in facet wrap)
-digmelt[, nutrient := gsub("_dig", "", nutrient)]
-
-ggplot(digmelt)+
-  geom_boxplot(aes(x = Diet, y = digestability))+
-  facet_wrap(~nutrient, nrow = 1, ncol = 3)+
   themerails
 
 
