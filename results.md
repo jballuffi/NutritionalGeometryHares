@@ -47,4 +47,6 @@ digestion did not change significantly between diet C and D (Figure 5).
 
 ![Figure 5](Output/figures/dietdigestion.jpeg)
 
-##Single-choice feeding trials: geometric analysis
+## Single-choice feeding trials: geometric analysis
+
+![Figure 6](CPdig)
