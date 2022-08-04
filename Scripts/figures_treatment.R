@@ -26,10 +26,8 @@ names(Intakemeans) <-  c("Diet", "Intake_mean", "Intake_SD")
   ggplot(Intakemeans)+
   geom_bar(aes(y = Intake_mean, x = Diet), width = .75, stat = "identity", fill = "grey70")+
   geom_errorbar(aes(x = Diet, ymax = Intake_mean + Intake_SD, ymin = Intake_mean - Intake_SD), width = .2, color = "grey30")+
-  labs(y = "Total Consumption (g DM/kg/day)", x = "", title = "A")+
-  themerails+
-  theme(axis.text.x = element_blank(),
-        axis.ticks.x = element_blank()))
+  labs(y = "Total Consumption (g DM/kg/day)", x = "Diet", title = "A")+
+  themerails)
 
 
 #calculate mean intake rates by diet
@@ -47,7 +45,7 @@ names(meanday) <- c("Diet", "CP", "CPsd", "NDF", "NDFsd")
     labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)", title = "B")+
     themerails)
 
-IntakeWeight <- ggarrange(IntakeBar, IntakeRails, nrow = 2, ncol = 1)
+Intake <- ggarrange(IntakeBar, IntakeRails, nrow = 2, ncol = 1)
 
 
 
@@ -92,6 +90,6 @@ digmelt[, nutrient := factor(nutrient, levels = c("CP", "NDF", "ADF"))]
 
 
 #save plots
-ggsave("Output/figures/intakebarandrail.jpeg", IntakeWeight, width = 4, height = 7, unit = "in")
+ggsave("Output/figures/intakebarandrail.jpeg", Intake, width = 4, height = 7, unit = "in")
 ggsave("Output/figures/weightchangebar.jpeg", WeightChange, width = 4, height = 4, unit = "in")
 ggsave("Output/figures/dietdigestion.jpeg", dietdigest, width = 7.5, height = 3 )
