@@ -183,7 +183,8 @@ Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Day, Date_start, Date_end, Date,
                    Temp
                    )] 
 
-
+#cut out three samples with weirdly negative NDF digestion
+Dailyresults <- Dailyresults[!NDF_dig < -.10]
 
 
 saveRDS(Dailyresults, "Output/data/dailyresultscleaned.rds")

@@ -12,6 +12,13 @@ wp <- fread("Input/Plants_winter2021_compositions_cleaned.csv")
 
 
 
+# summarize diet compositions based on lab results ------------------------
+
+diets <- diets[, .(mean(DM, na.rm = TRUE), mean(CP_DM/100, na.rm = TRUE), mean(NDF_DM/100, na.rm = TRUE), mean(ADF_DM/100, na.rm = TRUE), mean(ADL_DM/100, na.rm = TRUE), mean(C_DM/100, na.rm = TRUE)), Sample]
+names(diets) <- c("Diet", "DM_diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet") #C isnt predicted it was measured after (not for paper)
+
+
+
 # create diet rails -------------------------------------------------------
 
 #create list of intake rates and nutritional values for each diet
@@ -19,23 +26,23 @@ dietintakes<- list(
 
 #diet A
   data.table(IR = seq(1, 120, by = 1), 
-                CP = diets[Diet == "A", return(CP_DM_pred)]/100,
-                NDF = diets[Diet == "A", return(NDF_DM_pred)]/100,
+                CP = diets[Diet == "A", return(CP_diet)],
+                NDF = diets[Diet == "A", return(NDF_diet)],
                 Diet = "A"),
 #diet B
   data.table(IR = seq(1, 120, by = 1), 
-                CP = diets[Diet == "B", return(CP_DM_pred)]/100,
-                NDF = diets[Diet == "B", return(NDF_DM_pred)]/100,
+                CP = diets[Diet == "B", return(CP_diet)],
+                NDF = diets[Diet == "B", return(NDF_diet)],
                 Diet = "B"),
 #diet c
   data.table(IR = seq(1, 120, by = 1), 
-                CP = diets[Diet == "C", return(CP_DM_pred)]/100,
-                NDF = diets[Diet == "C", return(NDF_DM_pred)]/100,
+                CP = diets[Diet == "C", return(CP_diet)],
+                NDF = diets[Diet == "C", return(NDF_diet)],
                 Diet = "C"),
 #diet D
   data.table(IR = seq(1, 120, by = 1), 
-                CP = diets[Diet == "D", return(CP_DM_pred)]/100,
-                NDF = diets[Diet == "D", return(NDF_DM_pred)]/100,
+                CP = diets[Diet == "D", return(CP_diet)],
+                NDF = diets[Diet == "D", return(NDF_diet)],
                 Diet = "D")
 )
 
@@ -108,6 +115,7 @@ allrails <- rbind(foragerails, dietrails)
   labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)")+
   themerails)
 #how do I add labels to these lines???
+
 
 
 ggsave("Output/figures/dietrailswithforage.jpeg", foragerailplot, width = 4.5, height = 3, unit = "in")
