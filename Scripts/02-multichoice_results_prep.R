@@ -21,7 +21,7 @@ diets <- fread("Input/Diet_compositions.csv")
 # merge data together -----------------------------------------------------
 
 #cut diet compositions to just be DM
-dietDM <- diets[, .(Diet, DM, CP_DM_pred/100, NDF_DM_pred/100, ADF_DM_pred/100, ADL_DM_pred/100, C_DM/100)]
+dietDM <- diets[, .(mean(DM, na.rm = TRUE), mean(CP_DM/100, na.rm = TRUE), mean(NDF_DM/100, na.rm = TRUE), mean(ADF_DM/100, na.rm = TRUE), mean(ADL_DM/100, na.rm = TRUE), mean(C_DM/100, na.rm = TRUE)), Sample]
 names(dietDM) <- c("Diet", "DM_diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet") #C isnt predicted it was measured after (not for paper)
 
 #subset DM data
