@@ -11,7 +11,6 @@ trials <- fread("Input/Results_singlechoice.csv")
 
 #read in the nutritional compositions of each diet
 diets <- fread("Input/Diet_compositions.csv")
-diets[is.na(DM), DM := mean(diets$DM, na.rm =TRUE)] #one diet is missing DM, replace with avg for now
 
 #read in daily dry matter measures
 DM <- fread("Input/Daily_DryMatter.csv")
@@ -73,8 +72,8 @@ DT[, Sample := paste0(Enclosure, "_", substring(Date, 3))] #remove the first two
 DM <- DM[, .(Sample, DM)]
 
 #make just a diet DM table
-dietDM <- diets[, .(Diet, DM)]
-setnames(dietDM, "DM", "DietDM") 
+dietDM <- diets[, .(mean(DM, na.rm = TRUE), mean(CP_DM/100, na.rm = TRUE), mean(NDF_DM/100, na.rm = TRUE), mean(ADF_DM/100, na.rm = TRUE), mean(ADL_DM/100, na.rm = TRUE), mean(C_DM/100, na.rm = TRUE)), Sample]
+names(dietDM) <- c("Diet", "DM_diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet") #C isnt predicted it was measured after (not for paper)
 
 #merge feeding data (wet weights) with daily DM data
 DT <- merge(DT, DM, by = "Sample", all.x = TRUE)
@@ -120,15 +119,8 @@ DT <- merge(DT, fecaloutput, by = "Sample", all.x = TRUE)
 
 # Calculate intake measures  --------------------------------------
 
-#cut diet compositions to just be DM
-dietDM <- diets[, .(Diet, CP_DM_pred/100, NDF_DM_pred/100, ADF_DM_pred/100, ADL_DM_pred/100, C_DM/100)]
-names(dietDM) <- c("Diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet") #C isnt predicted it was measured after (not for paper)
-
-#merge DT with diet compositions in terms of DM 
-DT <- merge(DT, dietDM, by = "Diet", all.x = TRUE)
-
 #calculate start and end food weights in terms of dry matter
-DT[, OfferDM := OfferWet*DietDM]
+DT[, OfferDM := OfferWet*DM_diet]
 DT[, EndDM := (EndWet*DM) + Spilled_DM] #end weight adds in the dry matter of spilled food
 
 #calculate daily intake rate in DM
