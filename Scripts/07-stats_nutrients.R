@@ -75,3 +75,7 @@ ggplot(day)+
 NDF <- lm(NDF_dig ~ poly(CP_in_bw, 2) + poly(NDF_in_bw, 2), day)
 summary(NDF)
 
+ggplot(day)+
+  geom_point(aes(x = NDF_in_bw, y = NDF_dig))+
+  stat_smooth(aes(x = NDF_in_bw, y = NDF_dig), method='lm', formula = y ~ poly(x,2), size = 1)
+
