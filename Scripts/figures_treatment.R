@@ -81,7 +81,7 @@ digmelt[, nutrient := factor(nutrient, levels = c("CP", "NDF", "ADF"))]
 (dietdigest <- 
     ggplot(digmelt)+
     geom_boxplot(aes(x = Diet, y = digestability))+
-    labs(y = "Digestability (%)", x = "Diet")+
+    labs(y = "Digestability", x = "Diet")+
     facet_wrap(~nutrient, nrow = 1, ncol = 3)+
     themepoints+
     theme(strip.background = element_blank()))
