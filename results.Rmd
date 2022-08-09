@@ -19,23 +19,27 @@ source("Scripts/05-stats_treatment.R")
 
 During the naive multi-choice feeding trial phase of the experiment, snowshoe hares ate an average of `r round(mean(sums$Intake), digits = 2)` ± `r round(sd(sums$Intake), digits = 2)` g DM/day across all diets. There was no significant effect of diet on intake rate during naive multi-choice trials (p = `r MCpval`; Figure 2). Intake rates by diet translated to average intakes of `r round(mean(sums$CP), digits = 2)` ± `r round(sd(sums$CP), digits = 2)` and `r round(mean(sums$NDF), digits = 2)` ± `r round(sd(sums$NDF), digits = 2)` g DM/day of CP and NDF, respectively (Figure 2). The target intake of naive hares fell between the nutritional rails of Diets B and C.
 
-![Figure 2](Output/figures/targetintake.jpeg)
-
 ## Single-choice feeding trials: treatment-level analysis
 
 We conducted `r length(trials)` single-choice feeding trials on `r length(unique(trials$ID))` individuals. Hares ate on average `r round(mean(trials$Intake_bw), digits = 2)` g DM/kg/day of food across all diets. There was an overall significant effect of diet on intake rate (p = `r IRpval`; daily measure), but this varied between diets (Figure 3, panel A). The tukey test on this ANOVA shows that intake rates for diets C and D differ significantly from diet A, while all other diets did not differ significantly in intake rate (add stars to Figure 3). This pattern of intake rate resulted in hares on diets B and C to have CP and NDF intake rates closest to the average intake rates of hares offered all diets (Figure 3, panel B).
 
-![Figure 3](Output/figures/intakebarandrail.jpeg)
-
 There was an overall significant effect of diet on weight change during feeding trials (p = `r WCpval`; trial measures). Diet A yielded the highest weight loss over the three-day long trials (`r trials[Diet == "A", round(mean(Weight_change), digits = 2)]` %/day), while diets B and C allowed hares to maintain their original weight over feeding trials (Figure 4). The tukey test showed that weight change differed significantly between diet A and diets B and C (add stars to Figure 4).
 
-![Figure 4](Output/figures/weightchangebar.jpeg)
+Based on fecal composition, diet treatment significantly affected daily CP (p = `r CPdigpval`), NDF (p = `r NDFdigpval`), and ADF (p = `r ADFdigpval`) digestion rates. Hares digested more CP as diet CP:NDF increased (from A to D), and CP digestion differed significantly between all combinations of diet treatment except for diets C and B (Figure 5). NDF digestibility decreased significantly between diet A and diets B and C; diets C and D produced near zero NDF digestibility with no significant difference between the two (Figure 5). ADF digestibility decreased from diet A to D, with significant differences between diet A and diets C and D, and diet B and C (Figure 5). There was an observed increase in digestibility from diet C to D, but this was not significant (Figure 5).
 
-Based on fecal composition, diet treatment significantly affected daily CP (p = `r CPdigpval`), NDF (p = `r NDFdigpval`), and ADF (p = `r ADFdigpval`) digestion rates. Across treatments, hares digested more CP as diet CP:NDF increased (from A to D), and CP digestion differed significantly between all combinations of diet except for diets C and B (Figure 5). NDF and ADF digestion rates decreased as CP:NDF increased until diet C, after which NDF and ADF digestion did not change significantly between diet C and D (Figure 5).
 
-![Figure 5](Output/figures/dietdigestion.jpeg)
+![Figure 2. Feeding responses (g dry matter/kg/day) by snowshoe hares during the naiive, multi-choice phase of the feeding trial experiment (n = 32) in which we offered individual hares four experimental diets simulatenously for one day. Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios of 0.083, 0.22, 0.36, and 0.5 respectively. Panel A shows dry matter (DM) intake rate per kg body weight by diet treatment, with bars representing means and error bars representing standard deviations. Panel B places intake rates in Panel A in nutrient space. In Panel B, each black point represents the total CP intake plotted against total NDF intake by individual hares, summing their intake of all diets in the multi-choice feeding trial. The cross point represents the mean CP and NDF intake across all hares. Diet rails (CP:NDF) are represented by black lines. ](Output/figures/targetintake.jpeg)
 
-## Single-choice feeding trials: geometric analysis
+![Figure 3. Feeding responses (g dry matter/kg/day) by snowshoe hares during the single-choice phase of the feeding trial experiment (n = 99) in which we offered individual hares one of four experimental diets  for three days. Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios  of 0.083, 0.22, 0.36, and 0.5 respectively. Panel A shows dry matter (DM) intake rate per kg body weight by diet treatment, with bars representing means and error bars representing standard deviations. Panel B places intake rates in Panel A in nutrient space. Panel B shows mean intake rates (black points; error bars = standard deviation) of each diet along diet rails (CP:NDF) that are represented with black lines. Mean intake rates of diets are represented along the axes as CP intake against NDF intake in terms of dry matter.](Output/figures/intakebarandrail.jpeg)
+
+![Figure 4. Weight change (%/day) of snowshoe hares in response to feeding on one of four experimental diets for three days during the single-choice phase of the feeding trial experiment (n = 33). Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios of 0.083, 0.22, 0.36, and 0.5 respectively. Boxes represent median weight change bounded by lower 25th and 75th percentiles. Points represent values of individual feeding trials. ](Output/figures/weightchangebar.jpeg)
+
+![Figure 5. From left panel to right panel: crude protein (CP), neutral detergent fibre (NDF), and acid detergent fibre (ADF), digestability (proportion digested) in response to feeding on one of four experimental diets fo three days during the single-choice phase of the feeding trial experiment (n = 33). Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios of 0.083, 0.22, 0.36, and 0.5 respectively. Boxes represent median digestability bounded by lower 25th and 75th percentiles. ](Output/figures/dietdigestion.jpeg)
+
+
+
+
+## Single-choice feeding trials: preliminary geometric analysis
 
 Surface maps visualizing weight change performance (%/day) in relation to CP and NDF intake (g DM/kg/day) show greater performance under more balanced nutrient intakes (central hot spot, see figure below).
 
@@ -64,3 +68,14 @@ surface(fitdigNDF)
 fitdigADF <- Tps(day[, .(NDF_in_bw, CP_in_bw)], day$ADF_dig, scale.type = "range")
 surface(fitdigADF)
 ```
+
+
+
+## Additional figures
+
+![Excretion rates](Output/figures/excretionrates.jpg)
+
+
+![Weight change in response to protein intake](Output/figures/proteinintake.jpeg)
+
+![Weight change in response to fibre intake](Output/figures/NDFintake.jpeg)
