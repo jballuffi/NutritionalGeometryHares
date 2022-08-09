@@ -14,25 +14,31 @@ days[, Weight_start := Weight_start/1000]
 
 # Nutrient intake and excretion rates ----------------------------------------------
 
+total <- 
+  ggplot(days)+
+  geom_point(aes(x = Intake, y = Total_out, color = Diet))+
+  labs(x = "Intake Rate (g DM/day)", y = "Excretion Rate (g DM/day")+
+  themepoints
 
-ggplot(days)+
-  geom_point(aes(x = CP_in_bw, y = CP_out/Weight_start, color = Diet))+
+protein <-
+  ggplot(days)+
+  geom_point(aes(x = CP_in, y = CP_out, color = Diet))+
   labs(x = "Protein Intake (g DM/day)", y = "Protein Excretion (g DM/day")+
-  themerails
+  themepoints
 
-ggplot(days)+
-  geom_point(aes(x = NDF_in_bw, y = NDF_out/Weight_start, color = Diet))+
+NDF <- 
+  ggplot(days)+
+  geom_point(aes(x = NDF_in_bw, y = NDF_out, color = Diet))+
   labs(x = "NDF Intake (g DM/day)", y = "NDF Excretion (g DM/day")+
-  themerails
+  themepoints
 
-ggplot(days)+
+ADF <- 
+  ggplot(days)+
   geom_point(aes(x = ADF_in, ADF_out, color = Diet))+
-  labs(x = "ADF Intake (g DM/day", y = "ADF Extretion (g DM/day)")+
-  themerails
+  labs(x = "ADF Intake (g DM/day", y = "ADF Excretion (g DM/day)")+
+  themepoints
 
-ggplot(days)+
-  geom_point(aes(x = C_in, C_out, color = Diet))+
-  labs(x = "C Intake (g DM/day", y = "C Extretion (g DM/day)")+
-  themerails
+fullfig <- ggarrange(total, protein, NDF, ADF, ncol = 2, nrow = 2)
 
+ggsave("Output/figures/excretionrates.jpg", fullfig, width = 7, height = 6, units = "in")
 
