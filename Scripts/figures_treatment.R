@@ -59,6 +59,15 @@ Intake <- ggarrange(IntakeBar, IntakeRails, nrow = 2, ncol = 1)
    themerails)
 
 
+# Just protein digestibility for presentation ----------------------------------------------
+
+(ProteinDig<-
+   ggplot(day)+
+   geom_boxplot(aes(x = Diet, y = CP_dig*100), outlier.shape = NA, width = .75)+
+   geom_jitter(aes(x = Diet, y = CP_dig*100), shape = 1, size = 2, width = .25)+
+   labs(y = "Protein Digestibility (%)")+
+   themerails)
+
 
 # Digestability by diet ---------------------------------------------------
 
@@ -93,3 +102,4 @@ digmelt[, nutrient := factor(nutrient, levels = c("CP", "NDF", "ADF"))]
 ggsave("Output/figures/intakebarandrail.jpeg", Intake, width = 4, height = 7, unit = "in")
 ggsave("Output/figures/weightchangebar.jpeg", WeightChange, width = 4, height = 4, unit = "in")
 ggsave("Output/figures/dietdigestion.jpeg", dietdigest, width = 7.5, height = 3 )
+ggsave("Output/figures/proteindigestibility.jpeg", ProteinDig, width = 4, height = 4, unit = "in")
