@@ -133,11 +133,11 @@ DT[, ADF_in := Intake*ADF_diet]
 DT[, ADL_in := Intake*ADL_diet]
 DT[, C_in := Intake*C_diet]
 
-#calculate intake rates by weight
+#convert weights from g to kg
 DT[, Weight_start := Weight_start/1000]
 DT[, Weight_end := Weight_end/1000]
 
-
+#calculate intake rates by weight
 DT[, Intake_bw := Intake/Weight_start]
 DT[, CP_in_bw := CP_in/Weight_start]
 DT[, NDF_in_bw := NDF_in/Weight_start]
