@@ -7,9 +7,9 @@
 
 trialavg <- function(dt){
   cols <- c("CP_diet", "NDF_diet", "ADF_diet", "ADL_diet",
-            "Intake_bw", "CP_in_bw", "NDF_in_bw", "ADF_in_bw", 
+            "DMI", "DMI_CP", "DMI_NDF", "DMI_ADF", "DMI_ADL", 
             "Weight_start", "Weight_end", #weights are the same for every day because we only took a measure at the start and end of trital
-            "Total_out", "CP_dig", "NDF_dig", "ADF_dig", 
+            "DMF", "DP", "DNDF", "DADF", "DADL", 
             "Temp")
   out <- dt[, lapply(.SD, mean), .SDcols = cols]
   return(out)
