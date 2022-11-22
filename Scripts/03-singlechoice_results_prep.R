@@ -177,7 +177,7 @@ DT[, Temp := tempcalc(start = DayTime_start, end = DayTime_end), by = .(ID, Tria
 #cut out a datasheet of just key feeding trial info and results
 Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Day, Date_start, Date_end, Date, #info
                    CP_diet, NDF_diet, ADF_diet, ADL_diet, C_diet, #diet compositions (%)
-                   DMI, DMI_CP, DMI_NDF, DMI_NDF, DMI_ADF, DMI_ADL, DMI_C, #dry matter intakes (g/day)
+                   DMI, DMI_CP, DMI_NDF, DMI_ADF, DMI_ADL, DMI_C, #dry matter intakes (g/day)
                    DMI_bw, DMI_CP_bw, DMI_NDF_bw, DMI_ADF_bw, DMI_ADL_bw, DMI_C_bw, #dry matter intake by kg^.75 (g/kg^.75/day)
                    Weight_start, Weight_end, #weight change (%/day)
                    DMF, DMF_CP, DMF_NDF, DMF_ADF, DMF_ADL, DMF_C, #dry matter fecal outputs
