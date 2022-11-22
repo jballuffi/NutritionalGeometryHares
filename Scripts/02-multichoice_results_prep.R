@@ -87,7 +87,6 @@ DT[, DMI_C_bw := DMI_C/(Weight_start^.75)]
 
 #calculate total protein and fibre consumed from all diets in one day
 totals <- DT[, .(sum(DMI_bw), sum(DMI_CP_bw), sum(DMI_NDF_bw)), by = ID]
-
 names(totals) <- c("ID","DMI_bw", "DMI_CP_bw", "DMI_NDF_bw")
 
 
