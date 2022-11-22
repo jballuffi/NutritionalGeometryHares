@@ -135,15 +135,24 @@ DT[, DMI_C := DMI*C_diet]
 DT[, Weight_start := Weight_start/1000]
 DT[, Weight_end := Weight_end/1000]
 
+#calculate dry matter intakes by kg^.75
+DT[, DMI_bw := DMI/(Weight_start^.75)]
+DT[, DMI_CP_bw := DMI_CP/(Weight_start^.75)]
+DT[, DMI_NDF_bw := DMI_NDF/(Weight_start^.75)]
+DT[, DMI_ADF_bw := DMI_ADF/(Weight_start^.75)]
+DT[, DMI_ADL_bw := DMI_ADL/(Weight_start^.75)]
+DT[, DMI_C_bw := DMI_C/(Weight_start^.75)]
+
+
 
 # Calculate digestibility -----------------------------------------------
 
-#four 
-DT[, DP := (DMI_CP - DMF_CP)/DMI_CP]
-DT[, DNDF := (DMI_NDF - DMF_NDF)/DMI_NDF]
-DT[, DADF := (DMI_ADF - DMF_ADF)/DMI_ADF]
-DT[, DADL := (DMI_ADL - DMF_ADL)/DMI_ADL]
-DT[, DC := (DMI_C - DMF_C)/DMI_C]
+DT[, DMD := (DMI-DMF)/DMI] #dry matter digestibility
+DT[, DP := (DMI_CP - DMF_CP)/DMI_CP] #digestible protein
+DT[, DNDF := (DMI_NDF - DMF_NDF)/DMI_NDF] #digestible NDF
+DT[, DADF := (DMI_ADF - DMF_ADF)/DMI_ADF] #digestible ADF
+DT[, DADL := (DMI_ADL - DMF_ADL)/DMI_ADL] #digestible ADL
+DT[, DC := (DMI_C - DMF_C)/DMI_C] #digestible carbon? do i keep this?
 
 
 # Merge in daily temperatures ---------------------------------------------
@@ -168,10 +177,11 @@ DT[, Temp := tempcalc(start = DayTime_start, end = DayTime_end), by = .(ID, Tria
 #cut out a datasheet of just key feeding trial info and results
 Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Day, Date_start, Date_end, Date, #info
                    CP_diet, NDF_diet, ADF_diet, ADL_diet, C_diet, #diet compositions (%)
-                   DMI, DMI_CP, DMI_NDF, DMI_NDF, DMI_ADF, DMI_ADL, DMI_C, # dry matter intakes (g)
-                   Weight_start, Weight_end, #weight change
+                   DMI, DMI_CP, DMI_NDF, DMI_NDF, DMI_ADF, DMI_ADL, DMI_C, #dry matter intakes (g/day)
+                   DMI_bw, DMI_CP_bw, DMI_NDF_bw, DMI_ADF_bw, DMI_ADL_bw, DMI_C_bw, #dry matter intake by kg^.75 (g/kg^.75/day)
+                   Weight_start, Weight_end, #weight change (%/day)
                    DMF, DMF_CP, DMF_NDF, DMF_ADF, DMF_ADL, DMF_C, #dry matter fecal outputs
-                   DP, DNDF, DADF, DADL, DC, #digestibility (%)
+                   DMD, DP, DNDF, DADF, DADL, DC, #digestibility (%)
                    Temp
                    )] 
 
