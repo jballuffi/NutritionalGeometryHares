@@ -19,13 +19,6 @@ day<- readRDS("Output/data/dailyresultscleaned.rds") # by day
 
 # stats for multi-choice trials ----------------------------------------------------
 
-# #mean intake rates by diet
-# NIA <- MC[Diet == "A", round(mean(Intake_bw), digits = 2)]
-# NIB <- MC[Diet == "B", round(mean(Intake_bw), digits = 2)]
-# NIC <- MC[Diet == "C", round(mean(Intake_bw), digits = 2)]
-# NID <- MC[Diet == "D", round(mean(Intake_bw), digits = 2)]
-
-
 #ANOVA testing for significance between treatments
 lmMC <- lm(MC$Intake_bw ~ MC$Diet)
 aMC <- anova(lmMC)
