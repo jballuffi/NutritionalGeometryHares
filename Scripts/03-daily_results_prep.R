@@ -172,7 +172,7 @@ DT[, Temp := tempcalc(start = DayTime_start, end = DayTime_end), by = .(ID, Tria
 
 
 
-# create final, simplified datasheet --------------------------------------
+# create simplified datasheet for daily results --------------------------------------
 
 #cut out a datasheet of just key feeding trial info and results
 Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Day, Date_start, Date_end, Date, #info
@@ -189,4 +189,21 @@ Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Day, Date_start, Date_end, Date,
 Dailyresults <- Dailyresults[!DNDF < -.10]
 
 
+
+# create trial results ----------------------------------------------------
+
+#run the trialavg function (in R folder) by ID and Diet (trial is extra, same as diet)
+#trials is a spreadsheet with results for whole trials
+trials <- Dailyresults[, trialavg(.SD), by = c("ID", "Diet", "Trial")]
+
+#calculate weight change per day for each trial (% change/day)
+trials[, Weight_change := (((Weight_end - Weight_start)/Weight_start)*100)/3]
+
+
+
+# save results ------------------------------------------------------------
+
+#save daily format of results
 saveRDS(Dailyresults, "Output/data/dailyresultscleaned.rds")
+#save trial format of results
+saveRDS(trials, "Output/data/trialresultscleaned.rds")
