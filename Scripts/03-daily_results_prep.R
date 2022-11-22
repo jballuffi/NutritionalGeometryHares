@@ -66,13 +66,13 @@ DT[, Sample := paste0(Enclosure, "_", substring(Date, 3))] #remove the first two
 
 
 
-# merge with daily dry matter and diet dry matter --------------------------------
+# merge with daily dry matter and diet compositions --------------------------------
 
 #remove excess columns in daily DM table
 DM <- DM[, .(Sample, DM)]
 
 #make just a diet DM table
-dietDM <- diets[, .(mean(DM, na.rm = TRUE), mean(CP_DM/100, na.rm = TRUE), mean(NDF_DM/100, na.rm = TRUE), mean(ADF_DM/100, na.rm = TRUE), mean(ADL_DM/100, na.rm = TRUE), mean(C_DM/100, na.rm = TRUE)), Sample]
+dietDM <- diets[, .(mean(DM, na.rm = TRUE), mean(CP_diet/100, na.rm = TRUE), mean(NDF_diet/100, na.rm = TRUE), mean(ADF_diet/100, na.rm = TRUE), mean(ADL_diet/100, na.rm = TRUE), mean(C_diet/100, na.rm = TRUE)), Sample]
 names(dietDM) <- c("Diet", "DM_diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet") #C isnt predicted it was measured after (not for paper)
 
 #merge feeding data (wet weights) with daily DM data
@@ -91,27 +91,25 @@ DT <- merge(DT, dietDM, by = "Diet", all.x = TRUE)
 
 #remove excess columns from remainder/spilled food table
 spill <- spill[, .(Sample, Total_DM)]
+setnames(spill, "Total_DM", "DM_spilled")
 
 #merge in the mass of spilled food with full datasheet
 DT <- merge(DT, spill, by = "Sample", all.x = TRUE)
-setnames(DT, "Total_DM", "Spilled_DM") #rename to be specific to spilled food
-DT[is.na(Spilled_DM), Spilled_DM := 0] #fill in cases where no food was dumped
+DT[is.na(DM_spilled), DM_spilled := 0] #fill in cases where no food was dumped
 
 
 # merge in fecal data ------------------------------------------------------
 
-#calculate C 
-
 #calculate fecal outputs
-feces[, Total_out := Total_dried*DM] #total dry matter
-feces[, NDF_out := Total_out*(NDF_DM/100)] #total NDF on DM basis
-feces[, ADF_out := Total_out*(ADF_DM/100)] #total ADF on DM basis
-feces[, CP_out := Total_out*(CP_DM/100)] #total CP on DM basis
-feces[, C_out := Total_out*(C_DM/100)] #total CP on DM basis
-
+feces[, DMF := Total_dried*DM] #total dry matter
+feces[, DMF_NDF := DMF*(NDF_F/100)] #total NDF on DM basis (g)
+feces[, DMF_ADF := DMF*(ADF_F/100)] #total ADF on DM basis (g)
+feces[, DMF_ADL := DMF*(ADL_F/100)] #total ADF on DM basis (g)
+feces[, DMF_CP := DMF*(CP_F/100)] #total CP on DM basis (g)
+feces[, DMF_C := DMF*(C_F/100)] #total CP on DM basis (g)
 
 #cut the fecal data down to just fecal output columns
-fecaloutput <- feces[, .(Sample, Total_out, NDF_out, ADF_out, CP_out, C_out)]
+fecaloutput <- feces[, .(Sample, DMF, DMF_NDF, DMF_ADF, DMF_ADL, DMF_CP, DMF_C)]
 
 #merge intake rates and DMs with fecal output data
 DT <- merge(DT, fecaloutput, by = "Sample", all.x = TRUE)
@@ -120,37 +118,32 @@ DT <- merge(DT, fecaloutput, by = "Sample", all.x = TRUE)
 # Calculate intake measures  --------------------------------------
 
 #calculate start and end food weights in terms of dry matter
-DT[, OfferDM := OfferWet*DM_diet]
-DT[, EndDM := (EndWet*DM) + Spilled_DM] #end weight adds in the dry matter of spilled food
+DT[, DM_offer := OfferWet*DM_diet]
+DT[, DM_end := (EndWet*DM) + DM_spilled] #end weight adds in the dry matter of spilled food
 
-#calculate daily intake rate in DM
-DT[, Intake := OfferDM - EndDM]
+#calculate dry matter intake
+DT[, DMI := DM_offer - DM_end]
 
-#calculate intake rates of each nutrient
-DT[, CP_in := Intake*CP_diet]
-DT[, NDF_in := Intake*NDF_diet]
-DT[, ADF_in := Intake*ADF_diet]
-DT[, ADL_in := Intake*ADL_diet]
-DT[, C_in := Intake*C_diet]
+#calculate dry matter intake of each currency
+DT[, DMI_CP := DMI*CP_diet]
+DT[, DMI_NDF := DMI*NDF_diet]
+DT[, DMI_ADF := DMI*ADF_diet]
+DT[, DMI_ADL := DMI*ADL_diet]
+DT[, DMI_C := DMI*C_diet]
 
 #convert weights from g to kg
 DT[, Weight_start := Weight_start/1000]
 DT[, Weight_end := Weight_end/1000]
 
-#calculate intake rates by weight
-DT[, Intake_bw := Intake/Weight_start]
-DT[, CP_in_bw := CP_in/Weight_start]
-DT[, NDF_in_bw := NDF_in/Weight_start]
-DT[, ADF_in_bw := ADF_in/Weight_start]
-DT[, ADL_in_bw := ADF_in/Weight_start]
-DT[, C_in_bw:= C_in/Weight_start]
 
-# Calculate digestabilities -----------------------------------------------
+# Calculate digestibility -----------------------------------------------
 
-DT[, CP_dig := (CP_in - CP_out)/CP_in]
-DT[, NDF_dig := (NDF_in - NDF_out)/NDF_in]
-DT[, ADF_dig := (ADF_in - ADF_out)/ADF_in]
-DT[, C_dig := (C_in - C_out)/C_in]
+#four 
+DT[, DP := (DMI_CP - DMF_CP)/DMI_CP]
+DT[, DNDF := (DMI_NDF - DMF_NDF)/DMI_NDF]
+DT[, DADF := (DMI_ADF - DMF_ADF)/DMI_ADF]
+DT[, DADL := (DMI_ADL - DMF_ADL)/DMI_ADL]
+DT[, DC := (DMI_C - DMF_C)/DMI_C]
 
 
 # Merge in daily temperatures ---------------------------------------------
@@ -174,17 +167,16 @@ DT[, Temp := tempcalc(start = DayTime_start, end = DayTime_end), by = .(ID, Tria
 
 #cut out a datasheet of just key feeding trial info and results
 Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Day, Date_start, Date_end, Date, #info
-                   CP_diet, NDF_diet, ADF_diet, ADL_diet, C_diet, #diet compositions
-                   Intake, CP_in, NDF_in, ADF_in, ADL_in, C_in, #intakes
+                   CP_diet, NDF_diet, ADF_diet, ADL_diet, C_diet, #diet compositions (%)
+                   DMI, DMI_CP, DMI_NDF, DMI_NDF, DMI_ADF, DMI_ADL, DMI_C, # dry matter intakes (g)
                    Weight_start, Weight_end, #weight change
-                   Intake_bw, CP_in_bw, NDF_in_bw, ADF_in_bw, ADL_in_bw, C_in_bw, #intakes by weight
-                   Total_out, CP_out, NDF_out, ADF_out, C_out,#fecal outputs
-                   CP_dig, NDF_dig, ADF_dig, C_dig, #digestability
+                   DMF, DMF_CP, DMF_NDF, DMF_ADF, DMF_ADL, DMF_C, #dry matter fecal outputs
+                   DP, DNDF, DADF, DADL, DC, #digestibility (%)
                    Temp
                    )] 
 
 #cut out three samples with weirdly negative NDF digestion
-Dailyresults <- Dailyresults[!NDF_dig < -.10]
+Dailyresults <- Dailyresults[!DNDF < -.10]
 
 
 saveRDS(Dailyresults, "Output/data/dailyresultscleaned.rds")
