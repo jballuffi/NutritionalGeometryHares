@@ -26,7 +26,7 @@ names(Intakemeans) <-  c("Diet", "DMI_mean", "DMI_sd")
   ggplot(Intakemeans)+
   geom_bar(aes(y = DMI_mean, x = Diet), width = .75, stat = "identity", fill = "grey70")+
   geom_errorbar(aes(x = Diet, ymax = DMI_mean + DMI_sd, ymin = DMI_mean - DMI_sd), width = .2, color = "grey30")+
-  labs(y = "Total Consumption (g DM/kg/day)", x = "Diet", title = "A")+
+  labs(y = "Total Consumption (g DM/kg^0.75/day)", x = "Diet", title = "A")+
   themerails)
 
 

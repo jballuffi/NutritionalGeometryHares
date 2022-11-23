@@ -65,7 +65,6 @@ DT[, DMI_ADL := DMI*ADL_diet]
 DT[, DMI_C := DMI*C_diet]
 
 
-
 # DM intakes by body weight ----------------------------------------------------
 
 
