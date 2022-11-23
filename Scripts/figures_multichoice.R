@@ -65,7 +65,7 @@ names(IntakemeansNS) <-  c("Diet", "Intake_mean", "Intake_SD")
 
 #bar graph
 (NaiveIntakesNS<-
-    ggplot(NSIntakemeans)+
+    ggplot(IntakemeansNS)+
     geom_bar(aes(y = Intake_mean, x = Diet), width = .75, stat = "identity", fill = "grey70")+
     geom_errorbar(aes(x = Diet, ymax = Intake_mean + Intake_SD, ymin = Intake_mean - Intake_SD), width = .2, color = "grey30")+
     labs(y = "Dry matter intake (g DM/kg^0.75/day)", x = "Diet")+
@@ -81,7 +81,7 @@ names(IntakemeansNS) <-  c("Diet", "Intake_mean", "Intake_SD")
     labs(y = "CP Intake (g DM/kg^0.75/day)", x = "NDF Intake (g DM/kg^0.75/day)")+
     themerails)
 
-(naivechoiceNS <- ggarrange(NaiveIntakes, target, nrow = 2, ncol = 1))
+(naivechoiceNS <- ggarrange(NaiveIntakesNS, targetNS, nrow = 2, ncol = 1))
 
 
 

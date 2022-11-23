@@ -12,7 +12,7 @@ rails <- fread("Output/data/dietrails.rds")
 
 #read in multichoice trial sums
 sums <- readRDS("Output/data/multichoicesums.rds")
-
+sums <- sums[DMI_bw > 30] #remove food strikers
 
 # intake rate figures -----------------------
 
@@ -59,14 +59,6 @@ Intake <- ggarrange(IntakeBar, IntakeRails, nrow = 2, ncol = 1)
    themerails)
 
 
-# Just protein digestibility for presentation ----------------------------------------------
-
-(ProteinDig<-
-   ggplot(day)+
-   geom_boxplot(aes(x = Diet, y = DP*100), outlier.shape = NA, width = .75)+
-   geom_jitter(aes(x = Diet, y = DP*100), shape = 1, size = 2, width = .25)+
-   labs(y = "Protein Digestibility (%)")+
-   themerails)
 
 
 # Digestibility by diet ---------------------------------------------------
@@ -95,10 +87,60 @@ digmelt <- digmelt[!digestibility < -0.2]
     theme(strip.background = element_blank()))
 
 
+# Just PD and PD intake by diet ----------------------------------------------
+
+#protein digestability
+(ProteinDig<-
+   ggplot(day)+
+   geom_boxplot(aes(x = Diet, y = DP*100), outlier.shape = NA, width = .75)+
+   geom_jitter(aes(x = Diet, y = DP*100), shape = 1, size = 2, width = .25)+
+   labs(y = "Protein Digestibility (%)")+
+   themerails)
+
+#protein intake
+(ProteinIntake<-
+    ggplot(day)+
+    geom_boxplot(aes(x = Diet, y = DPI), outlier.shape = NA, width = .75)+
+    geom_jitter(aes(x = Diet, y = DPI), shape = 1, size = 2, width = .25)+
+    labs(y = "Digestible Protein Intake (g/kg^0.75/day")+
+    themerails)
+
+#pull protein figs together
+Protein <- ggarrange(ProteinDig, ProteinIntake, nrow = 1, ncol = 2)
+
+
+
+# Just DMD by diet --------------------------------------------------------
+
+(DMDdig<-
+   ggplot(day)+
+   geom_boxplot(aes(x = Diet, y = DMD*100), outlier.shape = NA, width = .75)+
+   geom_jitter(aes(x = Diet, y = DMD*100), shape = 1, size = 2, width = .25)+
+   labs(y = "Dry Matter Digestibility (%)")+
+   themerails)
+
+(DMDIntake<-
+    ggplot(day)+
+    geom_boxplot(aes(x = Diet, y = DMDI), outlier.shape = NA, width = .75)+
+    geom_jitter(aes(x = Diet, y = DMDI), shape = 1, size = 2, width = .25)+
+    labs(y = "DMD Intake (g/kg^0.75/day")+
+    themerails)
+
+#pull protein figs together
+DMD <- ggarrange(DMDdig, DMDIntake, nrow = 1, ncol = 2)
+
+
+
+
+# Rail plot with DP and DMD ------------------------------------------------------
+
+#need to make rails with DMD and DP etc
+
 
 
 #save plots
 ggsave("Output/figures/intakebarandrail.jpeg", Intake, width = 4, height = 7, unit = "in")
 ggsave("Output/figures/weightchangebar.jpeg", WeightChange, width = 4, height = 4, unit = "in")
 ggsave("Output/figures/dietdigestion.jpeg", dietdigest, width = 7.5, height = 6 )
-ggsave("Output/figures/proteindigestibility.jpeg", ProteinDig, width = 4, height = 4, unit = "in")
+ggsave("Output/figures/proteindigestibility.jpeg", Protein, width = 8, height = 4, unit = "in")
+ggsave("Output/figures/drymatterdigestibility.jpeg", DMD, width = 8, height = 4, unit = "in")
