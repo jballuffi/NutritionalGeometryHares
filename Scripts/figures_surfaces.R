@@ -3,11 +3,13 @@
 #source the R folder to load any packages and functions
 lapply(dir('R', '*.R', full.names = TRUE), source)
 
-
 #read in results
 trials <- readRDS("Output/data/trialresultscleaned.rds")
 day <- readRDS("Output/data/dailyresultscleaned.rds")
 
+
+
+# learning some plot methods ----------------------------------------------
 
 #example of quiltplot
 data( ozone2)
@@ -19,29 +21,26 @@ quilt.plot( ozone2$lon.lat, ozone2$y[16,])
 
 
 
-# surface plots for weight change digestion -------------------------------
+# Protein and DMI  -------------------------------
+
+#not accounting for digestibility
+fitDMI <- Tps(trials[, .(DMI_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
+surface(fitDMI)
+
+#yes accounting for digestibilty 
+fitDMD <- Tps(trials[, .(DMDI, DPI)], trials$Weight_change, scale.type = "range")
+surface(fitDMD)
 
 
 
-fitweight <- Tps(trials[, .(NDF_in_bw, CP_in_bw)], trials$Weight_change, scale.type = "range")
-surface(fitweight)
+# Protein and NDF ---------------------------------------------------------
+
+#not accounting for digestibility
+fitCP <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
+surface(fitCP)
+
+#yes accounting for digestibility
+fitDP <- Tps(trials[, .(DNDFI, DPI)], trials$Weight_change, scale.type = "range")
+surface(fitDP)
 
 
-
-fitdigCP <- Tps(day[, .(NDF_in_bw, CP_in_bw)], day$CP_dig, scale.type = "range")
-surface(fitdigCP)
-
-fitdigNDF <- Tps(day[, .(NDF_in_bw, CP_in_bw)], day$NDF_dig, scale.type = "range")
-surface(fitdigNDF)
-
-fitdigADF <- Tps(day[, .(NDF_in_bw, CP_in_bw)], day$ADF_dig, scale.type = "range")
-surface(fitdigADF)
-
-plot(fitdigCP)
-
-ggplot(fitdigCP)+
-  geom_raster(aes(x = x, y = y, fill = z), interpolate = FALSE)
-  
-
-
-savePlot("Output/figures/CPsurface.jpeg", CPdig, type = "jpg")
