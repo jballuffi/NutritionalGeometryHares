@@ -115,7 +115,7 @@ fecaloutput <- feces[, .(Sample, DMF, DMF_NDF, DMF_ADF, DMF_ADL, DMF_CP, DMF_C)]
 DT <- merge(DT, fecaloutput, by = "Sample", all.x = TRUE)
 
 
-# Calculate intake measures  --------------------------------------
+# Calculate dry matter intake with and without weight --------------------------------------
 
 #calculate start and end food weights in terms of dry matter
 DT[, DM_offer := OfferWet*DM_diet]
@@ -144,7 +144,6 @@ DT[, DMI_ADL_bw := DMI_ADL/(Weight_start^.75)]
 DT[, DMI_C_bw := DMI_C/(Weight_start^.75)]
 
 
-
 # Calculate digestibility -----------------------------------------------
 
 DT[, DMD := (DMI-DMF)/DMI] #dry matter digestibility
@@ -154,6 +153,16 @@ DT[, DADF := (DMI_ADF - DMF_ADF)/DMI_ADF] #digestible ADF
 DT[, DADL := (DMI_ADL - DMF_ADL)/DMI_ADL] #digestible ADL
 DT[, DC := (DMI_C - DMF_C)/DMI_C] #digestible carbon? do i keep this?
 
+
+
+# Calculate digestibility intake ------------------------------------------
+
+#double check these calculations. I am a little confused.
+#these intake rates are on a kg^.75 basis
+DT[, DMDI := DMD*DMI_bw]
+DT[, DPI := DP*DMI_CP]
+DT[, DNDFI := DP*DMI_NDF]
+DT[, DADFI := DP*DMI_ADF]
 
 # Merge in daily temperatures ---------------------------------------------
 
@@ -176,12 +185,12 @@ DT[, Temp := tempcalc(start = DayTime_start, end = DayTime_end), by = .(ID, Tria
 
 #cut out a datasheet of just key feeding trial info and results
 Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Day, Date_start, Date_end, Date, #info
-                   CP_diet, NDF_diet, ADF_diet, ADL_diet, C_diet, #diet compositions (%)
-                   DMI, DMI_CP, DMI_NDF, DMI_ADF, DMI_ADL, DMI_C, #dry matter intakes (g/day)
-                   DMI_bw, DMI_CP_bw, DMI_NDF_bw, DMI_ADF_bw, DMI_ADL_bw, DMI_C_bw, #dry matter intake by kg^.75 (g/kg^.75/day)
+                   DMI, DMI_CP, DMI_NDF, DMI_ADF, DMI_ADL, #dry matter intakes (g/day)
+                   DMI_bw, DMI_CP_bw, DMI_NDF_bw, DMI_ADF_bw, DMI_ADL_bw, #dry matter intake (g/kg^.75/day)
                    Weight_start, Weight_end, #weight change (%/day)
-                   DMF, DMF_CP, DMF_NDF, DMF_ADF, DMF_ADL, DMF_C, #dry matter fecal outputs
-                   DMD, DP, DNDF, DADF, DADL, DC, #digestibility (%)
+                   DMF, DMF_CP, DMF_NDF, DMF_ADF, DMF_ADL, #dry matter fecal outputs
+                   DMD, DP, DNDF, DADF, DADL,  #digestibility (%)
+                   DMDI, DPI, DNDFI, DADFI, #digestible intake rate (g/kg^.75/day)
                    Temp
                    )] 
 
