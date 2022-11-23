@@ -17,7 +17,7 @@ days[, Weight_start := Weight_start/1000]
 (total <- 
   ggplot(days)+
   geom_point(aes(x = DMI, y = DMF, color = Diet))+
-  labs(x = "Intake Rate (g DM/day)", y = "Excretion Rate (g DM/day")+
+  labs(x = "Dry Matter Intake (g DM/day)", y = "Dry Matter Excretion (g DM/day")+
   themepoints)
 
 (protein <-
