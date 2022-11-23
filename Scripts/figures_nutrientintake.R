@@ -17,70 +17,62 @@ days <- readRDS("Output/data/dailyresultscleaned.rds")
 
 (DMintake <- 
   ggplot(trials)+
-  geom_point(aes(x = DMI_bw, y = Weight_change, color = Diet), size = 1.75)+
-  labs(y = "Weight change (%/Day)", x = "Dry Matter Intake (g/kg^0.75/day)")+
+  geom_point(aes(x = DMI_bw, y = Weight_change), size = 1.75)+
+  geom_smooth(aes(x = DMI_bw, y = Weight_change), method = "lm")+
+  labs(y = "Weight change (%/Day)", x = "DMI (g/kg^0.75/day)")+
   #scale_x_continuous("\n Protein Intake (g DM/k^0.75/day) \n", n.breaks =5) +
   themerails)
 
-(proteinintake <-
+(CPintake <-
    ggplot(trials)+
-   geom_point(aes(x = DMI_CP_bw, y = Weight_change, color = Diet), size = 1.75)+
-   labs(y = "Weight change (%/Day)", x = "Protein intake (g DM/kg^0.75/day)")+
+   geom_point(aes(x = DMI_CP_bw, y = Weight_change), size = 1.75)+
+   geom_smooth(aes(x = DMI_CP_bw, y = Weight_change), method = "lm")+
+   labs(y = "Weight change (%/Day)", x = "CP Intake (g DM/kg^0.75/day)")+
    #scale_x_continuous("\n Protein Intake (g DM/k^0.75/day) \n", n.breaks =5) +
    themerails)
 
 (NDFintake <-
     ggplot(trials)+
-    geom_point(aes(x = DMI_NDF_bw, y = Weight_change, color = Diet), size = 1.75)+
+    geom_point(aes(x = DMI_NDF_bw, y = Weight_change), size = 1.75)+
+    geom_smooth(aes(x = DMI_NDF_bw, y = Weight_change), method = "lm")+
     labs(y = "Weight change (%/Day)", x = "NDF intake (g DM/kg^0.75/day)")+
     themerails)
 
-
+nondig <- ggarrange(DMintake, CPintake, NDFintake, nrow = 1, ncol = 3)
 
 # Weight change in response to digestible matter intake -------------------
 
 
 (DMDintake <- 
    ggplot(trials)+
-   geom_point(aes(x = DMDI, y = Weight_change, color = Diet), size = 1.75)+
-   labs(y = "Weight change (%/Day)", x = "Dry Matter Digestibility Intake (g/kg^0.75/day)")+
+   geom_point(aes(x = DMDI, y = Weight_change), size = 1.75)+
+   geom_smooth(aes(x = DMDI, y = Weight_change), method = "lm")+
+   labs(y = "Weight change (%/Day)", x = "DMD intake (g/kg^0.75/day)")+
    #scale_x_continuous("\n Protein Intake (g DM/k^0.75/day) \n", n.breaks =5) +
    themerails)
 
-(digproteinintake <-
+(DPintake <-
     ggplot(trials)+
-    geom_point(aes(x = DPI, y = Weight_change, color = Diet), size = 1.75)+
-    labs(y = "Weight change (%/Day)", x = "Digestible Protein intake (g DM/kg^0.75/day)")+
+    geom_point(aes(x = DPI, y = Weight_change), size = 1.75)+
+    geom_smooth(aes(x = DPI, y = Weight_change), method = "lm")+
+    labs(y = "Weight change (%/Day)", x = "DP intake (g DM/kg^0.75/day)")+
     #scale_x_continuous("\n Protein Intake (g DM/k^0.75/day) \n", n.breaks =5) +
     themerails)
 
-(digNDFintake <-
+(DNDFintake <-
     ggplot(trials)+
-    geom_point(aes(x = DNDFI, y = Weight_change, color = Diet), size = 1.75,)+
-    labs(y = "Weight change (%/Day)", x = "Digestible NDF Intake (g DM/kg^0.75/day)")+
+    geom_point(aes(x = DNDFI, y = Weight_change), size = 1.75,)+
+    geom_smooth(aes(x = DNDFI, y = Weight_change), method = "lm")+
+    labs(y = "Weight change (%/Day)", x = "DNDF intake (g DM/kg^0.75/day)")+
     themerails)
 
+dig <- ggarrange(DMDintake, DPintake, DNDFintake, ncol = 3, nrow = 1)
 
 
-# Digestable intake vs. regular intake ------------------------------------
-
-ggplot(days)+
-  geom_point(aes(x = DMI_bw, y = DMDI, color = Diet), size = 1.75)+
-  labs(x = "Dry matter intake (g/kg^0.75/day)", y = "Dry matter digestibility intake (g/kg^0.75/day)")+
-  themerails
-
-ggplot(days)+
-  geom_point(aes(x = DMI_CP_bw, y = DPI, color = Diet), size = 1.75)+
-  labs(y = "Digestible protein intake (g/kg^0.75/day", x = "Protein intake (g/kg^0.75/day")+
-  themerails
-
-ggplot(days)+
-  geom_point(aes(x = DMI_NDF_bw, y = DNDFI, color = Diet), size = 1.75)+
-  labs(y = "Digestible NDF intake (g/kg^0.75/day", x = "NDF intake (g/kg^0.75/day")+
-  themerails
-
-
-
-
+#single panel
 ggsave("Output/figures/proteinintake.jpeg", proteinintake, width = 5, height = 3, unit = "in")
 ggsave("Output/figures/NDFintake.jpeg", NDFintake, width = 5, height = 3, unit = "in")
+
+#full panel figs
+ggsave("Output/figures/nondigintake.jpeg", nondig, width = 9.5, height = 3, unit = "in")
+ggsave("Output/figures/digintake.jpeg", dig, width = 9.5, height = 3, unit = "in")
