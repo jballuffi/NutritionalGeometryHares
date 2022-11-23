@@ -12,26 +12,26 @@ day<- readRDS("Output/data/dailyresultscleaned.rds")
 
 # Weight change -----------------------------------------------------------
 
-test <- lm(Weight_change ~ CP_in_bw + NDF_in_bw + 0, trials)
+test <- lm(Weight_change ~ DMI_CP_bw + DMI_NDF_bw + 0, trials)
 summary(test)
 
 ggplot(trials)+
-  geom_point(aes(x = NDF_in_bw, y = Weight_change))+
+  geom_point(aes(x = DMI_NDF_bw, y = Weight_change))+
   geom_abline(intercept = 0, slope = -0.021005)+
   xlim(0, 80)
 
 ggplot(trials)+
-  geom_point(aes(x = CP_in_bw, y = Weight_change))+
+  geom_point(aes(x = DMI_CP_bw, y = Weight_change))+
   geom_abline(intercept = 0, slope = 0.034366)+
   xlim(0, 17)
 
 
 
 
-int_lm <- lm(Weight_change ~ CP_in_bw*NDF_in_bw, trials)
-int_poly <- lm(Weight_change ~ poly(CP_in_bw, 2)*poly(NDF_in_bw, 2), trials)
-lmm <- lm(Weight_change ~ CP_in_bw + NDF_in_bw, trials)
-polym <- lm(Weight_change ~ poly(CP_in_bw, 2) + poly(NDF_in_bw, 2), trials)
+int_lm <- lm(Weight_change ~ DMI_CP_bw*DMI_NDF_bw, trials)
+int_poly <- lm(Weight_change ~ poly(DMI_CP_bw, 2)*poly(DMI_NDF_bw, 2), trials)
+lmm <- lm(Weight_change ~ DMI_CP_bw + DMI_NDF_bw, trials)
+polym <- lm(Weight_change ~ poly(DMI_CP_bw, 2) + poly(DMI_NDF_bw, 2), trials)
 
 
 Mods <- list(int_lm, int_poly, lmm, polym)
@@ -45,37 +45,37 @@ AIC <- AIC %>% mutate_if(is.numeric, round, digits=3)
 
 
 ggplot(trials)+
-  geom_point(aes(x = NDF_in_bw, y = Weight_change))+
-  stat_smooth(aes(x = NDF_in_bw, y = Weight_change), method='lm', formula = y ~ poly(x,2), size = 1)
+  geom_point(aes(x = DMI_NDF_bw, y = Weight_change))+
+  stat_smooth(aes(x = DMI_NDF_bw, y = Weight_change), method='lm', formula = y ~ poly(x,2), size = 1)
 
 ggplot(trials)+
-  geom_point(aes(x = CP_in_bw, y = Weight_change))+
-  stat_smooth(aes(x = CP_in_bw, y = Weight_change), method='lm', formula = y ~ poly(x,2), size = 1)
+  geom_point(aes(x = DMI_CP_bw, y = Weight_change))+
+  stat_smooth(aes(x = DMI_CP_bw, y = Weight_change), method='lm', formula = y ~ poly(x,2), size = 1)
 
 
 
 
 # Protein digestion -------------------------------------------------------
 
-CP <- lm(CP_dig ~ poly(CP_in_bw, 2)*poly(NDF_in_bw, 2), day)
+CP <- lm(CP_dig ~ poly(DMI_CP_bw, 2)*poly(DMI_NDF_bw, 2), day)
 summary(CP)
 
-summary(lm(CP_dig ~ poly(CP_in_bw, 2), day))
-summary(lm(CP_dig ~ CP_in_bw, day))
+summary(lm(CP_dig ~ poly(DMI_CP_bw, 2), day))
+summary(lm(CP_dig ~ DMI_CP_bw, day))
 
 
 ggplot(day)+
-  geom_point(aes(x = CP_in_bw, y = CP_dig))+
-  stat_smooth(aes(x = CP_in_bw, y = CP_dig), method='lm', formula = y ~ poly(x,2), size = 1)
+  geom_point(aes(x = DMI_CP_bw, y = CP_dig))+
+  stat_smooth(aes(x = DMI_CP_bw, y = CP_dig), method='lm', formula = y ~ poly(x,2), size = 1)
 
 
 
 # NDF digestion -----------------------------------------------------------
 
-NDF <- lm(NDF_dig ~ poly(CP_in_bw, 2) + poly(NDF_in_bw, 2), day)
+NDF <- lm(NDF_dig ~ poly(DMI_CP_bw, 2) + poly(DMI_NDF_bw, 2), day)
 summary(NDF)
 
 ggplot(day)+
-  geom_point(aes(x = NDF_in_bw, y = NDF_dig))+
-  stat_smooth(aes(x = NDF_in_bw, y = NDF_dig), method='lm', formula = y ~ poly(x,2), size = 1)
+  geom_point(aes(x = DMI_NDF_bw, y = NDF_dig))+
+  stat_smooth(aes(x = DMI_NDF_bw, y = NDF_dig), method='lm', formula = y ~ poly(x,2), size = 1)
 

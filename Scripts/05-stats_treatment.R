@@ -20,7 +20,7 @@ day<- readRDS("Output/data/dailyresultscleaned.rds") # by day
 # stats for multi-choice trials ----------------------------------------------------
 
 #ANOVA testing for significance between treatments
-lmMC <- lm(MC$Intake_bw ~ MC$Diet)
+lmMC <- lm(MC$DMI_bw ~ MC$Diet)
 aMC <- anova(lmMC)
 MCpval <- round(aMC$`Pr(>F)`[1], 2)
 
@@ -30,7 +30,7 @@ MCpval <- round(aMC$`Pr(>F)`[1], 2)
 
 
 #Intake rate by day
-IR <- lm(day$Intake_bw ~ day$Diet) #make model
+IR <- lm(day$DMI_bw ~ day$Diet) #make model
 aIR <- anova(IR) #take ANOVA table from linear regression
 IRpval <- round(aIR$`Pr(>F)`[1], 3) #pull out pvalue from ANOVA
 #tukey test on ANOVA
@@ -51,11 +51,27 @@ posthocWC <- TukeyHSD(x = aovWC, 'trials$Diet', conf.level = 0.95)
 posthocWC
 
 
+
+# DMD for feeding trials ----------------------------------------
+
+#DMD by day
+DMD <- lm(day$DMD ~ day$Diet)
+
+aCDMD <- anova(DMD)
+DMDpval <- round(aCDMD$`Pr(>F)`[1], 2)
+
+aovDMD <- aov(DMD)
+posthocDMD <- TukeyHSD(x = aovDMD, 'day$Diet', conf.level = 0.95)
+posthocDMD
+
+
+
+
 # CP digestion for feeding trials -----------------------------------------
 
 
 #CP digestion by day
-CPdig <- lm(day$CP_dig ~ day$Diet)
+CPdig <- lm(day$DP ~ day$Diet)
 
 aCPdig <- anova(CPdig)
 CPdigpval <- round(aCPdig$`Pr(>F)`[1], 2)
@@ -69,7 +85,7 @@ posthocCP
 
 
 #NDF digestion by day
-NDFdig <- lm(day$NDF_dig ~ day$Diet)
+NDFdig <- lm(day$DNDF ~ day$Diet)
 
 aNDFdig <- anova(NDFdig)
 NDFdigpval <- round(aNDFdig$`Pr(>F)`[1], 2)
@@ -83,7 +99,7 @@ posthocNDF
 
 
 #ADF digestion by day
-ADFdig <- lm(day$ADF_dig ~ day$Diet)
+ADFdig <- lm(day$DADF ~ day$Diet)
 
 aADFdig <- anova(ADFdig)
 ADFdigpval <- round(aADFdig$`Pr(>F)`[1], 2)
