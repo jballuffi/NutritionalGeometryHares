@@ -1,0 +1,37 @@
+---
+title: "surface plots"
+author: "Juliana Balluffi-Fry"
+date: "23/11/2022"
+output: powerpoint_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r naivetrials, include = FALSE}
+
+
+#source the R folder to load any packages and functions
+lapply(dir('R', '*.R', full.names = TRUE), source)
+
+trials <- fread("Output/data/trialresultscleaned.rds")
+
+```
+
+## Figure 1. 
+```{r}
+#not accounting for digestibility
+fitDMI <- Tps(trials[, .(DMI_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
+surface(fitDMI)
+```
+
+
+## Figure 2. 
+
+```{r}
+#yes accounting for digestibilty 
+fitDMD <- Tps(trials[, .(DMDI, DPI)], trials$Weight_change, scale.type = "range")
+surface(fitDMD)
+```
+
