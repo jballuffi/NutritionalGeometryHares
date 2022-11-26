@@ -100,7 +100,7 @@ DT[is.na(DM_spilled), DM_spilled := 0] #fill in cases where no food was dumped
 
 # merge in fecal data ------------------------------------------------------
 
-#calculate fecal outputs
+#calculate excretion rates for each nutrient (g/day)
 feces[, DMF := Total_dried*DM] #total dry matter
 feces[, DMF_NDF := DMF*(NDF_F/100)] #total NDF on DM basis (g)
 feces[, DMF_ADF := DMF*(ADF_F/100)] #total ADF on DM basis (g)
@@ -109,7 +109,9 @@ feces[, DMF_CP := DMF*(CP_F/100)] #total CP on DM basis (g)
 feces[, DMF_C := DMF*(C_F/100)] #total CP on DM basis (g)
 
 #cut the fecal data down to just fecal output columns
-fecaloutput <- feces[, .(Sample, DMF, DMF_NDF, DMF_ADF, DMF_ADL, DMF_CP, DMF_C)]
+fecaloutput <- feces[, .(Sample, 
+                         DMF, DMF_NDF, DMF_ADF, DMF_ADL, DMF_CP, #excretion rates
+                         CP_F, NDF_F, ADF_F, ADL_F)] #fecal compositions
 
 #merge intake rates and DMs with fecal output data
 DT <- merge(DT, fecaloutput, by = "Sample", all.x = TRUE)
@@ -184,15 +186,17 @@ DT[, Temp := tempcalc(start = DayTime_start, end = DayTime_end), by = .(ID, Tria
 # create simplified datasheet for daily results --------------------------------------
 
 #cut out a datasheet of just key feeding trial info and results
-Dailyresults <- DT[, .(Diet, Sample, ID, Trial, Day, Date_start, Date_end, Date, #info
-                   DMI, DMI_CP, DMI_NDF, DMI_ADF, DMI_ADL, #dry matter intakes (g/day)
-                   DMI_bw, DMI_CP_bw, DMI_NDF_bw, DMI_ADF_bw, DMI_ADL_bw, #dry matter intake (g/kg^.75/day)
-                   Weight_start, Weight_end, #weight change (%/day)
-                   DMF, DMF_CP, DMF_NDF, DMF_ADF, DMF_ADL, #dry matter fecal outputs
-                   DMD, DP, DNDF, DADF, DADL,  #digestibility (%)
-                   DMDI, DPI, DNDFI, DADFI, #digestible intake rate (g/kg^.75/day)
-                   Temp
-                   )] 
+Dailyresults <- DT[, c("Diet", "Sample", "ID", "Trial", "Day", "Date_start", "Date_end", "Date", #info
+                       "DMI", "DMI_CP", "DMI_NDF", "DMI_ADF", "DMI_ADL", #dry matter intakes (g/day)
+                       "Weight_start", "Weight_end", #weights (g)
+                       "DMI_bw", "DMI_CP_bw", "DMI_NDF_bw", "DMI_ADF_bw", "DMI_ADL_bw", #dry matter intake by weight (g/kg^.75/day)
+                       "DMF", "DMF_CP", "DMF_NDF", "DMF_ADF", "DMF_ADL", #fecal outputs (g/day) 
+                       "CP_F", "NDF_F", "ADF_F", "ADL_F", #fecal compositions (%)
+                       "DMD", "DP", "DNDF", "DADF", "DADL",  #digestibility (%)
+                       "DMDI", "DPI", "DNDFI", "DADFI", #digestible intake rate (g/kg^.75/day)
+                       "Temp"
+)] 
+
 
 #cut out three samples with weirdly negative NDF digestion
 Dailyresults <- Dailyresults[!DNDF < -.10]
@@ -216,3 +220,4 @@ trials[, Weight_change := (((Weight_end - Weight_start)/Weight_start)*100)/3]
 saveRDS(Dailyresults, "Output/data/dailyresultscleaned.rds")
 #save trial format of results
 saveRDS(trials, "Output/data/trialresultscleaned.rds")
+
