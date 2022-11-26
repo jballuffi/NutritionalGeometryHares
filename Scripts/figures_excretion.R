@@ -12,7 +12,7 @@ days[, Weight_start := Weight_start/1000]
 
 
 
-# Nutrient intake and excretion rates ----------------------------------------------
+# Nutrient intake and excretion rates (quantity) ----------------------------------------------
 
 (total <- 
   ggplot(days)+
@@ -40,5 +40,31 @@ days[, Weight_start := Weight_start/1000]
 
 fullfig <- ggarrange(total, protein, NDF, ADF, ncol = 2, nrow = 2)
 
-ggsave("Output/figures/excretionrates.jpg", fullfig, width = 7, height = 6, units = "in")
 
+
+
+# nutrient intake and excretion compositions (%) --------------------------
+
+
+(Proteincomp <- 
+  ggplot(days)+
+  geom_jitter(aes(x = CP_diet*100, y = CP_F), width = .5)+
+  geom_smooth(aes(x = CP_diet*100, y = CP_F))+
+  labs(x = "Diet crude protein (%)", y = "Fecal crude protein (%)")+
+  themerails)
+
+(NDFcomp <-
+  ggplot(days)+
+  geom_jitter(aes(x = NDF_diet*100, y = NDF_F), width = .5)+
+  geom_smooth(aes(x = NDF_diet*100, y = NDF_F))+
+  labs(x = "Diet NDF (%)", y = "Fecal NDF (%)")+
+  themerails)
+
+comps <- ggarrange(Proteincomp, NDFcomp, ncol = 1, nrow = 2)
+
+
+# save figures ------------------------------------------------------------
+
+
+ggsave("Output/figures/excretionrates.jpg", fullfig, width = 7, height = 6, units = "in")
+ggsave("Output/figures/fecalcompositions.jpg", comps, width = 3.5, height = 6, units = "in")
