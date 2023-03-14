@@ -55,8 +55,11 @@ DT[, test := NULL][, DayEnd := NULL]
 setnames(DT, "DayOffer", "Day")
 
 
-
 # create date column and unique sample IDs ------------------------
+
+DT[, Date_start := lubridate::mdy(Date_start)]
+DT[, Date_end := lubridate::mdy(Date_end)]
+
 
 #create a date for each day of the feeding trials based on the "day" column
 DT[Day == "D1", Date := Date_start + 1][Day == "D2", Date := Date_start + 2][Day == "D3", Date := Date_start + 3]
@@ -153,8 +156,6 @@ DT[, DP := (DMI_CP - DMF_CP)/DMI_CP] #digestible protein
 DT[, DNDF := (DMI_NDF - DMF_NDF)/DMI_NDF] #digestible NDF
 DT[, DADF := (DMI_ADF - DMF_ADF)/DMI_ADF] #digestible ADF
 DT[, DADL := (DMI_ADL - DMF_ADL)/DMI_ADL] #digestible ADL
-DT[, DC := (DMI_C - DMF_C)/DMI_C] #digestible carbon? do i keep this?
-
 
 
 # Calculate digestibility intake ------------------------------------------
@@ -172,11 +173,11 @@ DT[, DADFI := DP*DMI_ADF]
 DT[, Time_start := "10:00:00"][, Time_end := "10:00:00"]
 
 #create a datetime for feeding trial starts and ends
-DT[, DayTime_start := as_datetime(paste0(Date-1, " ", Time_start))]
-DT[, DayTime_end := as_datetime(paste0(Date, " ", Time_end))]
+DT[, DayTime_start := lubridate::as_datetime(paste0(Date-1, " ", Time_start))]
+DT[, DayTime_end := lubridate::as_datetime(paste0(Date, " ", Time_end))]
 
 #in temp data, merge date and time into a datetime
-temp[, DateTime := as_datetime(paste0(Date, " ", Time, " ", TimeStamp))]
+temp[, DateTime := lubridate::as_datetime(paste0(Date, " ", Time, " ", TimeStamp))]
 
 #run the tempcalc function (in R folder) by day and ID
 DT[, Temp := tempcalc(start = DayTime_start, end = DayTime_end), by = .(ID, Trial, Day)]
