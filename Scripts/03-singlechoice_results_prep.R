@@ -82,7 +82,7 @@ names(dietDM) <- c("Diet", "DM_diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_di
 DT <- merge(DT, DM, by = "Sample", all.x = TRUE)
 
 #any lines with missing DM get the average DM
-DT[is.na(DM), DM := avgSampleDM]
+#DT[is.na(DM), DM := avgSampleDM]
 
 #merge diet DM into datasheet
 DT <- merge(DT, dietDM, by = "Diet", all.x = TRUE)
@@ -98,7 +98,7 @@ setnames(spill, "Total_DM", "DM_spilled")
 
 #merge in the mass of spilled food with full datasheet
 DT <- merge(DT, spill, by = "Sample", all.x = TRUE)
-DT[is.na(DM_spilled), DM_spilled := 0] #fill in cases where no food was dumped
+DT[is.na(DM_spilled), DM_spilled := 0] #fill NAs with 0 for times where no food was spilled
 
 
 # merge in fecal data ------------------------------------------------------
@@ -109,7 +109,6 @@ feces[, DMF_NDF := DMF*(NDF_F/100)] #total NDF on DM basis (g)
 feces[, DMF_ADF := DMF*(ADF_F/100)] #total ADF on DM basis (g)
 feces[, DMF_ADL := DMF*(ADL_F/100)] #total ADF on DM basis (g)
 feces[, DMF_CP := DMF*(CP_F/100)] #total CP on DM basis (g)
-feces[, DMF_C := DMF*(C_F/100)] #total CP on DM basis (g)
 
 #cut the fecal data down to just fecal output columns
 fecaloutput <- feces[, .(Sample, 
@@ -201,8 +200,9 @@ Dailyresults <- DT[, c("Diet", "Sample", "ID", "Trial", "Day", "Date_start", "Da
 
 
 #cut out three samples with weirdly negative NDF digestion
-Dailyresults <- Dailyresults[!DNDF < -.10]
+#Dailyresults <- Dailyresults[!DNDF < -.10]
 
+    ## ^^^ look into this in the lab
 
 
 # create trial results ----------------------------------------------------
