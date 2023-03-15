@@ -59,6 +59,9 @@ Intake <- ggarrange(IntakeBar, IntakeRails, nrow = 2, ncol = 1)
    themerails)
 
 
+#weight change by trial
+ggplot(trials)+geom_boxplot(aes(x = as.factor(Trial), y = Weight_change))
+
 
 
 # Digestibility by diet ---------------------------------------------------
