@@ -24,7 +24,8 @@ spill <- fread("Input/Daily_food_remainders.csv")
 feces <- fread("Input/Results_feces.csv")
 
 #read in temp data
-temp <- fread("Input/temperatures_SW_2022.csv")
+temp2022 <- fread("Input/temperatures_SW_2022.csv")
+temp2023 <- fread("Input/temperature_SW_2023.csv")
 
 
 
@@ -166,14 +167,23 @@ DT[, DPI := DP*DMI_CP]
 DT[, DNDFI := DP*DMI_NDF]
 DT[, DADFI := DP*DMI_ADF]
 
+
+
 # Merge in daily temperatures ---------------------------------------------
 
 #create a daily start and end time for feeding trials
-DT[, Time_start := "10:00:00"][, Time_end := "10:00:00"]
+DT[, Time_start := "11:00:00"][, Time_end := "11:00:00"]
 
 #create a datetime for feeding trial starts and ends
 DT[, DayTime_start := lubridate::as_datetime(paste0(Date-1, " ", Time_start))]
 DT[, DayTime_end := lubridate::as_datetime(paste0(Date, " ", Time_end))]
+
+#get date columns from both years into the same format 
+temp2022[, Date := lubridate::ymd(Date)]
+temp2023[, Date := lubridate::mdy(Date)]
+
+#rbind both years of temperature data
+temp <- rbind(temp2022, temp2023)
 
 #in temp data, merge date and time into a datetime
 temp[, DateTime := lubridate::as_datetime(paste0(Date, " ", Time, " ", TimeStamp))]
