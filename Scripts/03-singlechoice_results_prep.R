@@ -14,8 +14,6 @@ diets <- fread("Input/Diet_compositions.csv")
 
 #read in daily dry matter measures
 DM <- fread("Input/Daily_DryMatter.csv")
-DM[, DM := DM/100]
-avgSampleDM <- mean(DM$DM, na.rm =TRUE) #calculate avg dry matter for all samples
 
 #read in amounts and DMs of spilled food (leftover food that fell and mixed in with feces)
 spill <- fread("Input/Daily_food_remainders.csv")
@@ -56,6 +54,7 @@ DT[, test := NULL][, DayEnd := NULL]
 setnames(DT, "DayOffer", "Day")
 
 
+
 # create date column and unique sample IDs ------------------------
 
 DT[, Date_start := lubridate::mdy(Date_start)]
@@ -68,6 +67,9 @@ DT[Day == "D1", Date := Date_start + 1][Day == "D2", Date := Date_start + 2][Day
 #paste enclosure and date together to create a 'sample id' that can be merged with lab results
 DT[, Sample := paste0(Enclosure, "_", substring(Date, 3))] #remove the first two characters from year
 
+#create winter col 
+DT[, Winter := year(Date)]
+
 
 
 # merge with daily dry matter and diet compositions --------------------------------
@@ -76,17 +78,27 @@ DT[, Sample := paste0(Enclosure, "_", substring(Date, 3))] #remove the first two
 DM <- DM[, .(Sample, DM)]
 
 #make just a diet DM table
-dietDM <- diets[, .(mean(DM, na.rm = TRUE), mean(CP_diet/100, na.rm = TRUE), mean(NDF_diet/100, na.rm = TRUE), mean(ADF_diet/100, na.rm = TRUE), mean(ADL_diet/100, na.rm = TRUE), mean(C_diet/100, na.rm = TRUE)), Sample]
-names(dietDM) <- c("Diet", "DM_diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet") #C isnt predicted it was measured after (not for paper)
+dietcomp <- diets[, .(mean(CP_diet/100, na.rm = TRUE), mean(NDF_diet/100, na.rm = TRUE), mean(ADF_diet/100, na.rm = TRUE), mean(ADL_diet/100, na.rm = TRUE), mean(C_diet/100, na.rm = TRUE)), Sample]
+names(dietcomp) <- c("Diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet") #C isnt predicted it was measured after (not for paper)
+
+#pull diet DMs by winter
+dietDM <- diets[, mean(DM), Winter]
+names(dietDM) <- c("Winter", "DM_diet")
 
 #merge feeding data (wet weights) with daily DM data
 DT <- merge(DT, DM, by = "Sample", all.x = TRUE)
 
-#any lines with missing DM get the average DM
-#DT[is.na(DM), DM := avgSampleDM]
+#merge diet compositions into datasheet
+DT <- merge(DT, dietcomp, by = "Diet", all.x = TRUE)
 
 #merge diet DM into datasheet
-DT <- merge(DT, dietDM, by = "Diet", all.x = TRUE)
+DT <- merge(DT, dietDM, by = "Winter", all.x = TRUE)
+
+#create mean DMs by winter
+meanDM <- DT[,  mean(DM, na.rm = TRUE), Winter]
+
+DT[is.na(DM) & Winter == 2022, DM := meanDM[Winter == 2022, V1]]
+DT[is.na(DM) & Winter == 2023, DM := meanDM[Winter == 2023, V1]]
 
 
 # merge in spilled food data --------------------------------------------
@@ -100,6 +112,7 @@ setnames(spill, "Total_DM", "DM_spilled")
 #merge in the mass of spilled food with full datasheet
 DT <- merge(DT, spill, by = "Sample", all.x = TRUE)
 DT[is.na(DM_spilled), DM_spilled := 0] #fill NAs with 0 for times where no food was spilled
+
 
 
 # merge in fecal data ------------------------------------------------------
@@ -120,11 +133,12 @@ fecaloutput <- feces[, .(Sample,
 DT <- merge(DT, fecaloutput, by = "Sample", all.x = TRUE)
 
 
+
 # Calculate dry matter intake with and without weight --------------------------------------
 
 #calculate start and end food weights in terms of dry matter
 DT[, DM_offer := OfferWet*DM_diet]
-DT[, DM_end := (EndWet*DM) + DM_spilled] #end weight adds in the dry matter of spilled food
+DT[, DM_end := (EndWet*DM/100) + DM_spilled] #end weight adds in the dry matter of spilled food
 
 #calculate dry matter intake
 DT[, DMI := DM_offer - DM_end]
@@ -149,6 +163,7 @@ DT[, DMI_ADL_bw := DMI_ADL/(Weight_start^.75)]
 DT[, DMI_C_bw := DMI_C/(Weight_start^.75)]
 
 
+
 # Calculate digestibility -----------------------------------------------
 
 DT[, DMD := (DMI-DMF)/DMI] #dry matter digestibility
@@ -156,6 +171,7 @@ DT[, DP := (DMI_CP - DMF_CP)/DMI_CP] #digestible protein
 DT[, DNDF := (DMI_NDF - DMF_NDF)/DMI_NDF] #digestible NDF
 DT[, DADF := (DMI_ADF - DMF_ADF)/DMI_ADF] #digestible ADF
 DT[, DADL := (DMI_ADL - DMF_ADL)/DMI_ADL] #digestible ADL
+
 
 
 # Calculate digestibility intake ------------------------------------------
@@ -207,6 +223,10 @@ Dailyresults <- DT[, c("Diet", "Sample", "ID", "Trial", "Day", "Date_start", "Da
                        "DMDI", "DPI", "DNDFI", "DADFI", #digestible intake rate (g/kg^.75/day)
                        "Temp"
 )] 
+
+
+#remove two random duplicates. 
+Dailyresults <- Dailyresults[!duplicated(Sample)==TRUE]
 
 
 #cut out three samples with weirdly negative NDF digestion
