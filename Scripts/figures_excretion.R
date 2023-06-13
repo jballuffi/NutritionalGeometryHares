@@ -6,7 +6,7 @@ lapply(dir('R', '*.R', full.names = TRUE), source)
 #read in daily feeding trial results
 days <- readRDS("Output/data/dailyresultscleaned.rds")
 
-days[, Weight_start := Weight_start/1000]
+
 
 
 
