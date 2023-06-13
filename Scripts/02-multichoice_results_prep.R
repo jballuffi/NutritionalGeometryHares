@@ -21,8 +21,12 @@ diets <- fread("Input/Diet_compositions.csv")
 # merge data together -----------------------------------------------------
 
 #cut diet compositions to just be DM
-dietDM <- diets[, .(mean(DM, na.rm = TRUE), mean(CP_diet/100, na.rm = TRUE), mean(NDF_diet/100, na.rm = TRUE), mean(ADF_diet/100, na.rm = TRUE), mean(ADL_diet/100, na.rm = TRUE), mean(C_diet/100, na.rm = TRUE)), Sample]
-names(dietDM) <- c("Diet", "DM_diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet" )
+dietcomp <- diets[, .(mean(CP_diet/100, na.rm = TRUE), mean(NDF_diet/100, na.rm = TRUE), mean(ADF_diet/100, na.rm = TRUE), mean(ADL_diet/100, na.rm = TRUE), mean(C_diet/100, na.rm = TRUE)), Sample]
+names(dietcomp) <- c("Diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet" )
+
+#average diet DM by winter
+dietDM <- diets[, mean(DM), Winter]
+names(dietDM) <- c("Winter", "DM_diet")
 
 #subset DM data
 DM <- DM[, .(Sample, DM)]
@@ -33,14 +37,20 @@ DM[, Date := tstrsplit(Sample, " ", keep = 2)]
 DM[, Date := ymd(Date)]
 DM[, Enclosure := tstrsplit(Sample, " ", keep = 1)]
 
-#set date in results
-MC[, Date := ymd(End_date)]
+#set date to be end date, this will match the dates in the habituation dry matter sheet
+MC[, Date := mdy(End_date)]
+
+#create winter col
+MC[, Winter := year(Date)]
 
 #merge results with DM
 DT <- merge(MC, DM, by = c("Enclosure", "Date", "Diet"), all.x = TRUE)
 
 #merge results with diet compositions
-DT <- merge(DT, dietDM, by = "Diet", all.x = TRUE)
+DT <- merge(DT, dietcomp, by = "Diet", all.x = TRUE)
+
+DT <- merge(DT, dietDM, by = "Winter", all.x = TRUE)
+
 
 #missing DM gets mean DM
 avgSampleDM <- mean(DT$DM, na.rm =TRUE)
