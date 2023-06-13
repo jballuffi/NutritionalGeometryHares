@@ -17,7 +17,7 @@ days <- readRDS("Output/data/dailyresultscleaned.rds")
 
 (DMintake <- 
   ggplot(trials)+
-  geom_point(aes(x = DMI_bw, y = Weight_change), size = 1.75)+
+  geom_point(aes(x = DMI_bw, y = Weight_change))+
   geom_smooth(aes(x = DMI_bw, y = Weight_change), method = "lm")+
   labs(y = "Weight change (%/Day)", x = "DMI (g/kg^0.75/day)")+
   #scale_x_continuous("\n Protein Intake (g DM/k^0.75/day) \n", n.breaks =5) +
@@ -25,7 +25,7 @@ days <- readRDS("Output/data/dailyresultscleaned.rds")
 
 (CPintake <-
    ggplot(trials)+
-   geom_point(aes(x = DMI_CP_bw, y = Weight_change), size = 1.75)+
+   geom_point(aes(x = DMI_CP_bw, y = Weight_change))+
    geom_smooth(aes(x = DMI_CP_bw, y = Weight_change), method = "lm")+
    labs(y = "Weight change (%/Day)", x = "CP Intake (g DM/kg^0.75/day)")+
    #scale_x_continuous("\n Protein Intake (g DM/k^0.75/day) \n", n.breaks =5) +
@@ -33,7 +33,7 @@ days <- readRDS("Output/data/dailyresultscleaned.rds")
 
 (NDFintake <-
     ggplot(trials)+
-    geom_point(aes(x = DMI_NDF_bw, y = Weight_change), size = 1.75)+
+    geom_point(aes(x = DMI_NDF_bw, y = Weight_change))+
     geom_smooth(aes(x = DMI_NDF_bw, y = Weight_change), method = "lm")+
     labs(y = "Weight change (%/Day)", x = "NDF intake (g DM/kg^0.75/day)")+
     themerails)
@@ -45,7 +45,7 @@ nondig <- ggarrange(DMintake, CPintake, NDFintake, nrow = 1, ncol = 3)
 
 (DMDintake <- 
    ggplot(trials)+
-   geom_point(aes(x = DMDI, y = Weight_change), size = 1.75)+
+   geom_point(aes(x = DMDI, y = Weight_change))+
    geom_smooth(aes(x = DMDI, y = Weight_change), method = "lm")+
    labs(y = "Weight change (%/Day)", x = "DMD intake (g/kg^0.75/day)")+
    #scale_x_continuous("\n Protein Intake (g DM/k^0.75/day) \n", n.breaks =5) +
@@ -53,7 +53,7 @@ nondig <- ggarrange(DMintake, CPintake, NDFintake, nrow = 1, ncol = 3)
 
 (DPintake <-
     ggplot(trials)+
-    geom_point(aes(x = DPI, y = Weight_change), size = 1.75)+
+    geom_point(aes(x = DPI, y = Weight_change))+
     geom_smooth(aes(x = DPI, y = Weight_change), method = "lm")+
     labs(y = "Weight change (%/Day)", x = "DP intake (g DM/kg^0.75/day)")+
     #scale_x_continuous("\n Protein Intake (g DM/k^0.75/day) \n", n.breaks =5) +
@@ -61,7 +61,7 @@ nondig <- ggarrange(DMintake, CPintake, NDFintake, nrow = 1, ncol = 3)
 
 (DNDFintake <-
     ggplot(trials)+
-    geom_point(aes(x = DNDFI, y = Weight_change), size = 1.75,)+
+    geom_point(aes(x = DNDFI, y = Weight_change))+
     geom_smooth(aes(x = DNDFI, y = Weight_change), method = "lm")+
     labs(y = "Weight change (%/Day)", x = "DNDF intake (g DM/kg^0.75/day)")+
     themerails)
@@ -70,7 +70,7 @@ dig <- ggarrange(DMDintake, DPintake, DNDFintake, ncol = 3, nrow = 1)
 
 
 #single panel
-ggsave("Output/figures/proteinintake.jpeg", proteinintake, width = 5, height = 3, unit = "in")
+ggsave("Output/figures/proteinintake.jpeg", CPintake, width = 5, height = 3, unit = "in")
 ggsave("Output/figures/NDFintake.jpeg", NDFintake, width = 5, height = 3, unit = "in")
 
 #full panel figs
