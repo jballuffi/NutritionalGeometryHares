@@ -20,6 +20,18 @@ day<- readRDS("Output/data/dailyresultscleaned.rds")
 
 
 
+
+# Remove food strikers from multichoice results ---------------------------
+
+#list the hares which did not food strike
+goodhares <- sums[DMI_bw > 30, unique(ID)] 
+
+sums <- sums[ID %in% goodhares]
+
+MC <- MC[ID %in% goodhares]
+
+
+
 # plot a bar graph and rail plot for intake rates  ----------------------------------------
 
 
@@ -50,47 +62,7 @@ names(Intakemeans) <-  c("Diet", "Intake_mean", "Intake_SD")
 
 
 
-# Remove the food strikes; NS = no strike ------------------------------------------------
+# save  -------------------------------------------------------
 
-
-foodstrikers <- sums[DMI_bw < 30, return(ID)]
-
-sumsNS <- sums[!ID %in% foodstrikers]
-MCNS <- MC[!ID %in% foodstrikers]
-
-
-#calculate mean intakes
-IntakemeansNS <- MCNS[, .(mean(DMI_bw), sd(DMI_bw)), by = Diet]
-names(IntakemeansNS) <-  c("Diet", "Intake_mean", "Intake_SD")
-
-#bar graph
-(NaiveIntakesNS<-
-    ggplot(IntakemeansNS)+
-    geom_bar(aes(y = Intake_mean, x = Diet), width = .75, stat = "identity", fill = "grey70")+
-    geom_errorbar(aes(x = Diet, ymax = Intake_mean + Intake_SD, ymin = Intake_mean - Intake_SD), width = .2, color = "grey30")+
-    labs(y = "Dry matter intake (g DM/kg^0.75/day)", x = "Diet")+
-    themerails+
-    theme(axis.ticks.x = element_blank()))
-
-#rail plot for target intake according to naiive multi choice trials
-(targetNS <-
-    ggplot(rails)+
-    geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
-    geom_point(aes(x = DMI_NDF_bw, y = DMI_CP_bw), size = 2, data = sumsNS)+
-    geom_point(aes(x = mean(DMI_NDF_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sumsNS)+
-    labs(y = "CP Intake (g DM/kg^0.75/day)", x = "NDF Intake (g DM/kg^0.75/day)")+
-    themerails)
-
-(naivechoiceNS <- ggarrange(NaiveIntakesNS, targetNS, nrow = 2, ncol = 1))
-
-
-
-
-
-# save both figures -------------------------------------------------------
-
-#including food strikers
 ggsave("Output/figures/targetintake.jpeg", naivechoice, width = 4, height = 7, units = "in")
 
-#excluding food strikers 
-ggsave("Output/figures/targetintakeNS.jpeg", naivechoiceNS, width = 4, height = 7, units = "in")
