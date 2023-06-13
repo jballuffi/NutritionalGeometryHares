@@ -95,16 +95,16 @@ digmelt <- digmelt[!digestibility < -0.2]
 #protein digestability
 (ProteinDig<-
    ggplot(day)+
-   geom_boxplot(aes(x = Diet, y = DP*100), outlier.shape = NA, width = .75)+
-   geom_jitter(aes(x = Diet, y = DP*100), shape = 1, size = 2, width = .25)+
+   geom_boxplot(aes(x = Diet, y = DP*100), width = .75)+
+   #geom_jitter(aes(x = Diet, y = DP*100), shape = 1, size = 2, width = .25)+
    labs(y = "Protein Digestibility (%)")+
    themerails)
 
 #protein intake
 (ProteinIntake<-
     ggplot(day)+
-    geom_boxplot(aes(x = Diet, y = DPI), outlier.shape = NA, width = .75)+
-    geom_jitter(aes(x = Diet, y = DPI), shape = 1, size = 2, width = .25)+
+    geom_boxplot(aes(x = Diet, y = DPI), width = .75)+
+    #geom_jitter(aes(x = Diet, y = DPI), shape = 1, size = 2, width = .25)+
     labs(y = "Digestible Protein Intake (g/kg^0.75/day")+
     themerails)
 
@@ -117,16 +117,16 @@ Protein <- ggarrange(ProteinDig, ProteinIntake, nrow = 1, ncol = 2)
 
 (DMDdig<-
    ggplot(day)+
-   geom_boxplot(aes(x = Diet, y = DMD*100), outlier.shape = NA, width = .75)+
-   geom_jitter(aes(x = Diet, y = DMD*100), shape = 1, size = 2, width = .25)+
+   geom_boxplot(aes(x = Diet, y = DMD*100),  width = .75)+
+   #geom_jitter(aes(x = Diet, y = DMD*100), shape = 1, size = 2, width = .25)+
    labs(y = "Dry Matter Digestibility (%)")+
    themerails)
 
 (DMDIntake<-
     ggplot(day)+
-    geom_boxplot(aes(x = Diet, y = DMDI), outlier.shape = NA, width = .75)+
-    geom_jitter(aes(x = Diet, y = DMDI), shape = 1, size = 2, width = .25)+
-    labs(y = "DMD Intake (g/kg^0.75/day")+
+    geom_boxplot(aes(x = Diet, y = DMDI), width = .75)+
+    #geom_jitter(aes(x = Diet, y = DMDI), shape = 1, size = 2, width = .25)+
+    labs(y = "DMD Intake (g/kg^0.75/day)")+
     themerails)
 
 #pull protein figs together
