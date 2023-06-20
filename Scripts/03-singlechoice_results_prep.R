@@ -117,6 +117,26 @@ DT[is.na(DM_spilled), DM_spilled := 0] #fill NAs with 0 for times where no food 
 
 # merge in fecal data ------------------------------------------------------
 
+#pull diets from sample IDs in main data
+IDdiet <- DT[, .(Sample, Diet)]
+
+#merge diets with feces
+feces <- merge(IDdiet, feces, all = TRUE)
+
+#average compositions by diet. This is for filling in gaps in data for now
+avg <- feces[, .(mean(NDF_F, na.rm = TRUE), mean(ADF_F, na.rm = TRUE), mean(ADL_F, na.rm = TRUE), 
+                 mean(CP_F, na.rm = TRUE), mean(C_F, na.rm = TRUE)), Diet]
+names(avg) <- c("Diet", "mNDF", "mADF", "mADL", "mCP", "mC")
+
+#merge averages with full feces data
+feces <- merge(feces, avg, by = "Diet", all.x = TRUE)
+
+#replace NA's with the averages
+feces[is.na(NDF_F), NDF_F := mNDF][is.na(ADF_F), ADF_F := mADF][is.na(ADL_F), ADL_F := mADL]
+feces[is.na(CP_F), CP_F := mCP][is.na(C_F), C_F := mC]
+mDM <- feces[, mean(DM, na.rm = TRUE)]
+feces[is.na(DM), DM := mDM]
+
 #calculate excretion rates for each nutrient (g/day)
 feces[, DMF := Total_dried*DM] #total dry matter
 feces[, DMF_NDF := DMF*(NDF_F/100)] #total NDF on DM basis (g)
@@ -126,8 +146,8 @@ feces[, DMF_CP := DMF*(CP_F/100)] #total CP on DM basis (g)
 
 #cut the fecal data down to just fecal output columns
 fecaloutput <- feces[, .(Sample, 
-                         DMF, DMF_NDF, DMF_ADF, DMF_ADL, DMF_CP, #excretion rates
-                         CP_F, NDF_F, ADF_F, ADL_F)] #fecal compositions
+                         CP_F, NDF_F, ADF_F, ADL_F,#fecal compositions
+                         DMF, DMF_NDF, DMF_ADF, DMF_ADL, DMF_CP)]  #fecal compositions
 
 #merge intake rates and DMs with fecal output data
 DT <- merge(DT, fecaloutput, by = "Sample", all.x = TRUE)
