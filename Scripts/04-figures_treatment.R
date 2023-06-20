@@ -12,7 +12,9 @@ rails <- fread("Output/data/dietrails.rds")
 
 #read in multichoice trial sums
 sums <- readRDS("Output/data/multichoicesums.rds")
-sums <- sums[DMI_bw > 30] #remove food strikers
+
+
+
 
 # intake rate figures -----------------------
 

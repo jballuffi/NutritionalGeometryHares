@@ -20,18 +20,6 @@ day<- readRDS("Output/data/dailyresultscleaned.rds")
 
 
 
-
-# Remove food strikers from multichoice results ---------------------------
-
-#list the hares which did not food strike
-goodhares <- sums[DMI_bw > 30, unique(ID)] 
-
-sums <- sums[ID %in% goodhares]
-
-MC <- MC[ID %in% goodhares]
-
-
-
 # plot a bar graph and rail plot for intake rates  ----------------------------------------
 
 
