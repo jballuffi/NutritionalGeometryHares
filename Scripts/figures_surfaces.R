@@ -27,10 +27,8 @@ quilt.plot( ozone2$lon.lat, ozone2$y[16,])
 fitDMI <- Tps(trials[, .(DMI_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
 surface(fitDMI)
 
-trials2 <- trials[!is.na(DMDI)]
-
 #yes accounting for digestibilty 
-fitDMD <- Tps(trials2[, .(DMDI, DPI)], trials2$Weight_change, scale.type = "range")
+fitDMD <- Tps(trials[, .(DMDI, DPI)], trials2$Weight_change, scale.type = "range")
 surface(fitDMD)
 
 
@@ -42,7 +40,7 @@ fitCP <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$Weight_change, scale.typ
 surface(fitCP)
 
 #yes accounting for digestibility
-fitDP <- Tps(trials2[, .(DNDFI, DPI)], trials2$Weight_change, scale.type = "range")
+fitDP <- Tps(trials[, .(DNDFI, DPI)], trials2$Weight_change, scale.type = "range")
 surface(fitDP)
 
 

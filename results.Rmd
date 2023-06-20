@@ -27,54 +27,56 @@ There was an overall significant effect of diet on weight change during feeding 
 
 Based on fecal composition, diet treatment significantly affected daily CP (p = `r CPdigpval`), NDF (p = `r NDFdigpval`), and ADF (p = `r ADFdigpval`) digestion rates. Hares digested more CP as diet CP:NDF increased (from A to D), and CP digestion differed significantly between all combinations of diet treatment except for diets C and B (Figure 5). NDF digestibility decreased significantly between diet A and diets B and C; diets C and D produced near zero NDF digestibility with no significant difference between the two (Figure 5). ADF digestibility decreased from diet A to D, with significant differences between diet A and diets C and D, and diet B and C (Figure 5). There was an observed increase in digestibility from diet C to D, but this was not significant (Figure 5).
 
+![Figure 2. Feeding responses (g dry matter/kg/day) by snowshoe hares during the naiive, multi-choice phase of the feeding trial experiment (n = 32) in which we offered individual hares four experimental diets simulatenously for one day. Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios of 0.083, 0.22, 0.36, and 0.5 respectively. Panel A shows dry matter (DM) intake rate per kg body weight by diet treatment, with bars representing means and error bars representing standard deviations. Panel B places intake rates in Panel A in nutrient space. In Panel B, each black point represents the total CP intake plotted against total NDF intake by individual hares, summing their intake of all diets in the multi-choice feeding trial. The cross point represents the mean CP and NDF intake across all hares. Diet rails (CP:NDF) are represented by black lines.](Output/figures/targetintake.jpeg)
 
-![Figure 2. Feeding responses (g dry matter/kg/day) by snowshoe hares during the naiive, multi-choice phase of the feeding trial experiment (n = 32) in which we offered individual hares four experimental diets simulatenously for one day. Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios of 0.083, 0.22, 0.36, and 0.5 respectively. Panel A shows dry matter (DM) intake rate per kg body weight by diet treatment, with bars representing means and error bars representing standard deviations. Panel B places intake rates in Panel A in nutrient space. In Panel B, each black point represents the total CP intake plotted against total NDF intake by individual hares, summing their intake of all diets in the multi-choice feeding trial. The cross point represents the mean CP and NDF intake across all hares. Diet rails (CP:NDF) are represented by black lines. ](Output/figures/targetintake.jpeg)
+![Figure 3. Feeding responses (g dry matter/kg/day) by snowshoe hares during the single-choice phase of the feeding trial experiment (n = 99) in which we offered individual hares one of four experimental diets for three days. Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios of 0.083, 0.22, 0.36, and 0.5 respectively. Panel A shows dry matter (DM) intake rate per kg body weight by diet treatment, with bars representing means and error bars representing standard deviations. Panel B places intake rates in Panel A in nutrient space. Panel B shows mean intake rates (black points; error bars = standard deviation) of each diet along diet rails (CP:NDF) that are represented with black lines. Mean intake rates of diets are represented along the axes as CP intake against NDF intake in terms of dry matter.](Output/figures/intakebarandrail.jpeg)
 
-![Figure 3. Feeding responses (g dry matter/kg/day) by snowshoe hares during the single-choice phase of the feeding trial experiment (n = 99) in which we offered individual hares one of four experimental diets  for three days. Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios  of 0.083, 0.22, 0.36, and 0.5 respectively. Panel A shows dry matter (DM) intake rate per kg body weight by diet treatment, with bars representing means and error bars representing standard deviations. Panel B places intake rates in Panel A in nutrient space. Panel B shows mean intake rates (black points; error bars = standard deviation) of each diet along diet rails (CP:NDF) that are represented with black lines. Mean intake rates of diets are represented along the axes as CP intake against NDF intake in terms of dry matter.](Output/figures/intakebarandrail.jpeg)
+![Figure 4. Weight change (%/day) of snowshoe hares in response to feeding on one of four experimental diets for three days during the single-choice phase of the feeding trial experiment (n = 33). Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios of 0.083, 0.22, 0.36, and 0.5 respectively. Boxes represent median weight change bounded by lower 25th and 75th percentiles. Points represent values of individual feeding trials.](Output/figures/weightchangebar.jpeg)
 
-![Figure 4. Weight change (%/day) of snowshoe hares in response to feeding on one of four experimental diets for three days during the single-choice phase of the feeding trial experiment (n = 33). Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios of 0.083, 0.22, 0.36, and 0.5 respectively. Boxes represent median weight change bounded by lower 25th and 75th percentiles. Points represent values of individual feeding trials. ](Output/figures/weightchangebar.jpeg)
-
-![Figure 5. From left panel to right panel: crude protein (CP), neutral detergent fibre (NDF), and acid detergent fibre (ADF), digestability (proportion digested) in response to feeding on one of four experimental diets fo three days during the single-choice phase of the feeding trial experiment (n = 33). Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios of 0.083, 0.22, 0.36, and 0.5 respectively. Boxes represent median digestability bounded by lower 25th and 75th percentiles. ](Output/figures/dietdigestion.jpeg)
-
-
-
+![Figure 5. From left panel to right panel: crude protein (CP), neutral detergent fibre (NDF), and acid detergent fibre (ADF), digestability (proportion digested) in response to feeding on one of four experimental diets fo three days during the single-choice phase of the feeding trial experiment (n = 33). Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios of 0.083, 0.22, 0.36, and 0.5 respectively. Boxes represent median digestability bounded by lower 25th and 75th percentiles.](Output/figures/dietdigestion.jpeg)
 
 ## Single-choice feeding trials: preliminary geometric analysis
 
-Surface maps visualizing weight change performance (%/day) in relation to CP and NDF intake (g DM/kg/day) show greater performance under more balanced nutrient intakes (central hot spot, see figure below).
+
 
 ```{r}
-fitweight <- Tps(trials[, .(NDF_in_bw, CP_in_bw)], trials$Weight_change, scale.type = "range")
-surface(fitweight)
+#surface map to show weight change in response to NDF and CP
+fitCP <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
+surface(fitCP)
 
 ```
-
-Surface maps visualizing CP digestion performance (%) in relation to CP and NDF intake (g DM/kg/day) show an strict protein limitation (hot spot at top of plot, see figure below). Greater CP intake led to higher CP digestion rates.
+Above: Surface maps visualizing weight change performance (%/day) in relation to CP and NDF intake (g DM/kg/day).
 
 ```{r}
-fitdigCP <- Tps(day[, .(NDF_in_bw, CP_in_bw)], day$CP_dig, scale.type = "range")
-surface(fitdigCP)
+#surface map to show weight change in response to intake of dry matter and protein
+fitDMI <- Tps(trials[, .(DMI_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
+surface(fitDMI)
 ```
+Above: Surface maps visualizing weight change performance (%/day) in relation to CP and total dry matter intake (g DM/kg/day).
 
-Surface maps visualizing both NDF and ADF digestion performance (%) in relation to CP and NDF intake (g DM/kg/day) show an NDF limitation. NDF digestion was overall higher (right-hand hot spot; first figure below) than ADF digestion (right-hand hot spot; second figure below). Greater fibre intake led to higher fibre digestion rates.
 
 ```{r}
-fitdigNDF <- Tps(day[, .(NDF_in_bw, CP_in_bw)], day$NDF_dig, scale.type = "range")
-surface(fitdigNDF)
+#surface map showing weight change in response to intake of digestable protein and NDF
+fitDP <- Tps(trials[, .(DNDFI, DPI)], trials$Weight_change, scale.type = "range")
+surface(fitDP)
 
 ```
+Above: Surface map visualizing weight change performance (%/day) in relation to digestible protein and digestible NDF intake (g DM/kg/day).
+
+
 
 ```{r}
-fitdigADF <- Tps(day[, .(NDF_in_bw, CP_in_bw)], day$ADF_dig, scale.type = "range")
-surface(fitdigADF)
-```
+#surface showing weight change in response to digestable dry matter and digestable protein intake
+fitDMD <- Tps(trials[, .(DMDI, DPI)], trials$Weight_change, scale.type = "range")
+surface(fitDMD)
 
+```
+Above: Surface map visualizing weight change performance (%/day) in relation to digestible protein and digestible dry matter intake (g DM/kg/day).
 
 
 ## Additional figures
 
 ![Excretion rates](Output/figures/excretionrates.jpg)
-
 
 ![Weight change in response to protein intake](Output/figures/proteinintake.jpeg)
 
