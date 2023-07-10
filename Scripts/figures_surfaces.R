@@ -28,7 +28,7 @@ fitDMI <- Tps(trials[, .(DMI_bw, DMI_CP_bw)], trials$Weight_change, scale.type =
 surface(fitDMI)
 
 #yes accounting for digestibilty 
-fitDMD <- Tps(trials[, .(DMDI, DPI)], trials2$Weight_change, scale.type = "range")
+fitDMD <- Tps(trials[, .(DMDI, DPI)], trials$Weight_change, scale.type = "range")
 surface(fitDMD)
 
 
@@ -40,7 +40,7 @@ fitCP <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$Weight_change, scale.typ
 surface(fitCP)
 
 #yes accounting for digestibility
-fitDP <- Tps(trials[, .(DNDFI, DPI)], trials2$Weight_change, scale.type = "range")
+fitDP <- Tps(trials[, .(DNDFI, DPI)], trials$Weight_change, scale.type = "range")
 surface(fitDP)
 
 
