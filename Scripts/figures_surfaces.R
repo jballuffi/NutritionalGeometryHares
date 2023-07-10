@@ -44,3 +44,10 @@ fitDP <- Tps(trials[, .(DNDFI, DPI)], trials$Weight_change, scale.type = "range"
 surface(fitDP)
 
 
+
+#NDF and CP intake effect on dry matter digestibility
+# from just diet A to diet B
+trials2 <- trials[Diet == "A" | Diet == "B"]
+dmd <- Tps(trials2[, .(DMI_ADL_bw, DMI_CP_bw)], trials2$DMD, scale.type = "range")
+surface(dmd)
+# any kind of fibre works. A very balanced relationship between protein and fibre
