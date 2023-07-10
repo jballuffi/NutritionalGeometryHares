@@ -36,7 +36,7 @@ summary(lm(Weight_change ~ DMD, trials))
 
 # predict total DMD based on composition ----------------------------------
 
-
+summary(lm(DMD ~ CP_diet, day))
 
 
 
