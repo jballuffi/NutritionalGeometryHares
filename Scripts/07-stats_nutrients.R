@@ -10,7 +10,7 @@ day<- readRDS("Output/data/dailyresultscleaned.rds")
 
 
 
-# Weight change -----------------------------------------------------------
+# Weight change figures -----------------------------------------------------------
 
 test <- lm(Weight_change ~ DMI_CP_bw + DMI_NDF_bw + 0, trials)
 summary(test)
@@ -27,6 +27,20 @@ ggplot(trials)+
 
 
 
+# basic linear models for digestability effects on weight change -----------------------------------
+
+summary(lm(Weight_change ~ DMDI, trials))
+summary(lm(Weight_change ~ DMD, trials))
+
+
+
+# predict total DMD based on composition ----------------------------------
+
+
+
+
+
+# poly models -------------------------------------------------------------
 
 int_lm <- lm(Weight_change ~ DMI_CP_bw*DMI_NDF_bw, trials)
 int_poly <- lm(Weight_change ~ poly(DMI_CP_bw, 2)*poly(DMI_NDF_bw, 2), trials)
@@ -44,38 +58,4 @@ AIC[, Cum.Wt := NULL]
 AIC <- AIC %>% mutate_if(is.numeric, round, digits=3)
 
 
-ggplot(trials)+
-  geom_point(aes(x = DMI_NDF_bw, y = Weight_change))+
-  stat_smooth(aes(x = DMI_NDF_bw, y = Weight_change), method='lm', formula = y ~ poly(x,2), size = 1)
-
-ggplot(trials)+
-  geom_point(aes(x = DMI_CP_bw, y = Weight_change))+
-  stat_smooth(aes(x = DMI_CP_bw, y = Weight_change), method='lm', formula = y ~ poly(x,2), size = 1)
-
-
-
-
-# Protein digestion -------------------------------------------------------
-
-CP <- lm(CP_dig ~ poly(DMI_CP_bw, 2)*poly(DMI_NDF_bw, 2), day)
-summary(CP)
-
-summary(lm(CP_dig ~ poly(DMI_CP_bw, 2), day))
-summary(lm(CP_dig ~ DMI_CP_bw, day))
-
-
-ggplot(day)+
-  geom_point(aes(x = DMI_CP_bw, y = CP_dig))+
-  stat_smooth(aes(x = DMI_CP_bw, y = CP_dig), method='lm', formula = y ~ poly(x,2), size = 1)
-
-
-
-# NDF digestion -----------------------------------------------------------
-
-NDF <- lm(NDF_dig ~ poly(DMI_CP_bw, 2) + poly(DMI_NDF_bw, 2), day)
-summary(NDF)
-
-ggplot(day)+
-  geom_point(aes(x = DMI_NDF_bw, y = NDF_dig))+
-  stat_smooth(aes(x = DMI_NDF_bw, y = NDF_dig), method='lm', formula = y ~ poly(x,2), size = 1)
 
