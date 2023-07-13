@@ -75,6 +75,24 @@ nondig <- ggarrange(DMintake, CPintake, NDFintake, nrow = 1, ncol = 3)
 dig <- ggarrange(DMDintake, DPintake, DNDFintake, ncol = 3, nrow = 1)
 
 
+
+# DMD in response to nutrient intake --------------------------------------
+
+ggplot(days)+
+  geom_point(aes(x = DMI_CP_bw, y = DMD))+
+  geom_smooth(aes(x = DMI_CP_bw, y = DMD), method = "lm")+
+  ylab("DMD (%)")+
+  xlab(expression(Protein~intake~(g/kg^0.75/day)))+
+  themerails
+
+ggplot(days)+
+  geom_point(aes(x = DMI_NDF_bw, y = DMD))+
+  geom_smooth(aes(x = DMI_NDF_bw, y = DMD), method = "lm")+
+  ylab("DMD (%)")+
+  xlab(expression(NDF~intake~(g/kg^0.75/day)))+
+  themerails
+
+
 #single panel
 ggsave("Output/figures/proteinintake.jpeg", CPintake, width = 5, height = 3, unit = "in")
 ggsave("Output/figures/NDFintake.jpeg", NDFintake, width = 5, height = 3, unit = "in")
