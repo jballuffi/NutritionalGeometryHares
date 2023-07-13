@@ -28,7 +28,7 @@ fitDMI <- Tps(trials[, .(DMI_bw, DMI_CP_bw)], trials$Weight_change, scale.type =
 surface(fitDMI)
 
 #yes accounting for digestibilty 
-fitDMD <- Tps(trials[, .(DMDI, DPI)], trials$Weight_change, scale.type = "range")
+fitDMD <- Tps(trials[, .(DMDI, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
 surface(fitDMD)
 
 
@@ -48,6 +48,6 @@ surface(fitDP)
 #NDF and CP intake effect on dry matter digestibility
 # from just diet A to diet B
 trials2 <- trials[Diet == "A" | Diet == "B"]
-dmd <- Tps(trials2[, .(DMI_ADL_bw, DMI_CP_bw)], trials2$DMD, scale.type = "range")
+dmd <- Tps(trials2[, .(DMI_NDF_bw, DMI_CP_bw)], trials2$DMD, scale.type = "range")
 surface(dmd)
 # any kind of fibre works. A very balanced relationship between protein and fibre
