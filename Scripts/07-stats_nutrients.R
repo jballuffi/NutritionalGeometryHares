@@ -30,7 +30,7 @@ ggplot(trials)+
 # basic linear models for digestability effects on weight change -----------------------------------
 
 summary(lm(Weight_change ~ DMDI, trials))
-summary(lm(Weight_change ~ DMD, trials))
+summary(lm(Weight_change ~ DMI, trials))
 
 
 
