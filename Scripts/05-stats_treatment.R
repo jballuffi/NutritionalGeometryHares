@@ -24,6 +24,9 @@ lmMC <- lm(MC$DMI_bw ~ MC$Diet)
 aMC <- anova(lmMC)
 MCpval <- round(aMC$`Pr(>F)`[1], 2)
 
+aovMC <- aov(lmMC)
+posthocMC <- TukeyHSD(x = aovMC, 'MC$Diet', conf.level = 0.95)
+posthocMC
 
 
 # intake rate for normal feeding trials -----------------------------
