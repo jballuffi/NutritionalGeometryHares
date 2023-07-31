@@ -9,45 +9,21 @@ day <- readRDS("Output/data/dailyresultscleaned.rds")
 
 
 
-# learning some plot methods ----------------------------------------------
-
-#example of quiltplot
-data( ozone2)
-fitozone <- Tps(ozone2$lon.lat, ozone2$y[16,], scale.type = "range")
-surface(fitozone)
-image.plot(fitozone)
-
-quilt.plot( ozone2$lon.lat, ozone2$y[16,])
-
-
-
-# Protein and DMI  -------------------------------
-
-#not accounting for digestibility
-fitDMI <- Tps(trials[, .(DMI_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
-surface(fitDMI)
-
-#yes accounting for digestibilty 
-fitDMD <- Tps(trials[, .(DMDI, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
-surface(fitDMD)
-
-
-
-# Protein and NDF ---------------------------------------------------------
 
 #not accounting for digestibility
 fitCP <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
-surface(fitCP)
+surface(fitCP, x = "NDF intake (g DM/kg^0.75/day)", 
+        y = "CP intake (g DM/kg^0.75/day)")
 
 #yes accounting for digestibility
 fitDP <- Tps(trials[, .(DNDFI, DPI)], trials$Weight_change, scale.type = "range")
-surface(fitDP)
-
-
+surface(fitDP, x = "Digestible NDF intake (g DM/kg^0.75/day)", 
+        y = "Digestible CP intake (g DM/kg^0.75/day)")
 
 #NDF and CP intake effect on dry matter digestibility
-# from just diet A to diet B
-trials2 <- trials[Diet == "A" | Diet == "B"]
-dmd <- Tps(trials2[, .(DMI_NDF_bw, DMI_CP_bw)], trials2$DMD, scale.type = "range")
-surface(dmd)
-# any kind of fibre works. A very balanced relationship between protein and fibre
+dmd <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$DMD, scale.type = "range")
+surface(dmd, x = "NDF intake (g DM/kg^0.75/day)", 
+        y = "CP intake (g DM/kg^0.75/day)")
+
+
+
