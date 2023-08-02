@@ -27,16 +27,33 @@ ggplot(trials)+
 
 
 
+# models for non-digestible nutrients -------------------------------------
+
+ND1 <- gam(Weight_change ~ DMI_CP_bw + DMI_NDF_bw, data = trials)
+ND2 <- gam(Weight_change ~ DMI_CP_bw*DMI_NDF_bw, data = trials)
+ND3 <- gam(Weight_change ~ s(DMI_CP_bw) + s(DMI_NDF_bw), data = trials)
+ND4 <- gam(Weight_change ~ s(DMI_CP_bw, DMI_NDF_bw), data = trials)
+ND5 <- gam(Weight_change ~ s(DMI_CP_bw, by = DMI_NDF_bw), data = trials)
+ND6 <- gam(Weight_change ~ s(DMI_NDF_bw, by = DMI_CP_bw), data = trials)
+
+
+
+# models for digestible nutrient intake -----------------------------------
+
+D1 <- gam(Weight_change ~ DPI + DNDFI, data = trials)
+D2 <- gam(Weight_change ~ DPI*DNDFI, data = trials)
+D3 <- gam(Weight_change ~ s(DPI) + s(DNDFI), data = trials)
+D4 <- gam(Weight_change ~ s(DPI, DNDFI), data = trials)
+D5 <- gam(Weight_change ~ s(DPI, by = DNDFI), data = trials)
+D6 <- gam(Weight_change ~ s(DNDFI, by = DPI), data = trials)
+
+
+
 # basic linear models for digestability effects on weight change -----------------------------------
 
 summary(lm(Weight_change ~ DMDI, trials))
 summary(lm(Weight_change ~ DMI, trials))
 
-
-
-# predict total DMD based on composition ----------------------------------
-
-summary(lm(DMD ~ CP_diet, day))
 
 
 
