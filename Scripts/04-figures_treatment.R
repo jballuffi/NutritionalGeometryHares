@@ -10,52 +10,81 @@ day <- readRDS("Output/data/dailyresultscleaned.rds")
 #read in data for diet nutritional rails
 rails <- fread("Output/data/dietrails.rds")
 
+#read in full multichoice results
+MC <- readRDS("Output/data/multichoiceresults.rds")
+
 #read in multichoice trial sums
 sums <- readRDS("Output/data/multichoicesums.rds")
 
 
 
 
-# intake rate figures -----------------------
+# intake rate figures (4 panel) -----------------------
 
 
-#calculate mean intakes and weight change
-Intakemeans <- day[, .(mean(DMI_bw), sd(DMI_bw)), by = Diet]
-names(Intakemeans) <-  c("Diet", "DMI_mean", "DMI_sd")
+#calculate mean intakes in mutlichoice trials
+Multimeans <- MC[, .(mean(DMI_bw), sd(DMI_bw)), by = Diet]
+names(Multimeans) <-  c("Diet", "Intake_mean", "Intake_SD")
+
+#bar graph
+(Mbar<-
+    ggplot(Multimeans)+
+    geom_bar(aes(y = Intake_mean, x = Diet), width = .75, stat = "identity", fill = "grey70")+
+    geom_errorbar(aes(x = Diet, ymax = Intake_mean + Intake_SD, ymin = Intake_mean - Intake_SD), width = .2, color = "grey30")+
+    ylab(expression(Daily~intake~(gDM/kg^0.75/day)))+
+    xlab(expression(Diet))+
+    ggtitle("Multi-choice trials", subtitle = "A")+
+    themerails+
+    theme(axis.ticks.x = element_blank()))
+
+#rail plot for target intake according to naiive multi choice trials
+(Mrail <-
+    ggplot(rails)+
+    geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
+    geom_point(aes(x = DMI_NDF_bw, y = DMI_CP_bw), size = 2, data = sums)+
+    geom_point(aes(x = mean(DMI_NDF_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sums)+
+    ylab(expression(Protein~intake~(gDM/kg^0.75/day)))+
+    xlab(expression(NDF~intake~(gDM/kg^0.75/day)))+
+    ggtitle(" ", subtitle = "B")+
+    themerails)
+
+
+#calculate mean intakes in single choice trials
+Singlemeans <- day[, .(mean(DMI_bw), sd(DMI_bw), mean(DMI_CP_bw), sd(DMI_CP_bw), mean(DMI_NDF_bw), sd(DMI_NDF_bw)), by = Diet]
+names(Singlemeans) <-  c("Diet", "DMI_mean", "DMI_sd", "CP", "CPsd", "NDF", "NDFsd")
 
 #bar graph by treatment
-(IntakeBar<-
-  ggplot(Intakemeans)+
+(Sbar<-
+  ggplot(Singlemeans)+
   geom_bar(aes(y = DMI_mean, x = Diet), width = .75, stat = "identity", fill = "grey70")+
   geom_errorbar(aes(x = Diet, ymax = DMI_mean + DMI_sd, ymin = DMI_mean - DMI_sd), width = .2, color = "grey30")+
-  ylab(expression(Intake~rate~(gDM/kg^0.75/day)))+
-  ggtitle("A")+
+  ylab(expression(Daily~intake~(gDM/kg^0.75/day)))+
+  xlab(expression(Diet))+
+  ggtitle("Single-choice trials", subtitle = "C")+
   themerails)
 
-
-#calculate mean intake rates by diet
-meanday <- day[, .(mean(DMI_CP_bw), sd(DMI_CP_bw), mean(DMI_NDF_bw), sd(DMI_NDF_bw)), Diet]
-names(meanday) <- c("Diet", "CP", "CPsd", "NDF", "NDFsd")
-
 #rail plot showing intake (rule of compromise)
-(IntakeRails <-
+(Srail <-
     ggplot(rails)+
     geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
     geom_point(aes(x = mean(DMI_NDF_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sums)+
-    geom_point(aes(x = NDF, y = CP), size = 3, data = meanday)+
-    geom_errorbar(aes(x = NDF, y = CP, ymin = CP - CPsd, ymax = CP + CPsd), width = .5, data = meanday)+
-    geom_errorbar(aes(x = NDF, y = CP,xmin = NDF - NDFsd, xmax = NDF + NDFsd), width = .5, data = meanday)+
-    ylab(expression(Protein~intake~rate~(gDM/kg^0.75/day)))+
-    xlab(expression(NDF~Intake~rate~(gDM/kg^0.75/day)))+
-    ggtitle("B")+
+    geom_point(aes(x = NDF, y = CP), size = 3, data = Singlemeans)+
+    geom_errorbar(aes(x = NDF, y = CP, ymin = CP - CPsd, ymax = CP + CPsd), width = .5, data = Singlemeans)+
+    geom_errorbar(aes(x = NDF, y = CP,xmin = NDF - NDFsd, xmax = NDF + NDFsd), width = .5, data = Singlemeans)+
+    ylab(expression(Protein~intake~(gDM/kg^0.75/day)))+
+    xlab(expression(NDF~intake~(gDM/kg^0.75/day)))+
+    ggtitle(" ", subtitle = "D")+
     themerails)
 
-Intake <- ggarrange(IntakeBar, IntakeRails, nrow = 2, ncol = 1)
+
+
+Intake <- ggarrange(Mbar, Sbar, Mrail, Srail, nrow = 2, ncol = 2)
 
 
 
 # weight change by treatment ----------------------------------------------
 
+#weight change by diet
 (WeightChange<-
    ggplot(trials)+
    geom_boxplot(aes(x = Diet, y = Weight_change), outlier.shape = NA, width = .75)+
@@ -83,6 +112,7 @@ digmelt <- melt(dig, measure.vars = c("DMD", "DP", "DNDF"),
 #re-order the nutrients for facet wrap
 digmelt[, nutrient := factor(nutrient, levels = c("DMD", "DP", "DNDF"))]
 
+#remove stuff that's not possible
 digmelt <- digmelt[!digestibility < -0.2]
 
 #ggplot digestibility against diet
@@ -90,30 +120,9 @@ digmelt <- digmelt[!digestibility < -0.2]
     ggplot(digmelt)+
     geom_boxplot(aes(x = Diet, y = digestibility*100))+
     labs(y = "Digestability (%)", x = "Diet")+
-    facet_wrap(~nutrient, nrow = 1, ncol = 3)+
+    facet_wrap(~nutrient, nrow = 3, ncol = 1)+
     themepoints+
     theme(strip.background = element_blank()))
-
-
-# Just DMD and PD intake by diet ----------------------------------------------
-
-(DMDdig<-
-   ggplot(day)+
-   geom_boxplot(aes(x = Diet, y = DMD*100),  width = .75)+
-   #geom_jitter(aes(x = Diet, y = DMD*100), shape = 1, size = 2, width = .25)+
-   labs(y = "Dry Matter Digestibility (%)")+
-   themerails)
-
-#protein digestability
-(ProteinDig<-
-   ggplot(day)+
-   geom_boxplot(aes(x = Diet, y = DP*100), width = .75)+
-   #geom_jitter(aes(x = Diet, y = DP*100), shape = 1, size = 2, width = .25)+
-   labs(y = "Protein Digestibility (%)")+
-   themerails)
-
-#pull protein figs together
-DMDandDP <- ggarrange(DMDdig, ProteinDig, nrow = 1, ncol = 2)
 
 
 
@@ -126,7 +135,6 @@ DMDandDP <- ggarrange(DMDdig, ProteinDig, nrow = 1, ncol = 2)
 
 
 #save plots
-ggsave("Output/figures/intakebarandrail.jpeg", Intake, width = 4, height = 7, unit = "in")
+ggsave("Output/figures/intakebarandrail.jpeg", Intake, width = 8, height = 8, unit = "in")
 ggsave("Output/figures/weightchangebar.jpeg", WeightChange, width = 4, height = 4, unit = "in")
-ggsave("Output/figures/dietdigestion.jpeg", dietdigest, width = 10, height = 5 )
-ggsave("Output/figures/proteindigestibility.jpeg", DMDandDP, width = 8, height = 4, unit = "in")
+ggsave("Output/figures/dietdigestion.jpeg", dietdigest, width = 5, height = 10 )
