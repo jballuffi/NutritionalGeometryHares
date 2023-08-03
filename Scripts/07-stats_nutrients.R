@@ -18,13 +18,14 @@ sum <- summary(bodyND)
   
 #make p-table, and indicate model, this is for intercept stuff
 sump <- as.data.table(round((sum$p.table), 4))
-sump[, Model := "Crude macronutrient intake"]
+sump[, Model := "Crude macronutrient"]
+sump[, Response := "Weight change"]
 sump[, `Dev. Explained` := round(sum$dev.expl, 2)]
   
 #make s-table, and indicate model, this is for variable stuff
 sums <- as.data.table(round((sum$s.table), 4))
-sums[, Model := "Crude macronutrient intake"]
-
+sums[, Model := "Crude macronutrient"]
+sums[, Response := "Weight change"]
  
 
 # model for digestible intake on weight change -----------------------------------
@@ -36,13 +37,14 @@ sum2 <- summary(bodyD)
 
 #make p-table, and indicate model, this is for intercept stuff
 sum2p <- as.data.table(round((sum2$p.table), 4))
-sum2p[, Model := "Digestible macro-nutrient intake"]
+sum2p[, Model := "Digestible macronutrient"]
+sum2p[, Response := "Weight change"]
 sum2p[, `Dev. Explained` := round(sum2$dev.expl, 2)]
 
 #make s-table, and indicate model, this is for variable stuff
 sum2s <- as.data.table(round((sum2$s.table), 4))
-sum2s[, Model := "Digestible macro-nutrient intake"]
-
+sum2s[, Model := "Digestible macronutrient"]
+sum2s[, Response := "Weight change"]
 
 #  model for intake on DMD -----------------------------------------------
 
@@ -53,12 +55,14 @@ sum3 <- summary(DMD)
 
 #make p-table, intercept stuff
 sum3p <- as.data.table(round((sum3$p.table), 4))
-sum3p[, Model := "DMD"]
+sum3p[, Model := "Crude macronutrient"]
+sum3p[, Response := "DMD"]
 sum3p[, `Dev. Explained` := round(sum3$dev.expl, 2)]
 
 #make s-table, intercept stuff
 sum3s <- as.data.table(round((sum3$s.table), 4))
-sum3s[, Model := "DMD"]
+sum3s[, Model := "Crude macronutrient"]
+sum3s[, Response := "DMD"]
 
 
 
@@ -66,59 +70,23 @@ sum3s[, Model := "DMD"]
 
 #bind all p tables
 allsump <- rbind(sump, sum2p, sum3p)
-names(allsump) <- c("Estimate/edf", "SE/Ref.df", "t/F", "p", "Model", "Dev. Explained")
+names(allsump) <- c("Estimate/edf", "SE/Ref.df", "t/F", "p", "Model", "Response", "Dev. Explained")
 allsump[, Parameter := "Intercept"]
 
 #bind all s tables
 allsums <- rbind(sums, sum2s, sum3s)
-names(allsums) <- c("Estimate/edf", "SE/Ref.df", "t/F", "p", "Model")
-allsums[, Parameter := "s(DMI_NDF, DMI_protein)"]
+names(allsums) <- c("Estimate/edf", "SE/Ref.df", "t/F", "p", "Model", "Response")
+allsums[, Parameter := "s(DMI_NDF x DMI_protein)"]
 
 #bind p and s tables together
 summarytable <- rbind(allsump, allsums, fill = TRUE)
-setorder(summarytable, Model)
-setcolorder(summarytable, c("Model", "Parameter", "Dev. Explained", "Estimate/edf", "SE/Ref.df", "t/F", "p"))
+setorder(summarytable, Response, Model)
+setcolorder(summarytable, c("Response", "Model", "Parameter", "Dev. Explained", "Estimate/edf", "SE/Ref.df", "t/F", "p"))
 
 
 
 # Save table --------------------------------------------------------------
 
 write.csv(summarytable, "Output/GAMoutputs.csv")
-
-
-
-
-# Figures -----------------------------------------------------------
-
-#regular NDF intake
-ggplot(trials)+
-  geom_point(aes(x = DMI_NDF_bw, y = Weight_change))+
-  theme_minimal()
-
-#digestible NDF intake
-ggplot(trials)+
-  geom_point(aes(x = DNDFI, y = Weight_change))+
-  theme_minimal()
-
-#regular protein intake
-ggplot(trials)+
-  geom_point(aes(x = DMI_CP_bw, y = Weight_change))+
-  theme_minimal()
-
-#digestible protein intake
-ggplot(trials)+
-  geom_point(aes(x = DPI, y = Weight_change))+
-  theme_minimal()
-
-#protein intake to DMD
-ggplot(day)+
-  geom_point(aes(x = DMI_CP_bw, y = DMD))+
-  theme_minimal()
-
-#NDF intake to DMD
-ggplot(day)+
-  geom_point(aes(x = DMI_NDF_bw, y = DMD))+
-  theme_minimal()
-
 
         
