@@ -9,7 +9,7 @@ rails <- fread("Output/data/dietrails.rds")
 
 #read in single choice results
 trials <- readRDS("Output/data/trialresultscleaned.rds")
-days <- readRDS("Output/data/dailyresultscleaned.rds")
+day <- readRDS("Output/data/dailyresultscleaned.rds")
 
 
 
@@ -78,14 +78,14 @@ dig <- ggarrange(DMDintake, DPintake, DNDFintake, ncol = 3, nrow = 1)
 
 # DMD in response to nutrient intake --------------------------------------
 
-ggplot(days)+
+ggplot(day)+
   geom_point(aes(x = DMI_CP_bw, y = DMD))+
   geom_smooth(aes(x = DMI_CP_bw, y = DMD), method = "lm")+
   ylab("DMD (%)")+
   xlab(expression(Protein~intake~(g/kg^0.75/day)))+
   themerails
 
-ggplot(days)+
+ggplot(day)+
   geom_point(aes(x = DMI_NDF_bw, y = DMD))+
   geom_smooth(aes(x = DMI_NDF_bw, y = DMD), method = "lm")+
   ylab("DMD (%)")+
