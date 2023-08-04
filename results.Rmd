@@ -10,11 +10,12 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r naivetrials, include = FALSE}
 
 #source the multichoice script
-
 source("Scripts/05-stats_treatment.R")
-#source("Scripts/07-stats_nutrients.R")
 
+source("Scripts/07-stats_nutrients.R")
 ```
+
+
 
 ## Multi-choice feeding trials
 
@@ -30,7 +31,7 @@ Based on fecal composition and quantity, diet DMD followed a similar trend to we
 
 ## Single-choice feeding trials: results by nutrient intake
 
-We used GAMs to test if response patterns in the thin-spline surface plots were significant. GAMs 
+We used GAMs and thin-spline surface plots to investigate qualitative relationships between protein and fibre intake, both as crude and digestible measures, and weight change. We also assessed how protein and fibre intake affected total DMD.  
 
 ![Figure 2. Feeding responses (g dry matter/kg\^0.75/day) by snowshoe hares during both the naiive multi-choice (C and D; n = 15) and the single-choice (A and B; n = 99) feeding trial experiments. Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios of 0.083, 0.22, 0.36, and 0.5 respectively. Panels A and C show mean intake rates by diet in the multi-choice and single choice scenarios, respectively (error bars = standard deviation). Panels B and D show intake rates in nutrient space where diet rails (CP:NDF) are represented by black lines. In Panel B, black points represent the total CP and NDF intake by individuals in multi-choice trials, summing their intake of all diets. The cross point represents the mean CP and NDF intake across all hares, i.e., a potential target intake. Panel D shows mean intake rates (error bars = standard deviation) along the diet rails as CP intake against NDF intake.](Output/figures/intakebarandrail.jpeg)
 
@@ -42,7 +43,7 @@ We used GAMs to test if response patterns in the thin-spline surface plots were 
 #surface map to show weight change in response to NDF and CP
 fitCP <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
 surface(fitCP, x = "NDF intake (g DM/kg^0.75/day)", 
-        y = "CP intake (g DM/kg^0.75/day)")
+        y = "Protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
 
 ```
 
@@ -52,7 +53,7 @@ Above: Surface maps visualizing weight change performance (%/day) in relation to
 #surface map showing weight change in response to intake of digestable protein and NDF
 fitDP <- Tps(trials[, .(DNDFI, DPI)], trials$Weight_change, scale.type = "range")
 surface(fitDP, x = "Digestible NDF intake (g DM/kg^0.75/day)", 
-        y = "Digestible CP intake (g DM/kg^0.75/day)")
+        y = "Digestible protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
 
 ```
 
@@ -63,7 +64,7 @@ Above: Surface map visualizing weight change performance (%/day) in relation to 
 
 dmd <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$DMD, scale.type = "range")
 surface(dmd, x = "NDF intake (g DM/kg^0.75/day)", 
-        y = "CP intake (g DM/kg^0.75/day)")
+        y = "Protein intake (g DM/kg^0.75/day)", main = "DMD (%)")
 ```
 
 ## Additional figures

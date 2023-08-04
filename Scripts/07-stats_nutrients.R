@@ -87,6 +87,6 @@ setcolorder(summarytable, c("Response", "Model", "Parameter", "Dev. Explained", 
 
 # Save table --------------------------------------------------------------
 
-write.csv(summarytable, "Output/GAMoutputs.csv")
+#write.csv(summarytable, "Output/GAMoutputs.csv")
 
         

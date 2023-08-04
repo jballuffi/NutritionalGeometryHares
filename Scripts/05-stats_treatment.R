@@ -23,14 +23,13 @@ day<- readRDS("Output/data/dailyresultscleaned.rds") # by day
 lmMC <- lm(MC$DMI_bw ~ MC$Diet)
 aMC <- anova(lmMC)
 MCpval <- round(aMC$`Pr(>F)`[1], 2)
-
 aovMC <- aov(lmMC)
 posthocMC <- TukeyHSD(x = aovMC, 'MC$Diet', conf.level = 0.95)
 posthocMC
 
 
-# intake rate for normal feeding trials -----------------------------
 
+# intake rate for normal feeding trials -----------------------------
 
 #Intake rate by day
 IR <- lm(day$DMI_bw ~ day$Diet) #make model
@@ -42,8 +41,8 @@ posthocIR <- TukeyHSD(x = aovIR, 'day$Diet', conf.level = 0.95)
 posthocIR
 
 
-# weight change for feeding trials ----------------------------------------
 
+# weight change for feeding trials ----------------------------------------
 
 #Weight change by trial 
 WC <- lm(trials$Weight_change ~ trials$Diet)
@@ -59,55 +58,92 @@ posthocWC
 
 #DMD by day
 DMD <- lm(day$DMD ~ day$Diet)
-
 aCDMD <- anova(DMD)
 DMDpval <- round(aCDMD$`Pr(>F)`[1], 2)
-
 aovDMD <- aov(DMD)
 posthocDMD <- TukeyHSD(x = aovDMD, 'day$Diet', conf.level = 0.95)
 posthocDMD
 
 
 
-
 # CP digestion for feeding trials -----------------------------------------
-
 
 #CP digestion by day
 CPdig <- lm(day$DP ~ day$Diet)
-
 aCPdig <- anova(CPdig)
 CPdigpval <- round(aCPdig$`Pr(>F)`[1], 2)
-
 aovCP <- aov(CPdig)
 posthocCP <- TukeyHSD(x = aovCP, 'day$Diet', conf.level = 0.95)
 posthocCP
 
 
-# NDF digestion for feeding trials ----------------------------------------
 
+# NDF digestion for feeding trials ----------------------------------------
 
 #NDF digestion by day
 NDFdig <- lm(day$DNDF ~ day$Diet)
-
 aNDFdig <- anova(NDFdig)
 NDFdigpval <- round(aNDFdig$`Pr(>F)`[1], 2)
-
 aovNDF <- aov(NDFdig)
 posthocNDF <- TukeyHSD(x = aovNDF, 'day$Diet', conf.level = 0.95)
 posthocNDF
 
 
-# ADF digestion for feeding trials ----------------------------------------
 
+# ADF digestion for feeding trials ----------------------------------------
 
 #ADF digestion by day
 ADFdig <- lm(day$DADF ~ day$Diet)
-
 aADFdig <- anova(ADFdig)
 ADFdigpval <- round(aADFdig$`Pr(>F)`[1], 2)
-
 aovADF <- aov(ADFdig)
 posthocADF <- TukeyHSD(x = aovADF, 'day$Diet', conf.level = 0.95)
 posthocADF
 
+
+
+
+# collect model outputs into one table ------------------------------------
+
+mods <- list(lmMC, IR, WC, DMD, CPdig, NDFdig, ADFdig)
+names <- c("multi-choice", "single choice", "weight", "DMD", "CP digestion", "NDF digestion", "ADF digestion")
+
+
+
+lm_out <- function(model) {
+  #summarize model
+  out <- summary(model)
+  
+  #collect coef values
+  coefOut <- data.table(t(out$coefficients[, 1]))
+  coefOut<-round(coefOut, 3)
+  
+  #collect standard errors
+  seOut <- data.table(t(out$coefficients[, 2]))
+  seOut<-round(seOut, 3)
+  
+  #collect p-values
+  pvals <- data.table(t(out$coefficients[, 4]))
+  pvals <- round(pvals, 3)
+  
+  #Paste coef and standard errors together, rename cols
+  coefse<-data.table(t(paste0(coefOut, " ± ", seOut, " (", pvals, ")")))
+  setnames(coefse, paste0(colnames(coefOut)))
+  
+  #collect R2s and change column name
+  rsqOut <- data.table(rsq(model))
+  names(rsqOut)<-c("rsq")
+  rsqOut <- round(rsqOut, 3)
+  
+  
+  
+  #return each datatable binded together by row
+  return(data.table(coefse, rsqOut))
+}
+
+
+
+#apply to same list of models as in AIC
+OutAll<-lapply(mods, lm_out)
+OutAll<-rbindlist(OutAll, fill = TRUE)
+OutAll$Model<-names
