@@ -1,7 +1,7 @@
-"","Response","Model","Parameter","Dev. Explained","Estimate/edf","SE/Ref.df","t/F","p"
-"1","DMD","Crude macronutrient","Intercept",0.81,0.5202,0.0037,140.1621,0
-"2","DMD","Crude macronutrient","s(DMI_NDF x DMI_protein)",NA,22.877,26.7952,26.5059,0
-"3","Weight change","Crude macronutrient","Intercept",0.29,-0.3953,0.0984,-4.0168,2e-04
-"4","Weight change","Crude macronutrient","s(DMI_NDF x DMI_protein)",NA,4.412,5.7842,3.7076,0.0039
-"5","Weight change","Digestible macronutrient","Intercept",0.52,-0.3953,0.0877,-4.5069,0
-"6","Weight change","Digestible macronutrient","s(DMI_NDF x DMI_protein)",NA,12.9587,17.2407,2.5439,0.0051
+,Response,Model,Parameter,Dev. Explained,Estimate/edf,SE/Ref.df,t/F,p
+1,DMD,Crude macronutrient,Intercept,0.81,0.5202,0.0037,140.1621,0
+2,DMD,Crude macronutrient,s(DMI_NDF x DMI_protein),NA,22.877,26.7952,26.5059,0
+3,Weight change,Crude macronutrient,Intercept,0.29,-0.3953,0.0984,-4.0168,2.00E-04
+4,Weight change,Crude macronutrient,s(DMI_NDF x DMI_protein),NA,4.412,5.7842,3.7076,0.0039
+5,Weight change,Digestible macronutrient,Intercept,0.52,-0.3953,0.0877,-4.5069,0
+6,Weight change,Digestible macronutrient,s(DMI_NDF x DMI_protein),NA,12.9587,17.2407,2.5439,0.0051
