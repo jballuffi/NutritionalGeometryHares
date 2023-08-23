@@ -67,4 +67,4 @@ comps <- ggarrange(Proteincomp, NDFcomp, ncol = 1, nrow = 2)
 
 
 ggsave("Output/figures/excretionrates.jpg", fullfig, width = 7, height = 6, units = "in")
-ggsave("Output/figures/fecalcompositions.jpg", comps, width = 3.5, height = 6, units = "in")
+ggsave("Output/figures/fecalprotein.jpg", Proteincomp, width = 6, height = 5, units = "in")
