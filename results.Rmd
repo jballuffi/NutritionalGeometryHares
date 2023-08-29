@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #source the multichoice script
 source("Scripts/05-stats_treatment.R")
 
-source("Scripts/07-stats_nutrients.R")
+source("Scripts/07-stats_surface.R")
 ```
 
 
@@ -62,10 +62,21 @@ Above: Surface map visualizing weight change performance (%/day) in relation to 
 ```{r}
 #surface map showing DMD in response to protein-fibre balance
 
-dmd <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$DMD, scale.type = "range")
+dmd <- Tps(day[, .(DMI_NDF_bw, DMI_CP_bw)], day$DMD, scale.type = "range")
 surface(dmd, x = "NDF intake (g DM/kg^0.75/day)", 
         y = "Protein intake (g DM/kg^0.75/day)", main = "DMD (%)")
 ```
+
+
+```{r}
+#surface map showing DMD in response to protein-fibre balance
+
+dp <- Tps(day[, .(DMI_NDF_bw, DMI_CP_bw)], day$DP, scale.type = "range")
+surface(dp, x = "NDF intake (g DM/kg^0.75/day)", 
+        y = "Protein intake (g DM/kg^0.75/day)", main = "DP (%)")
+
+```
+
 
 ## Additional figures
 

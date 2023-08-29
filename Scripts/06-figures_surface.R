@@ -21,9 +21,13 @@ surface(fitDP, x = "Digestible NDF intake (g DM/kg^0.75/day)",
         y = "Digestible protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
 
 #NDF and CP intake effect on dry matter digestibility
-dmd <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$DMD, scale.type = "range")
+dmd <- Tps(day[, .(DMI_NDF_bw, DMI_CP_bw)], day$DMD, scale.type = "range")
 surface(dmd, x = "NDF intake (g DM/kg^0.75/day)", 
         y = "Protein intake (g DM/kg^0.75/day)", main = "DMD (%)")
 
+#NDF and CP intake on protein digestibility
+dp <- Tps(day[, .(DMI_NDF_bw, DMI_CP_bw)], day$DP, scale.type = "range")
+surface(dp, x = "NDF intake (g DM/kg^0.75/day)", 
+        y = "Protein intake (g DM/kg^0.75/day)", main = "DP (%)")
 
 
