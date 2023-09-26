@@ -121,7 +121,7 @@ digmelt <- digmelt[!digestibility < -0.2]
     geom_boxplot(aes(x = Diet, y = digestibility*100))+
     labs(y = "Digestability (%)", x = "Diet")+
     facet_wrap(~nutrient, nrow = 3, ncol = 1)+
-    themepoints+
+    themerails+
     theme(strip.background = element_blank()))
 
 
