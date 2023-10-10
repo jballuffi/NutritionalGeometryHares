@@ -6,7 +6,7 @@ lapply(dir('R', '*.R', full.names = TRUE), source)
 #read in daily feeding trial results
 days <- readRDS("Output/data/dailyresultscleaned.rds")
 
-
+trials <- readRDS("Output/data/trialresultscleaned.rds")
 
 
 
@@ -53,15 +53,17 @@ fullfig <- ggarrange(total, protein, NDF, ADF, ncol = 2, nrow = 2)
   labs(x = "Diet crude protein (%)", y = "Fecal crude protein (%)")+
   themerails)
 
-(NDFcomp <-
-  ggplot(days)+
-  geom_jitter(aes(x = NDF_diet*100, y = NDF_F), width = .5)+
-  geom_smooth(aes(x = NDF_diet*100, y = NDF_F))+
-  labs(x = "Diet NDF (%)", y = "Fecal NDF (%)")+
-  themerails)
+ggplot(trials)+
+    geom_jitter(aes(x = CP_diet*100, y = Weight_change), width = .5)+
+    geom_smooth(aes(x = CP_diet*100, y = Weight_change))+
+    labs(x = "Diet crude protein (%)", y = "Weight change (%)")+
+    themerails
 
-comps <- ggarrange(Proteincomp, NDFcomp, ncol = 1, nrow = 2)
-
+ggplot(trials)+
+  geom_jitter(aes(x = CP_F, y = Weight_change), width = .5)+
+  geom_smooth(aes(x = CP_F, y = Weight_change), method = "lm")+
+  labs(x = "Diet crude protein (%)", y = "Weight change (%)")+
+  themerails
 
 # save figures ------------------------------------------------------------
 
