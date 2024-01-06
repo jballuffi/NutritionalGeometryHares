@@ -5,7 +5,7 @@ lapply(dir('R', '*.R', full.names = TRUE), source)
 
 #read in results
 trials <- readRDS("Output/data/trialresultscleaned.rds")
-day<- readRDS("Output/data/dailyresultscleaned.rds")
+day <- readRDS("Output/data/dailyresultscleaned.rds")
 
 
 
