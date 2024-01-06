@@ -8,7 +8,7 @@ lapply(dir('R', '*.R', full.names = TRUE), source)
 
 #read in cleaned multi-choice results
 MC <- readRDS("Output/data/multichoiceresults.rds") #all results by diet
-sums <- readRDS("Output/data/multichoicesums.rds") #sums of nutrient intakes per trial
+targets <- readRDS("Output/data/multichoicesums.rds") #sums of nutrient intakes per trial
 
 #read in cleaned feeding trial results
 trials <- readRDS("Output/data/trialresultscleaned.rds") #by trial
