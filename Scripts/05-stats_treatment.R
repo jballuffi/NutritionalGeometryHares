@@ -27,6 +27,8 @@ aovMC <- aov(lmMC)
 posthocMC <- TukeyHSD(x = aovMC, 'MC$Diet', conf.level = 0.95)
 posthocMC
 
+#how much more of diet B did hares eat than other diets
+effectofB <- round((MC[Diet == "B", mean(DMI_bw)])/(MC[, mean(DMI_bw)]), digits = 2)
 
 
 # intake rate for normal feeding trials -----------------------------
@@ -39,6 +41,8 @@ IRpval <- round(aIR$`Pr(>F)`[1], 3) #pull out pvalue from ANOVA
 aovIR <- aov(IR)
 posthocIR <- TukeyHSD(x = aovIR, 'day$Diet', conf.level = 0.95)
 posthocIR
+
+effectofA <- round((day[Diet == "A", mean(DMI_bw)])/(day[, mean(DMI_bw)]), digits = 2)
 
 
 
