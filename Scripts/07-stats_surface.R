@@ -83,10 +83,13 @@ summarytable <- rbind(allsump, allsums, fill = TRUE)
 setorder(summarytable, Response, Model)
 setcolorder(summarytable, c("Response", "Model", "Parameter", "Dev. Explained", "Estimate/edf", "SE/Ref.df", "t/F", "p"))
 
+#round the table to 2 decimal places
+summarytable <- summarytable %>% mutate_if(is.numeric, round, digits = 2)
+
 
 
 # Save table --------------------------------------------------------------
 
-#write.csv(summarytable, "Output/GAMoutputs.csv")
+write.csv(summarytable, "Output/stats/GAMoutputs.csv")
 
         
