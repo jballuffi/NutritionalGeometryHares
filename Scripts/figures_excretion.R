@@ -38,6 +38,13 @@ trials <- readRDS("Output/data/trialresultscleaned.rds")
   labs(x = "ADF Intake (g DM/day", y = "ADF Excretion (g DM/day)")+
   themepoints)
 
+(ADL <- 
+    ggplot(days)+
+    geom_point(aes(x = DMI_ADL, y = DMF_ADL, color = Diet))+
+    labs(x = "ADL Intake (g DM/day", y = "ADL Excretion (g DM/day)")+
+    themepoints)
+
+
 fullfig <- ggarrange(total, protein, NDF, ADF, ncol = 2, nrow = 2)
 
 
