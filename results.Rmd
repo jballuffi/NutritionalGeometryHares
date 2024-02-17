@@ -15,15 +15,13 @@ source("Scripts/05-stats_treatment.R")
 source("Scripts/07-stats_surface.R")
 ```
 
-
-
 ## Multi-choice feeding trials
 
-During the naive multi-choice feeding trial phase of the experiment, snowshoe hares ate an average of `r round(mean(targets$DMI_bw), digits = 2)` ± `r round(sd(targets$DMI_bw), digits = 2)` g DM/kg^0.75/day across all diets. There was a significant effect of diet on intake rate during naive multi-choice trials (p = `r MCpval`): hares ate `r effectofB` times more of diet B than the average diet intake rate. Intake rates by diet translated to average intakes of `r round(mean(targets$DMI_CP_bw), digits = 2)` ± `r round(sd(targets$DMI_CP_bw), digits = 2)` and `r round(mean(targets$DMI_NDF_bw), digits = 2)` ± `r round(sd(targets$DMI_NDF_bw), digits = 2)` g DM/kg^0.75/day of CP and NDF, respectively (Figure 2, panel A). When plotted in nutritional space, i.e., CP and NDF intake rates, the average feeding response of hares fell between the nutritional rails of Diets B and C (Figure 2, panel B). We can use this as an estimate of the target intake of CP and NDF for hares under these conditions.
+During the naive multi-choice feeding trial phase of the experiment, snowshoe hares ate an average of `r round(mean(targets$DMI_bw), digits = 2)` ± `r round(sd(targets$DMI_bw), digits = 2)` g DM/kg\^0.75/day across all diets. There was a significant effect of diet on intake rate during naive multi-choice trials (p = `r MCpval`): hares ate `r effectofB` times more of diet B than the average diet intake rate. Intake rates by diet translated to average intakes of `r round(mean(targets$DMI_CP_bw), digits = 2)` ± `r round(sd(targets$DMI_CP_bw), digits = 2)` and `r round(mean(targets$DMI_NDF_bw), digits = 2)` ± `r round(sd(targets$DMI_NDF_bw), digits = 2)` g DM/kg\^0.75/day of CP and NDF, respectively (Figure 2, panel A). When plotted in nutritional space, i.e., CP and NDF intake rates, the average feeding response of hares fell between the nutritional rails of Diets B and C (Figure 2, panel B). We can use this as an estimate of the target intake of CP and NDF for hares under these conditions.
 
 ## Single-choice feeding trials: results by treatment
 
-We conducted `r length(trials)` single-choice feeding trials on `r length(unique(trials$ID))` individuals. Hares ate on average `r round(mean(trials$DMI_bw), digits = 2)` g DM/kg^0.75/day of food across all diets. The intake rate for diet A was `r effectofA` times more than the average of all diets while differences between diets B, C, and D were not significant (Figure 2, panel C). This pattern of intake rate resulted in hares on diets B and C to have CP and NDF intake rates closest to the target intake found in the multi-choice trials (Figure 2, panel D).
+We conducted `r length(trials)` single-choice feeding trials on `r length(unique(trials$ID))` individuals. Hares ate on average `r round(mean(trials$DMI_bw), digits = 2)` g DM/kg\^0.75/day of food across all diets. The intake rate for diet A was `r effectofA` times more than the average of all diets while differences between diets B, C, and D were not significant (Figure 2, panel C). This pattern of intake rate resulted in hares on diets B and C to have CP and NDF intake rates closest to the target intake found in the multi-choice trials (Figure 2, panel D).
 
 There was an overall significant effect of diet on weight change during feeding trials (p = `r WCpval`; trial measures). Diet A caused significantly more weight loss over the three-day long trials than other diets (`r trials[Diet == "A", round(median(Weight_change), digits = 2)]` %/day). Diets B, C and D allowed hares to endure minimal weight loss during the trial.
 
@@ -31,13 +29,15 @@ Based on fecal composition and quantity, diet DMD followed a similar trend to we
 
 ## Single-choice feeding trials: results by nutrient intake
 
-We used GAMs and thin-spline surface plots to investigate qualitative relationships between protein and fibre intake, both as crude and digestible measures, and weight change. We also assessed how protein and fibre intake affected total DMD. In terms of crude macronutrients, the heat map shows that hares begin to maintain weight as protein intake increases, at approximately 10 g DM/kg^0.75/day, but only at mid ranges of fibre intake. After protein intake reaches about 14 g DM/kg^0.75/day, fibre intake becomes irrelevant (Figure 5). At highest fibre intake rates relative to protein intake we see the highest weight loss. The GAM for this pattern showed that the interacting effects of protein and fibre intake were significant toward weight change and that this relationship was non-linear (edf > 10); together this interaction explained `r round(sum$dev.expl, 2)*100`% of the deviation (Table 2). The effect of digestible macronutrient intake on weight change shows a similar response to that of crude macronutrient, but with highest performance occurring from a more balanced intake of digestible protein and digestible fibre (Figure 5). This is further expressed with a higher edf in the GAM output, which means the effect is more non-linear. Yogether this interaction explained `r round(sum2$dev.expl, 2)*100`% of the deviation (Table 2). Lastly, the relationship between DMD and protein-fibre intake is the most non-linear of the three models, with the highest edf and the highest deviation explained (`r round(sum3$dev.expl, 2)*100`%; Table 2). Figure 5 displays this, with higher digestibility occurring as the ratio of protein to fibre intake increases.
+We used GAMs and thin-spline surface plots to investigate qualitative relationships between protein and fibre intake, both as crude and digestible measures, and weight change. We also assessed how protein and fibre intake affected total DMD. In terms of crude macronutrients, the heat map shows that hares begin to maintain weight as protein intake increases, at approximately 10 g DM/kg\^0.75/day, but only at mid ranges of fibre intake. After protein intake reaches about 14 g DM/kg\^0.75/day, fibre intake becomes irrelevant (Figure 5). At highest fibre intake rates relative to protein intake we see the highest weight loss. The GAM for this pattern showed that the interacting effects of protein and fibre intake were significant toward weight change and that this relationship was non-linear (edf \> 10); together this interaction explained `r round(sum$dev.expl, 2)*100`% of the deviation (Table 2). The effect of digestible macronutrient intake on weight change shows a similar response to that of crude macronutrient, but with highest performance occurring from a more balanced intake of digestible protein and digestible fibre (Figure 5). This is further expressed with a higher edf in the GAM output, which means the effect is more non-linear. Yogether this interaction explained `r round(sum2$dev.expl, 2)*100`% of the deviation (Table 2). Lastly, the relationship between DMD and protein-fibre intake is the most non-linear of the three models, with the highest edf and the highest deviation explained (`r round(sum3$dev.expl, 2)*100`%; Table 2). Figure 5 displays this, with higher digestibility occurring as the ratio of protein to fibre intake increases.
 
 ![Figure 2. Feeding responses (g dry matter/kg\^0.75/day) by snowshoe hares during both the naiive multi-choice (C and D; n = 15) and the single-choice (A and B; n = 99) feeding trial experiments. Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios of 0.083, 0.22, 0.36, and 0.5 respectively. Panels A and C show mean intake rates by diet in the multi-choice and single choice scenarios, respectively (error bars = standard deviation). Panels B and D show intake rates in nutrient space where diet rails (CP:NDF) are represented by black lines. In Panel B, black points represent the total CP and NDF intake by individuals in multi-choice trials, summing their intake of all diets. The cross point represents the mean CP and NDF intake across all hares, i.e., a potential target intake. Panel D shows mean intake rates (error bars = standard deviation) along the diet rails as CP intake against NDF intake.](Output/figures/intakebarandrail.jpeg)
 
 ![Figure 3. Weight change (%/day) of snowshoe hares in response to feeding on one of four experimental diets for three days during the single-choice phase of the feeding trial experiment (n = 33). Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios of 0.083, 0.22, 0.36, and 0.5 respectively. Boxes represent median weight change bounded by lower 25th and 75th percentiles. Points represent values of individual feeding trials.](Output/figures/weightchangebar.jpeg)
 
 ![Figure 4. From top panel to bottom panel: dry matter digestibility (DMD), protein digestibility (DP), and neutral detergent fibre digestibility (DNDF), in response to feeding on one of four experimental diets fo three days during the single-choice phase of the feeding trial experiment (n = 33). Diets A, B, C, and D had crude protein (CP) to neutral detergent fibre (NDF) ratios of 0.083, 0.22, 0.36, and 0.5 respectively. Boxes represent median digestability bounded by lower 25th and 75th percentiles.](Output/figures/dietdigestion.jpeg)
+
+![Figure 5. Weight change (%/day) of snowshoe hares in response to daily intake rates (g/kg\^0.75/day) of A) digestible dry matter and B) digestible protein acrpss all diets tested for three days during the single-choice phase of the feeding trial experiment (n = 33).](Output/figures/weightchangedigestible.jpeg)
 
 ```{r}
 #surface map to show weight change in response to NDF and CP
@@ -50,9 +50,9 @@ surface(fitCP, x = "NDF intake (g DM/kg^0.75/day)",
 Above: Surface maps visualizing weight change performance (%/day) in relation to CP and NDF intake (g DM/kg/day).
 
 ```{r}
-#surface map showing weight change in response to intake of digestable protein and NDF
-fitDP <- Tps(trials[, .(DNDFI, DPI)], trials$Weight_change, scale.type = "range")
-surface(fitDP, x = "Digestible NDF intake (g DM/kg^0.75/day)", 
+#surface map showing weight change in response to intake of digestable protein and DMD
+fitDP <- Tps(trials[, .(DMDI, DPI)], trials$Weight_change, scale.type = "range")
+surface(fitDP, x = "DMD intake (g DM/kg^0.75/day)", 
         y = "Digestible protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
 
 ```
@@ -67,7 +67,6 @@ surface(dmd, x = "NDF intake (g DM/kg^0.75/day)",
         y = "Protein intake (g DM/kg^0.75/day)", main = "DMD (%)")
 ```
 
-
 ```{r}
 #surface map showing DMD in response to protein-fibre balance
 
@@ -76,7 +75,6 @@ surface(dp, x = "NDF intake (g DM/kg^0.75/day)",
         y = "Protein intake (g DM/kg^0.75/day)", main = "DP (%)")
 
 ```
-
 
 ## Additional figures
 
