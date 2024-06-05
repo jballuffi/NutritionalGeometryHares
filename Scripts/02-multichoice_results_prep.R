@@ -23,9 +23,12 @@ diets <- fread("Input/Diet_compositions.csv")
 
 # merge data together -----------------------------------------------------
 
+#remove diet DM column from dietcomp. Will be calculated for each winter
+dietcomp[, DM_diet := NULL]
+
 #average diet DM by winter
-dietDM <- diets[, mean(DM), Winter]
-names(dietDM) <- c("Winter", "DM_diet")
+dietDM <- diets[, .(DM_diet = mean(DM)), by = .(Winter, Sample)]
+setnames(dietDM, "Sample", "Diet")
 
 #subset DM data
 DM <- DM[, .(Sample, DM)]
@@ -48,7 +51,7 @@ DT <- merge(MC, DM, by = c("Enclosure", "Date", "Diet"), all.x = TRUE)
 #merge results with diet compositions
 DT <- merge(DT, dietcomp, by = "Diet", all.x = TRUE)
 
-DT <- merge(DT, dietDM, by = "Winter", all.x = TRUE)
+DT <- merge(DT, dietDM, by = c("Diet", "Winter"), all.x = TRUE)
 
 
 #missing DM gets mean DM
@@ -56,8 +59,10 @@ avgSampleDM <- mean(DT$DM, na.rm =TRUE)
 DT[is.na(DM), DM := avgSampleDM]
 
 
+
 # Intake rates in DM ------------------------------------------------------------
 
+#convert start and end food weights in DM
 DT[, OfferDM := Offer_wet*DM_diet]
 DT[, EndDM := End_wet*(DM/100)]
 
@@ -72,10 +77,11 @@ DT[, DMI_NDF := DMI*NDF_diet]
 DT[, DMI_ADF := DMI*ADF_diet]
 DT[, DMI_ADL := DMI*ADL_diet]
 DT[, DMI_C := DMI*C_diet]
+DT[, DMI_energy := DMI*Energy_diet]
+
 
 
 # DM intakes by body weight ----------------------------------------------------
-
 
 #calculate intake rates by weight
 DT[, Weight_start := Weight_start/1000]
@@ -87,7 +93,7 @@ DT[, DMI_NDF_bw := DMI_NDF/(Weight_start^.75)]
 DT[, DMI_ADF_bw := DMI_ADF/(Weight_start^.75)]
 DT[, DMI_ADF_bw := DMI_ADL/(Weight_start^.75)]
 DT[, DMI_C_bw := DMI_C/(Weight_start^.75)]
-
+DT[, DMI_energy_bw := DMI_energy/(Weight_start^.75)]
 
 
 # Sum nutrient intakes by individual------------------------------------------------------------
