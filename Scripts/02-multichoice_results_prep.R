@@ -15,14 +15,13 @@ MC <- fread("Input/Results_multichoice.csv")
 DM <- fread("Input/Habituation_DryMatter.csv")
 
 #read in the nutritional compositions of each diet
+dietcomp <- fread("Output/data/dietcompositions.rds")
+
 diets <- fread("Input/Diet_compositions.csv")
 
 
-# merge data together -----------------------------------------------------
 
-#cut diet compositions to just be DM
-dietcomp <- diets[, .(mean(CP_diet/100, na.rm = TRUE), mean(NDF_diet/100, na.rm = TRUE), mean(ADF_diet/100, na.rm = TRUE), mean(ADL_diet/100, na.rm = TRUE), mean(C_diet/100, na.rm = TRUE)), Sample]
-names(dietcomp) <- c("Diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet" )
+# merge data together -----------------------------------------------------
 
 #average diet DM by winter
 dietDM <- diets[, mean(DM), Winter]
