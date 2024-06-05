@@ -14,8 +14,13 @@ wp <- fread("Input/Plants_winter2021_compositions_cleaned.csv")
 
 # summarize diet compositions based on lab results ------------------------
 
-diets <- diets[, .(mean(DM, na.rm = TRUE), mean(CP_diet/100, na.rm = TRUE), mean(NDF_diet/100, na.rm = TRUE), mean(ADF_diet/100, na.rm = TRUE), mean(ADL_diet/100, na.rm = TRUE), mean(C_diet/100, na.rm = TRUE)), Sample]
-names(diets) <- c("Diet", "DM_diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet") #C isnt predicted it was measured after (not for paper)
+diets <- diets[, .(DM_diet = mean(DM, na.rm = TRUE),
+                   CP_diet = mean(CP_diet/100, na.rm = TRUE), 
+                   NDF_diet = mean(NDF_diet/100, na.rm = TRUE),
+                   ADF_diet = mean(ADF_diet/100, na.rm = TRUE), 
+                   ADL_diet = mean(ADL_diet/100, na.rm = TRUE),
+                   C_diet = mean(C_diet/100, na.rm = TRUE), 
+                   Energy_diet = mean(Energy_diet, na.rm = TRUE)), Sample]
 
 
 
