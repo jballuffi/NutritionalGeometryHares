@@ -22,7 +22,7 @@ diets <- diets[, .(DM_diet = mean(DM, na.rm = TRUE),
                    C_diet = mean(C_diet/100, na.rm = TRUE), 
                    Energy_diet = mean(Energy_diet, na.rm = TRUE)), Sample]
 
-setname(diets, "Sample", "Diet")
+setnames(diets, "Sample", "Diet")
 
 
 
