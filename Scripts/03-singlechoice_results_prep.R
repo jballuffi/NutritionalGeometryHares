@@ -12,6 +12,9 @@ trials <- fread("Input/Results_singlechoice.csv")
 #read in the nutritional compositions of each diet
 diets <- fread("Input/Diet_compositions.csv")
 
+#read in prepped diet compositions
+dietcomp <- fread("Output/data/dietcompositions.rds")
+
 #read in daily dry matter measures
 DM <- fread("Input/Daily_DryMatter.csv")
 
@@ -74,16 +77,15 @@ DT[, Winter := year(Date)]
 
 # merge with daily dry matter and diet compositions --------------------------------
 
+#remove DM from dietcomp. Calculated by winter
+dietcomp[, DM_diet := NULL]
+
 #remove excess columns in daily DM table
 DM <- DM[, .(Sample, DM)]
 
-#make just a diet DM table
-dietcomp <- diets[, .(mean(CP_diet/100, na.rm = TRUE), mean(NDF_diet/100, na.rm = TRUE), mean(ADF_diet/100, na.rm = TRUE), mean(ADL_diet/100, na.rm = TRUE), mean(C_diet/100, na.rm = TRUE)), Sample]
-names(dietcomp) <- c("Diet", "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "C_diet") #C isnt predicted it was measured after (not for paper)
-
 #pull diet DMs by winter
-dietDM <- diets[, mean(DM), Winter]
-names(dietDM) <- c("Winter", "DM_diet")
+dietDM <- diets[, mean(DM), by = .(Winter, Sample)]
+names(dietDM) <- c ("Winter", "Diet", "DM_diet")
 
 #merge feeding data (wet weights) with daily DM data
 DT <- merge(DT, DM, by = "Sample", all.x = TRUE)
@@ -92,7 +94,7 @@ DT <- merge(DT, DM, by = "Sample", all.x = TRUE)
 DT <- merge(DT, dietcomp, by = "Diet", all.x = TRUE)
 
 #merge diet DM into datasheet
-DT <- merge(DT, dietDM, by = "Winter", all.x = TRUE)
+DT <- merge(DT, dietDM, by = c("Winter", "Diet"), all.x = TRUE)
 
 #create mean DMs by winter
 meanDM <- DT[,  mean(DM, na.rm = TRUE), Winter]
@@ -169,6 +171,7 @@ DT[, DMI_NDF := DMI*NDF_diet]
 DT[, DMI_ADF := DMI*ADF_diet]
 DT[, DMI_ADL := DMI*ADL_diet]
 DT[, DMI_C := DMI*C_diet]
+DT[, DMI_energy := DMI*Energy_diet]
 
 #convert weights from g to kg
 DT[, Weight_start := Weight_start/1000]
@@ -181,7 +184,7 @@ DT[, DMI_NDF_bw := DMI_NDF/(Weight_start^.75)]
 DT[, DMI_ADF_bw := DMI_ADF/(Weight_start^.75)]
 DT[, DMI_ADL_bw := DMI_ADL/(Weight_start^.75)]
 DT[, DMI_C_bw := DMI_C/(Weight_start^.75)]
-
+DT[, DMI_energy_bw := DMI_energy/(Weight_start^.75)]
 
 
 # Calculate digestibility -----------------------------------------------
@@ -191,17 +194,21 @@ DT[, DP := (DMI_CP - DMF_CP)/DMI_CP] #digestible protein
 DT[, DNDF := (DMI_NDF - DMF_NDF)/DMI_NDF] #digestible NDF
 DT[, DADF := (DMI_ADF - DMF_ADF)/DMI_ADF] #digestible ADF
 DT[, DADL := (DMI_ADL - DMF_ADL)/DMI_ADL] #digestible ADL
-
+DT[, DE := DMD*Energy_diet] #digestible energy
 
 
 # Calculate digestibility intake ------------------------------------------
 
-#double check these calculations. I am a little confused.
+
+#DOUBLE CHECK THESE
+
 #these intake rates are on a kg^.75 basis
 DT[, DMDI := DMD*DMI_bw]
 DT[, DPI := DP*DMI_CP]
-DT[, DNDFI := DP*DMI_NDF]
-DT[, DADFI := DP*DMI_ADF]
+DT[, DNDFI := DNDF*DMI_NDF]
+DT[, DADFI := DADF*DMI_ADF]
+
+#calculate digestible energy intake?
 
 
 
