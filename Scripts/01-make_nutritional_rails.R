@@ -128,4 +128,4 @@ ggsave("Output/figures/dietrails.jpeg", dietrailplot, width = 4, height = 3, uni
 
 fwrite(allrails, "Output/data/dietrailsandforage.rds")
 fwrite(dietrails, "Output/data/dietrails.rds")
-
+fwrite(diets, "Output/data/dietcompositions.rds")
