@@ -94,12 +94,13 @@ Intake <- ggarrange(Mbar, Sbar, Mrail, Srail, nrow = 2, ncol = 2)
 
 
 #weight change by trial
-ggplot(trials)+geom_boxplot(aes(x = as.factor(Trial), y = Weight_change))
+ggplot(trials)+
+  geom_boxplot(aes(x = as.factor(Trial), y = Weight_change))+
+  labs(x = "Trial #", y = "Weight change (%/Day)")
 
 
 
 # Digestibility by diet ---------------------------------------------------
-
 
 #subset to just digestibility columns
 dig <- day[, .(Diet, DMD, DP, DNDF, DADF, DADL)]
