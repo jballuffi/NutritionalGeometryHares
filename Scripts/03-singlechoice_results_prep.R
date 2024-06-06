@@ -126,9 +126,11 @@ IDdiet <- DT[, .(Sample, Diet)]
 feces <- merge(IDdiet, feces, all = TRUE)
 
 #average compositions by diet. This is for filling in gaps in data for now
-avg <- feces[, .(mean(NDF_F, na.rm = TRUE), mean(ADF_F, na.rm = TRUE), mean(ADL_F, na.rm = TRUE), 
-                 mean(CP_F, na.rm = TRUE), mean(C_F, na.rm = TRUE)), Diet]
-names(avg) <- c("Diet", "mNDF", "mADF", "mADL", "mCP", "mC")
+avg <- feces[, .(mNDF = mean(NDF_F, na.rm = TRUE),
+                 mADF = mean(ADF_F, na.rm = TRUE),
+                 mADL = mean(ADL_F, na.rm = TRUE), 
+                 mCP = mean(CP_F, na.rm = TRUE),
+                 mC = mean(C_F, na.rm = TRUE)), Diet]
 
 #merge averages with full feces data
 feces <- merge(feces, avg, by = "Diet", all.x = TRUE)
@@ -166,12 +168,12 @@ DT[, DM_end := (EndWet*DM/100) + DM_spilled] #end weight adds in the dry matter 
 DT[, DMI := DM_offer - DM_end]
 
 #calculate dry matter intake of each currency
-DT[, DMI_CP := DMI*CP_diet]
-DT[, DMI_NDF := DMI*NDF_diet]
-DT[, DMI_ADF := DMI*ADF_diet]
-DT[, DMI_ADL := DMI*ADL_diet]
-DT[, DMI_C := DMI*C_diet]
-DT[, DMI_energy := DMI*Energy_diet]
+DT[, DMI_CP := DMI*CP_diet]   #intake of dry matter
+DT[, DMI_NDF := DMI*NDF_diet] #intake of NDF
+DT[, DMI_ADF := DMI*ADF_diet] #intake of ADF
+DT[, DMI_ADL := DMI*ADL_diet] #inake of ADL
+DT[, DMI_C := DMI*C_diet]     #intake of carbon
+DT[, DMI_energy := DMI*Energy_diet/1000] #intake of energy (kj)
 
 #convert weights from g to kg
 DT[, Weight_start := Weight_start/1000]
@@ -201,6 +203,7 @@ DT[, DE := DMD*Energy_diet] #digestible energy
 
 
 #DOUBLE CHECK THESE
+###########################################################
 
 #these intake rates are on a kg^.75 basis
 DT[, DMDI := DMD*DMI_bw]
