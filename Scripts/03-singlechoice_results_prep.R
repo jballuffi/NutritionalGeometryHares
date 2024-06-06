@@ -168,11 +168,11 @@ DT[, DM_end := (EndWet*DM/100) + DM_spilled] #end weight adds in the dry matter 
 DT[, DMI := DM_offer - DM_end]
 
 #calculate dry matter intake of each currency
-DT[, DMI_CP := DMI*CP_diet]   #intake of dry matter
-DT[, DMI_NDF := DMI*NDF_diet] #intake of NDF
-DT[, DMI_ADF := DMI*ADF_diet] #intake of ADF
-DT[, DMI_ADL := DMI*ADL_diet] #inake of ADL
-DT[, DMI_C := DMI*C_diet]     #intake of carbon
+DT[, DMI_CP := DMI*CP_diet]   #dry matter intake protein (g)
+DT[, DMI_NDF := DMI*NDF_diet] #dry matter intake of NDF (g)
+DT[, DMI_ADF := DMI*ADF_diet] #dry matter intake of ADF (g)
+DT[, DMI_ADL := DMI*ADL_diet] #dry matter intake of ADL (g)
+DT[, DMI_C := DMI*C_diet]     #dry matter intake of carbon (g)
 DT[, DMI_energy := DMI*Energy_diet/1000] #intake of energy (kj)
 
 #convert weights from g to kg
