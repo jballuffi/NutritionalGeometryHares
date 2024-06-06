@@ -189,29 +189,25 @@ DT[, DMI_C_bw := DMI_C/(Weight_start^.75)]
 DT[, DMI_energy_bw := DMI_energy/(Weight_start^.75)]
 
 
+
 # Calculate digestibility -----------------------------------------------
 
-DT[, DMD := (DMI-DMF)/DMI] #dry matter digestibility
-DT[, DP := (DMI_CP - DMF_CP)/DMI_CP] #digestible protein
-DT[, DNDF := (DMI_NDF - DMF_NDF)/DMI_NDF] #digestible NDF
-DT[, DADF := (DMI_ADF - DMF_ADF)/DMI_ADF] #digestible ADF
-DT[, DADL := (DMI_ADL - DMF_ADL)/DMI_ADL] #digestible ADL
-DT[, DE := DMD*Energy_diet] #digestible energy
+DT[, DMD := (DMI-DMF)/DMI] #dry matter digestibility (%)
+DT[, DP := (DMI_CP - DMF_CP)/DMI_CP] #digestible protein (%)
+DT[, DNDF := (DMI_NDF - DMF_NDF)/DMI_NDF] #digestible NDF (%)
+DT[, DADF := (DMI_ADF - DMF_ADF)/DMI_ADF] #digestible ADF (%)
+DT[, DADL := (DMI_ADL - DMF_ADL)/DMI_ADL] #digestible ADL (%)
+DT[, DE := DMD*Energy_diet/1000] #digestible energy (kj/g)
 
 
 # Calculate digestibility intake ------------------------------------------
 
-
-#DOUBLE CHECK THESE
-###########################################################
-
 #these intake rates are on a kg^.75 basis
-DT[, DMDI := DMD*DMI_bw]
-DT[, DPI := DP*DMI_CP]
-DT[, DNDFI := DNDF*DMI_NDF]
-DT[, DADFI := DADF*DMI_ADF]
-
-#calculate digestible energy intake?
+DT[, DMDI := DMD*DMI_bw]        #digestible dry matter intake (g/kg.75)
+DT[, DPI := DP*DMI_CP_bw]       #digestible protein intake (g/kg.75)
+DT[, DNDFI := DNDF*DMI_NDF_bw]  #digestible NDF intake (g/kg.75)
+DT[, DADFI := DADF*DMI_ADF_bw]  #digestible ADF intake (g/kg.75)
+DT[, DEI := DE*DMI_bw] #digestible energy intake (kj/kg.75)
 
 
 
