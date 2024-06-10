@@ -11,13 +11,13 @@ day <- readRDS("Output/data/dailyresultscleaned.rds")
 
 # figure for digestible intake rate and weight change ---------------------
 
-(DMDintake <- 
+(DEintake <- 
    ggplot(trials)+
-   geom_point(aes(x = DMDI, y = Weight_change))+
-   geom_smooth(aes(x = DMDI, y = Weight_change), method = "lm")+
+   geom_point(aes(x = DEI, y = Weight_change))+
+   geom_smooth(aes(x = DEI, y = Weight_change), method = "lm")+
    geom_abline(intercept = 0, slope = 0, linetype = 2)+
    ylab("Weight change (%/day)")+
-   xlab(expression(DMD~intake~(g/kg^0.75/day)))+
+   xlab(expression(DE~intake~(kj/kg^0.75/day)))+
    labs(title = "A")+
    themerails)
 
@@ -31,7 +31,7 @@ day <- readRDS("Output/data/dailyresultscleaned.rds")
     labs(title = "B")+
     themerails)
 
-weight <- ggarrange(DMDintake, DPintake,  ncol = 1, nrow =2)
+weight <- ggarrange(DEintake, DPintake,  ncol = 1, nrow =2)
 
 
 
@@ -40,9 +40,10 @@ weight <- ggarrange(DMDintake, DPintake,  ncol = 1, nrow =2)
 FP <- lm(Weight_change ~ CP_F, data = trials)
 
 ggplot(trials)+
-  geom_point(aes(x = CP_F, y = Weight_change))+
-  geom_abline(intercept = 0, slope = 0, linetype = 2)+
-  geom_smooth(aes(x = CP_F, y = Weight_change), method = "lm")+
+  geom_point(aes(x = CP_F, y = Weight_change), size = 2, shape = 1)+
+  geom_abline(intercept = 0, slope = 0, linetype = 2, size = .8)+
+  geom_abline(intercept = -1.6, slope = 0.15, linetype = 1, color = "blue3", size = .8)+
+  #geom_smooth(aes(x = CP_F, y = Weight_change), method = "lm")+
   #geom_abline(intercept = -1.62, slope = 0.15)
   themerails
 
