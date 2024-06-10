@@ -35,6 +35,19 @@ weight <- ggarrange(DMDintake, DPintake,  ncol = 1, nrow =2)
 
 
 
+# fecal protein and weight change -----------------------------------------
+
+FP <- lm(Weight_change ~ CP_F, data = trials)
+
+ggplot(trials)+
+  geom_point(aes(x = CP_F, y = Weight_change))+
+  geom_abline(intercept = 0, slope = 0, linetype = 2)+
+  geom_smooth(aes(x = CP_F, y = Weight_change), method = "lm")+
+  #geom_abline(intercept = -1.62, slope = 0.15)
+  themerails
+
+
+
 # surface plots -----------------------------------------------------------
 
 #not accounting for digestibility
