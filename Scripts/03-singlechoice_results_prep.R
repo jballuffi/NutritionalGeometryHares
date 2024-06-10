@@ -199,6 +199,11 @@ DT[, DADF := (DMI_ADF - DMF_ADF)/DMI_ADF] #digestible ADF (%)
 DT[, DADL := (DMI_ADL - DMF_ADL)/DMI_ADL] #digestible ADL (%)
 DT[, DE := DMD*Energy_diet/1000] #digestible energy (kj/g)
 
+#calculate total digestible protein in diets
+DT[, DP_diet := CP_diet*DP]
+#caclulate digestibilities by diet (use in table 1)
+DT[, .(DMD = mean(DMD), DE = mean(DE), DP = mean(DP_diet)), Diet]
+
 
 # Calculate digestibility intake ------------------------------------------
 
