@@ -33,7 +33,7 @@ names(Multimeans) <-  c("Diet", "Intake_mean", "Intake_SD")
     geom_errorbar(aes(x = Diet, ymax = Intake_mean + Intake_SD, ymin = Intake_mean - Intake_SD), width = .2, color = "grey30")+
     ylab(expression(Daily~intake~(gDM/kg^0.75/day)))+
     xlab(expression(Diet))+
-    ggtitle("Multi-choice trials", subtitle = "A")+
+    ggtitle("Multi-choice", subtitle = "A")+
     themerails+
     theme(axis.ticks.x = element_blank()))
 
@@ -45,7 +45,7 @@ names(Multimeans) <-  c("Diet", "Intake_mean", "Intake_SD")
     geom_point(aes(x = mean(DMI_NDF_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sums)+
     ylab(expression(Protein~intake~(gDM/kg^0.75/day)))+
     xlab(expression(NDF~intake~(gDM/kg^0.75/day)))+
-    ggtitle(" ", subtitle = "B")+
+    ggtitle("Multi-choice", subtitle = "B")+
     themerails)
 
 
@@ -60,7 +60,7 @@ names(Singlemeans) <-  c("Diet", "DMI_mean", "DMI_sd", "CP", "CPsd", "NDF", "NDF
   geom_errorbar(aes(x = Diet, ymax = DMI_mean + DMI_sd, ymin = DMI_mean - DMI_sd), width = .2, color = "grey30")+
   ylab(expression(Daily~intake~(gDM/kg^0.75/day)))+
   xlab(expression(Diet))+
-  ggtitle("Single-choice trials", subtitle = "C")+
+  ggtitle("Single-choice", subtitle = "C")+
   themerails)
 
 #rail plot showing intake (rule of compromise)
@@ -73,12 +73,12 @@ names(Singlemeans) <-  c("Diet", "DMI_mean", "DMI_sd", "CP", "CPsd", "NDF", "NDF
     geom_errorbar(aes(x = NDF, y = CP,xmin = NDF - NDFsd, xmax = NDF + NDFsd), width = .5, data = Singlemeans)+
     ylab(expression(Protein~intake~(gDM/kg^0.75/day)))+
     xlab(expression(NDF~intake~(gDM/kg^0.75/day)))+
-    ggtitle(" ", subtitle = "D")+
+    ggtitle("Single-choice", subtitle = "D")+
     themerails)
 
 
 
-Intake <- ggarrange(Mbar, Sbar, Mrail, Srail, nrow = 2, ncol = 2)
+Intake <- ggarrange(Mbar, Mrail, Sbar, Srail, nrow = 2, ncol = 2)
 
 
 
@@ -93,25 +93,19 @@ Intake <- ggarrange(Mbar, Sbar, Mrail, Srail, nrow = 2, ncol = 2)
    themerails)
 
 
-#weight change by trial
-ggplot(trials)+
-  geom_boxplot(aes(x = as.factor(Trial), y = Weight_change))+
-  labs(x = "Trial #", y = "Weight change (%/Day)")
-
-
 
 # Digestibility by diet ---------------------------------------------------
 
 #subset to just digestibility columns
-dig <- day[, .(Diet, DMD, DP, DNDF, DADF, DE)]
+dig <- day[, .(Diet, DMD, DE, DP, DNDF)]
 
 #melt columns to have nutrient as a new variable
-digmelt <- melt(dig, measure.vars = c("DMD", "DP", "DNDF", "DADF", "DE"), 
+digmelt <- melt(dig, measure.vars = c("DMD", "DE", "DP", "DNDF"), 
                 variable.name = "nutrient", 
                 value.name = "digestibility")
 
 #re-order the nutrients for facet wrap
-digmelt[, nutrient := factor(nutrient, levels = c("DMD", "DP", "DNDF", "DADF", "DE"))]
+digmelt[, nutrient := factor(nutrient, levels = c("DMD", "DE", "DP", "DNDF"))]
 
 #remove stuff that's not possible
 digmelt <- digmelt[!digestibility < -0.2]
@@ -121,11 +115,9 @@ digmelt <- digmelt[!digestibility < -0.2]
     ggplot(digmelt)+
     geom_boxplot(aes(x = Diet, y = digestibility*100))+
     labs(y = "Apparent digestability (%)", x = "Diet")+
-    facet_wrap(~nutrient, nrow = 3, ncol = 3, scales = "free_y")+
+    facet_wrap(~nutrient, nrow = 2, ncol = 2, scales = "free_y")+
     themerails+
     theme(strip.background = element_blank()))
-
-
 
 
 
