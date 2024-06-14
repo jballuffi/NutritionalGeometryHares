@@ -23,7 +23,7 @@ sums <- readRDS("Output/data/multichoicesums.rds")
 
 
 #calculate mean intakes in mutlichoice trials
-Multimeans <- MC[, .(mean(DMI_bw), sd(DMI_bw)), by = Diet]
+Multimeans <- MC[, .(mean(DMI_bw), sd(DMI_bw)/sqrt(.N)), by = Diet]
 names(Multimeans) <-  c("Diet", "Intake_mean", "Intake_SD")
 
 #bar graph
@@ -50,7 +50,7 @@ names(Multimeans) <-  c("Diet", "Intake_mean", "Intake_SD")
 
 
 #calculate mean intakes in single choice trials
-Singlemeans <- day[, .(mean(DMI_bw), sd(DMI_bw), mean(DMI_CP_bw), sd(DMI_CP_bw), mean(DMI_NDF_bw), sd(DMI_NDF_bw)), by = Diet]
+Singlemeans <- day[, .(mean(DMI_bw), sd(DMI_bw)/(sqrt(.N)), mean(DMI_CP_bw), sd(DMI_CP_bw)/(sqrt(.N)), mean(DMI_NDF_bw), sd(DMI_NDF_bw)/(sqrt(.N))), by = Diet]
 names(Singlemeans) <-  c("Diet", "DMI_mean", "DMI_sd", "CP", "CPsd", "NDF", "NDFsd")
 
 #bar graph by treatment
@@ -68,7 +68,7 @@ names(Singlemeans) <-  c("Diet", "DMI_mean", "DMI_sd", "CP", "CPsd", "NDF", "NDF
     ggplot(rails)+
     geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
     geom_point(aes(x = mean(DMI_NDF_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sums)+
-    geom_point(aes(x = NDF, y = CP), size = 3, data = Singlemeans)+
+    geom_point(aes(x = NDF, y = CP), size = 2, data = Singlemeans)+
     geom_errorbar(aes(x = NDF, y = CP, ymin = CP - CPsd, ymax = CP + CPsd), width = .5, data = Singlemeans)+
     geom_errorbar(aes(x = NDF, y = CP,xmin = NDF - NDFsd, xmax = NDF + NDFsd), width = .5, data = Singlemeans)+
     ylab(expression(Protein~intake~(gDM/kg^0.75/day)))+
