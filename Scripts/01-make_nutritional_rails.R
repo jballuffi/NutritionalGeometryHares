@@ -117,7 +117,7 @@ allrails <- rbind(foragerails, dietrails)
 (foragerailplot <- 
   ggplot(allrails)+
   geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet, linetype = Type))+
-  labs(y = "Protein intake (g DM/day)", x = "Fibre intake (g DM/day)")+
+  labs(y = "Protein intake (g DM/day)", x = "NDF intake (g DM/day)")+
   themerails)
 #how do I add labels to these lines???
 
