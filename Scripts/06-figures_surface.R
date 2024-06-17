@@ -51,20 +51,26 @@ ggplot(trials)+
 
 # surface plots -----------------------------------------------------------
 
-#not accounting for digestibility
+#weight change ~ NDF and CP
 fitCP <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
 surface(fitCP, x = "NDF intake (g DM/kg^0.75/day)", 
         y = "Protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
 
-#yes accounting for digestibility
-fitDP <- Tps(trials[, .(DMDI, DPI)], trials$Weight_change, scale.type = "range")
-surface(fitDP, x = "DMD intake (g DM/kg^0.75/day)", 
+#weight change ~ DE and DPI
+fitDP <- Tps(trials[, .(DMI_energy_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
+surface(fitDP, x = "Crude Energy intake (kj/kg^0.75/day)", 
+        y = "Protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
+
+#weight change ~ NDF and CP
+fitCP <- Tps(trials[, .(DNDFI, DPI)], trials$Weight_change, scale.type = "range")
+surface(fitCP, x = "Digestible NDF intake (g DM/kg^0.75/day)", 
+        y = "Digestible Protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
+
+#weight change ~ DE and DPI
+fitDP <- Tps(trials[, .(DEI, DPI)], trials$Weight_change, scale.type = "range")
+surface(fitDP, x = "Digestible Energy intake (kj DM/kg^0.75/day)", 
         y = "Digestible protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
 
-#yes accounting for digestibility
-fitDP <- Tps(trials[, .(DEI, DPI)], trials$Weight_change, scale.type = "range")
-surface(fitDP, x = "DE intake (g DM/kg^0.75/day)", 
-        y = "Digestible protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
 
 
 
