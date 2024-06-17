@@ -41,40 +41,45 @@ We used GAMs and thin-spline surface plots to investigate qualitative relationsh
 
 ```{r}
 #surface map to show weight change in response to NDF and CP
-fitCP <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
-surface(fitCP, x = "NDF intake (g DM/kg^0.75/day)", 
-        y = "Protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
+fitNDF <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
+surface(fitNDF, x = "Crude NDF intake (g DM/kg^0.75/day)", 
+        y = "Crude protein intake (g DM/kg^0.75/day)")
 
 ```
 
-Above: Surface maps visualizing weight change performance (%/day) in relation to CP and NDF intake (g DM/kg/day).
+Above: Surface maps visualizing weight change performance (%/day) in relation to crude protein and NDF intake (g DM/kg/day).
 
 ```{r}
-#surface map showing weight change in response to intake of digestable protein and DMD
-fitDP <- Tps(trials[, .(DMDI, DPI)], trials$Weight_change, scale.type = "range")
-surface(fitDP, x = "DMD intake (g DM/kg^0.75/day)", 
-        y = "Digestible protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
+#surface map showing weight change in response to crude energy and crude protein
+
+fitCE <- Tps(trials[, .(DMI_energy_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
+surface(fitCE, x = "Crude energy intake (kj/kg^0.75/day)", 
+        y = "Crude protein intake (g DM/kg^0.75/day)")
 
 ```
 
-Above: Surface map visualizing weight change performance (%/day) in relation to digestible protein and digestible NDF intake (g DM/kg/day).
+Above: Surface map visualizing weight change performance (%/day) in relation to crude energy and crude protein intake.
 
 ```{r}
-#surface map showing DMD in response to protein-fibre balance
+#weight change in response to digestible protein and digestible NDF
+fitDNDF <- Tps(trials[, .(DNDFI, DPI)], trials$Weight_change, scale.type = "range")
+surface(fitDNDF, x = "Digestible NDF intake (g DM/kg^0.75/day)", 
+        y = "Digestible protein intake (g DM/kg^0.75/day)")
 
-dmd <- Tps(day[, .(DMI_NDF_bw, DMI_CP_bw)], day$DMD, scale.type = "range")
-surface(dmd, x = "NDF intake (g DM/kg^0.75/day)", 
-        y = "Protein intake (g DM/kg^0.75/day)", main = "DMD (%)")
 ```
+
+Above: Surface map visualizing weight change performance (%/day) in relation to digestible NDF and digestible protein.
 
 ```{r}
-#surface map showing DMD in response to protein-fibre balance
+#weight change in response to digestible protein and digestible energy
+fitDE <- Tps(trials[, .(DEI, DPI)], trials$Weight_change, scale.type = "range")
+surface(fitDE, x = "Digestible energy intake (kj DM/kg^0.75/day)", 
+        y = "Digestible protein intake (g DM/kg^0.75/day)")
 
-dp <- Tps(day[, .(DMI_NDF_bw, DMI_CP_bw)], day$DP, scale.type = "range")
-surface(dp, x = "NDF intake (g DM/kg^0.75/day)", 
-        y = "Protein intake (g DM/kg^0.75/day)", main = "DP (%)")
 
 ```
+
+Above: Surface map visualizing weight change performance (%/day) in relation to digestible energy and digestible protein.
 
 ## Additional figures
 

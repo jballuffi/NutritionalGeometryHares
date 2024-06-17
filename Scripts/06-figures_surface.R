@@ -49,7 +49,7 @@ ggplot(trials)+
 
 
 
-# surface plots -----------------------------------------------------------
+# surface plots for weight change response -----------------------------------------------------------
 
 #weight change ~ NDF and CP
 fitCP <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
@@ -73,6 +73,12 @@ surface(fitDP, x = "Digestible Energy intake (kj DM/kg^0.75/day)",
 
 
 
+# surface plots for digestibilities ---------------------------------------
+
+#NDF and CP intake effect on digestible energy
+dmd <- Tps(day[, .(DMI_NDF_bw, DMI_CP_bw)], day$DE, scale.type = "range")
+surface(dmd, x = "NDF intake (g DM/kg^0.75/day)", 
+        y = "Protein intake (g DM/kg^0.75/day)", main = "DE (%)")
 
 #NDF and CP intake effect on dry matter digestibility
 dmd <- Tps(day[, .(DMI_NDF_bw, DMI_CP_bw)], day$DMD, scale.type = "range")
