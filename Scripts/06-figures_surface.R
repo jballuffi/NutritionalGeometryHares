@@ -52,23 +52,23 @@ ggplot(trials)+
 # surface plots for weight change response -----------------------------------------------------------
 
 #weight change ~ NDF and CP
-fitCP <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
-surface(fitCP, x = "NDF intake (g DM/kg^0.75/day)", 
+fitNDF <- Tps(trials[, .(DMI_NDF_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
+surface(fitNDF, x = "NDF intake (g DM/kg^0.75/day)", 
         y = "Protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
 
 #weight change ~ DE and DPI
-fitDP <- Tps(trials[, .(DMI_energy_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
-surface(fitDP, x = "Crude Energy intake (kj/kg^0.75/day)", 
+fitCE <- Tps(trials[, .(DMI_energy_bw, DMI_CP_bw)], trials$Weight_change, scale.type = "range")
+surface(fitCE, x = "Crude Energy intake (kj/kg^0.75/day)", 
         y = "Protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
 
 #weight change ~ NDF and CP
-fitCP <- Tps(trials[, .(DNDFI, DPI)], trials$Weight_change, scale.type = "range")
-surface(fitCP, x = "Digestible NDF intake (g DM/kg^0.75/day)", 
+fitDNDF <- Tps(trials[, .(DNDFI, DPI)], trials$Weight_change, scale.type = "range")
+surface(fitDNDF, x = "Digestible NDF intake (g DM/kg^0.75/day)", 
         y = "Digestible Protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
 
 #weight change ~ DE and DPI
-fitDP <- Tps(trials[, .(DEI, DPI)], trials$Weight_change, scale.type = "range")
-surface(fitDP, x = "Digestible Energy intake (kj DM/kg^0.75/day)", 
+fitDE <- Tps(trials[, .(DEI, DPI)], trials$Weight_change, scale.type = "range")
+surface(fitDE, x = "Digestible Energy intake (kj DM/kg^0.75/day)", 
         y = "Digestible protein intake (g DM/kg^0.75/day)", main = "Weight change (%/day)")
 
 
@@ -76,8 +76,8 @@ surface(fitDP, x = "Digestible Energy intake (kj DM/kg^0.75/day)",
 # surface plots for digestibilities ---------------------------------------
 
 #NDF and CP intake effect on digestible energy
-dmd <- Tps(day[, .(DMI_NDF_bw, DMI_CP_bw)], day$DE, scale.type = "range")
-surface(dmd, x = "NDF intake (g DM/kg^0.75/day)", 
+de <- Tps(day[, .(DMI_NDF_bw, DMI_CP_bw)], day$DE, scale.type = "range")
+surface(de, x = "NDF intake (g DM/kg^0.75/day)", 
         y = "Protein intake (g DM/kg^0.75/day)", main = "DE (%)")
 
 #NDF and CP intake effect on dry matter digestibility
