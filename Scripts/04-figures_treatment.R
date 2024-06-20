@@ -90,6 +90,7 @@ Intake <- ggarrange(Mbar, Mrail, Sbar, Srail, nrow = 2, ncol = 2)
    geom_boxplot(aes(x = Diet, y = Weight_change), outlier.shape = NA, width = .75)+
    geom_jitter(aes(x = Diet, y = Weight_change), shape = 1, size = 2, width = .25)+
    labs(y = "Weight change (%/Day)")+
+   ylim(-2.5, 1.7)+
    themerails)
 
 
@@ -113,7 +114,7 @@ digmelt <- digmelt[!digestibility < -0.2]
 #ggplot digestibility against diet
 (dietdigest <- 
     ggplot(digmelt)+
-    geom_boxplot(aes(x = Diet, y = digestibility*100))+
+    geom_boxplot(aes(x = Diet, y = digestibility*100), outlier.shape = NA)+
     labs(y = "Apparent digestability (%)", x = "Diet")+
     facet_wrap(~nutrient, nrow = 3, ncol = 1, scales = "free_y")+
     themerails+
