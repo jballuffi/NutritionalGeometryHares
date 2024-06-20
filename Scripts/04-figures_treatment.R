@@ -97,15 +97,15 @@ Intake <- ggarrange(Mbar, Mrail, Sbar, Srail, nrow = 2, ncol = 2)
 # Digestibility by diet ---------------------------------------------------
 
 #subset to just digestibility columns
-dig <- day[, .(Diet, DMD, DE, DP, DNDF)]
+dig <- day[, .(Diet, DMD, DP, DNDF)]
 
 #melt columns to have nutrient as a new variable
-digmelt <- melt(dig, measure.vars = c("DMD", "DE", "DP", "DNDF"), 
+digmelt <- melt(dig, measure.vars = c("DMD", "DP", "DNDF"), 
                 variable.name = "nutrient", 
                 value.name = "digestibility")
 
 #re-order the nutrients for facet wrap
-digmelt[, nutrient := factor(nutrient, levels = c("DMD", "DE", "DP", "DNDF"))]
+digmelt[, nutrient := factor(nutrient, levels = c("DMD", "DP", "DNDF"))]
 
 #remove stuff that's not possible
 digmelt <- digmelt[!digestibility < -0.2]
@@ -115,7 +115,7 @@ digmelt <- digmelt[!digestibility < -0.2]
     ggplot(digmelt)+
     geom_boxplot(aes(x = Diet, y = digestibility*100))+
     labs(y = "Apparent digestability (%)", x = "Diet")+
-    facet_wrap(~nutrient, nrow = 2, ncol = 2, scales = "free_y")+
+    facet_wrap(~nutrient, nrow = 3, ncol = 1, scales = "free_y")+
     themerails+
     theme(strip.background = element_blank()))
 
@@ -130,4 +130,4 @@ digmelt <- digmelt[!digestibility < -0.2]
 #save plots
 ggsave("Output/figures/intakebarandrail.jpeg", Intake, width = 8, height = 8, unit = "in")
 ggsave("Output/figures/weightchangebar.jpeg", WeightChange, width = 4, height = 4, unit = "in")
-ggsave("Output/figures/dietdigestion.jpeg", dietdigest, width = 11, height = 8 )
+ggsave("Output/figures/dietdigestion.jpeg", dietdigest, width = 5, height = 12 )
