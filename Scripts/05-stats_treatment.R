@@ -96,19 +96,6 @@ posthocNDF
 
 
 
-# ADF digestion for feeding trials ----------------------------------------
-
-#ADF digestion by day
-ADFdig <- lm(day$DADF ~ day$Diet)
-aADFdig <- anova(ADFdig)
-ADFdigpval <- round(aADFdig$`Pr(>F)`[1], 5)
-aovADF <- aov(ADFdig)
-posthocADF <- TukeyHSD(x = aovADF, 'day$Diet', conf.level = 0.95)
-posthocADF
-
-
-
-
 # collect model outputs into one table ------------------------------------
 
 mods <- list(lmMC, IR, WC, DMD, CPdig, NDFdig, ADFdig)
