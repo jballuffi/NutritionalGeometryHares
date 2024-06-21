@@ -13,58 +13,90 @@ trials <- readRDS("Output/data/trialresultscleaned.rds")
 bodyCNDF <- gam(Weight_change ~ s(DMI_NDF_bw, DMI_CP_bw), data = trials)
 
 #save summary of model
-sum <- summary(bodyCNDF)
+sumCNDF <- summary(bodyCNDF)
   
 #make p-table, and indicate model, this is for intercept stuff
-sump <- as.data.table(round((sum$p.table), 4))
-sump[, Model := "Crude macronutrient"]
-sump[, Response := "Weight change"]
-sump[, `Dev. Explained` := round(sum$dev.expl, 2)]
+sumpCNDF <- as.data.table(round((sumCNDF$p.table), 4))
+sumpCNDF[, Model := "Crude macronutrient"]
+sumpCNDF[, Response := "Weight change"]
+sumpCNDF[, `Dev. Explained` := round(sumCNDF$dev.expl, 2)]
   
 #make s-table, and indicate model, this is for variable stuff
-sums <- as.data.table(round((sum$s.table), 4))
-sums[, Model := "Crude macronutrient"]
-sums[, Response := "Weight change"]
+sumsCNDF <- as.data.table(round((sumCNDF$s.table), 4))
+sumsCNDF[, Model := "Crude macronutrient"]
+sumsCNDF[, Response := "Weight change"]
 
 
 
 # model weight change ~ crude protein and crude energy --------------------
 
-bodyCE <- gam(Weight_change ~ s(DMI_NDF_bw, DMI_CP_bw), data = trials)
-
-
-
-
-
-# model weight change ~ digestible protein and NDF -----------------------------------
-
-bodyD <- gam(Weight_change ~ s(DNDFI, DPI), data = trials)
+bodyCE <- gam(Weight_change ~ s(DMI_energy_bw, DMI_CP_bw), data = trials)
 
 #save summary of model
-sum2 <- summary(bodyD)
+sumCE <- summary(bodyCE)
 
 #make p-table, and indicate model, this is for intercept stuff
-sum2p <- as.data.table(round((sum2$p.table), 4))
-sum2p[, Model := "Digestible macronutrient"]
-sum2p[, Response := "Weight change"]
-sum2p[, `Dev. Explained` := round(sum2$dev.expl, 2)]
+sumpCE <- as.data.table(round((sumCE$p.table), 4))
+sumpCE[, Model := "Crude macronutrient"]
+sumpCE[, Response := "Weight change"]
+sumpCE[, `Dev. Explained` := round(sumCE$dev.expl, 2)]
 
 #make s-table, and indicate model, this is for variable stuff
-sum2s <- as.data.table(round((sum2$s.table), 4))
-sum2s[, Model := "Digestible macronutrient"]
-sum2s[, Response := "Weight change"]
+sumsCE <- as.data.table(round((sumCE$s.table), 4))
+sumsCE[, Model := "Crude macronutrient"]
+sumsCE[, Response := "Weight change"]
+
+
+
+# model weight change ~ digestible protein and digestible NDF -----------------------------------
+
+bodyDNDF <- gam(Weight_change ~ s(DNDFI, DPI), data = trials)
+
+#save summary of model
+sumDNDF <- summary(bodyDNDF)
+
+#make p-table, and indicate model, this is for intercept stuff
+sumpDNDF <- as.data.table(round((sumDNDF$p.table), 4))
+sumpDNDF[, Model := "Digestible macronutrient"]
+sumpDNDF[, Response := "Weight change"]
+sumpDNDF[, `Dev. Explained` := round(sumDNDF$dev.expl, 2)]
+
+#make s-table, and indicate model, this is for variable stuff
+sumsDNDF <- as.data.table(round((sumDNDF$s.table), 4))
+sumsDNDF[, Model := "Digestible macronutrient"]
+sumsDNDF[, Response := "Weight change"]
+
+
+
+# model weight change ~ digestible protein and digestible energy -----------------------------------
+
+bodyDE <- gam(Weight_change ~ s(DEI, DPI), data = trials)
+
+#save summary of model
+sumDE <- summary(bodyDE)
+
+#make p-table, and indicate model, this is for intercept stuff
+sumpDE <- as.data.table(round((sumDE$p.table), 4))
+sumpDE[, Model := "Digestible macronutrient"]
+sumpDE[, Response := "Weight change"]
+sumpDE[, `Dev. Explained` := round(sumDE$dev.expl, 2)]
+
+#make s-table, and indicate model, this is for variable stuff
+sumsDE <- as.data.table(round((sumDE$s.table), 4))
+sumsDE[, Model := "Digestible macronutrient"]
+sumsDE[, Response := "Weight change"]
 
 
 
 # Merge output tables -----------------------------------------------------
 
 #bind all p tables
-allsump <- rbind(sump, sum2p, sum3p)
+allsump <- rbind(sumpCNDF, sumpCE, sumpDNDF, sumpDE)
 names(allsump) <- c("Estimate/edf", "SE/Ref.df", "t/F", "p", "Model", "Response", "Dev. Explained")
 allsump[, Parameter := "Intercept"]
 
 #bind all s tables
-allsums <- rbind(sums, sum2s, sum3s)
+allsums <- rbind(sumsCNDF, sumsCE, sumsDNDF, sumsDE)
 names(allsums) <- c("Estimate/edf", "SE/Ref.df", "t/F", "p", "Model", "Response")
 allsums[, Parameter := "s(DMI_NDF x DMI_protein)"]
 
