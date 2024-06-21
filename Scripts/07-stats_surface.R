@@ -5,16 +5,15 @@ lapply(dir('R', '*.R', full.names = TRUE), source)
 
 #read in results
 trials <- readRDS("Output/data/trialresultscleaned.rds")
-day <- readRDS("Output/data/dailyresultscleaned.rds")
 
 
 
-# model for non-digestible intake on weight change -------------------------------------
+# model weight change ~ crude protein and crude NDF -------------------------------------
 
-bodyND <- gam(Weight_change ~ s(DMI_NDF_bw, DMI_CP_bw), data = trials)
+bodyCNDF <- gam(Weight_change ~ s(DMI_NDF_bw, DMI_CP_bw), data = trials)
 
 #save summary of model
-sum <- summary(bodyND)
+sum <- summary(bodyCNDF)
   
 #make p-table, and indicate model, this is for intercept stuff
 sump <- as.data.table(round((sum$p.table), 4))
@@ -26,9 +25,18 @@ sump[, `Dev. Explained` := round(sum$dev.expl, 2)]
 sums <- as.data.table(round((sum$s.table), 4))
 sums[, Model := "Crude macronutrient"]
 sums[, Response := "Weight change"]
- 
 
-# model for digestible intake on weight change -----------------------------------
+
+
+# model weight change ~ crude protein and crude energy --------------------
+
+bodyCE <- gam(Weight_change ~ s(DMI_NDF_bw, DMI_CP_bw), data = trials)
+
+
+
+
+
+# model weight change ~ digestible protein and NDF -----------------------------------
 
 bodyD <- gam(Weight_change ~ s(DNDFI, DPI), data = trials)
 
@@ -45,24 +53,6 @@ sum2p[, `Dev. Explained` := round(sum2$dev.expl, 2)]
 sum2s <- as.data.table(round((sum2$s.table), 4))
 sum2s[, Model := "Digestible macronutrient"]
 sum2s[, Response := "Weight change"]
-
-#  model for intake on DMD -----------------------------------------------
-
-DMD <- gam(DMD ~ s(DMI_NDF_bw, DMI_CP_bw), data = day)
-
-#save summary of model
-sum3 <- summary(DMD)
-
-#make p-table, intercept stuff
-sum3p <- as.data.table(round((sum3$p.table), 4))
-sum3p[, Model := "Crude macronutrient"]
-sum3p[, Response := "DMD"]
-sum3p[, `Dev. Explained` := round(sum3$dev.expl, 2)]
-
-#make s-table, intercept stuff
-sum3s <- as.data.table(round((sum3$s.table), 4))
-sum3s[, Model := "Crude macronutrient"]
-sum3s[, Response := "DMD"]
 
 
 
