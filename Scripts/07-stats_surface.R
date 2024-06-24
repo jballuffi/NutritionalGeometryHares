@@ -8,7 +8,7 @@ trials <- readRDS("Output/data/trialresultscleaned.rds")
 
 
 
-# model weight change ~ crude protein and crude NDF -------------------------------------
+# model weight change ~ crude NDF -------------------------------------
 
 bodyCNDF <- gam(Weight_change ~ s(DMI_NDF_bw, DMI_CP_bw), data = trials)
 
@@ -17,18 +17,18 @@ sumCNDF <- summary(bodyCNDF)
   
 #make p-table, and indicate model, this is for intercept stuff
 sumpCNDF <- as.data.table(round((sumCNDF$p.table), 4))
-sumpCNDF[, Model := "Crude macronutrient"]
+sumpCNDF[, Model := "Crude NDF"]
 sumpCNDF[, Response := "Weight change"]
 sumpCNDF[, `Dev. Explained` := round(sumCNDF$dev.expl, 2)]
   
 #make s-table, and indicate model, this is for variable stuff
 sumsCNDF <- as.data.table(round((sumCNDF$s.table), 4))
-sumsCNDF[, Model := "Crude macronutrient"]
+sumsCNDF[, Model := "Crude NDF"]
 sumsCNDF[, Response := "Weight change"]
 
 
 
-# model weight change ~ crude protein and crude energy --------------------
+# model weight change ~ crude energy --------------------
 
 bodyCE <- gam(Weight_change ~ s(DMI_energy_bw, DMI_CP_bw), data = trials)
 
@@ -37,18 +37,18 @@ sumCE <- summary(bodyCE)
 
 #make p-table, and indicate model, this is for intercept stuff
 sumpCE <- as.data.table(round((sumCE$p.table), 4))
-sumpCE[, Model := "Crude macronutrient"]
+sumpCE[, Model := "Crude energy"]
 sumpCE[, Response := "Weight change"]
 sumpCE[, `Dev. Explained` := round(sumCE$dev.expl, 2)]
 
 #make s-table, and indicate model, this is for variable stuff
 sumsCE <- as.data.table(round((sumCE$s.table), 4))
-sumsCE[, Model := "Crude macronutrient"]
+sumsCE[, Model := "Crude energy"]
 sumsCE[, Response := "Weight change"]
 
 
 
-# model weight change ~ digestible protein and digestible NDF -----------------------------------
+# model weight change ~ digestible NDF -----------------------------------
 
 bodyDNDF <- gam(Weight_change ~ s(DNDFI, DPI), data = trials)
 
@@ -57,18 +57,18 @@ sumDNDF <- summary(bodyDNDF)
 
 #make p-table, and indicate model, this is for intercept stuff
 sumpDNDF <- as.data.table(round((sumDNDF$p.table), 4))
-sumpDNDF[, Model := "Digestible macronutrient"]
+sumpDNDF[, Model := "Digestible NDF"]
 sumpDNDF[, Response := "Weight change"]
 sumpDNDF[, `Dev. Explained` := round(sumDNDF$dev.expl, 2)]
 
 #make s-table, and indicate model, this is for variable stuff
 sumsDNDF <- as.data.table(round((sumDNDF$s.table), 4))
-sumsDNDF[, Model := "Digestible macronutrient"]
+sumsDNDF[, Model := "Digestible NDF"]
 sumsDNDF[, Response := "Weight change"]
 
 
 
-# model weight change ~ digestible protein and digestible energy -----------------------------------
+# model weight change ~ digestible energy -----------------------------------
 
 bodyDE <- gam(Weight_change ~ s(DEI, DPI), data = trials)
 
@@ -77,13 +77,13 @@ sumDE <- summary(bodyDE)
 
 #make p-table, and indicate model, this is for intercept stuff
 sumpDE <- as.data.table(round((sumDE$p.table), 4))
-sumpDE[, Model := "Digestible macronutrient"]
+sumpDE[, Model := "Digestible energy"]
 sumpDE[, Response := "Weight change"]
 sumpDE[, `Dev. Explained` := round(sumDE$dev.expl, 2)]
 
 #make s-table, and indicate model, this is for variable stuff
 sumsDE <- as.data.table(round((sumDE$s.table), 4))
-sumsDE[, Model := "Digestible macronutrient"]
+sumsDE[, Model := "Digestible energy"]
 sumsDE[, Response := "Weight change"]
 
 
