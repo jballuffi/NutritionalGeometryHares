@@ -1,9 +1,9 @@
 "","Response","Model","Parameter","Dev. Explained","Estimate/edf","SE/Ref.df","t/F","p"
 "1","Weight change","Crude NDF","Intercept",0.29,-0.4,0.1,-4.02,0
-"2","Weight change","Crude NDF","s(DMI_NDF x DMI_protein)",NA,4.48,5.88,3.69,0
+"2","Weight change","Crude NDF","s",NA,4.48,5.88,3.69,0
 "3","Weight change","Crude energy","Intercept",0.17,-0.4,0.1,-3.77,0
-"4","Weight change","Crude energy","s(DMI_NDF x DMI_protein)",NA,2.7,3.23,3.6,0.02
+"4","Weight change","Crude energy","s",NA,2.7,3.23,3.6,0.02
 "5","Weight change","Digestible NDF","Intercept",0.6,-0.4,0.08,-4.83,0
-"6","Weight change","Digestible NDF","s(DMI_NDF x DMI_protein)",NA,15.74,20.29,3.02,0
+"6","Weight change","Digestible NDF","s",NA,15.74,20.29,3.02,0
 "7","Weight change","Digestible energy","Intercept",0.27,-0.4,0.1,-3.97,0
-"8","Weight change","Digestible energy","s(DMI_NDF x DMI_protein)",NA,3.65,4.6,4.37,0
+"8","Weight change","Digestible energy","s",NA,3.65,4.6,4.37,0

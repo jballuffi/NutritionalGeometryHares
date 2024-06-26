@@ -98,7 +98,7 @@ allsump[, Parameter := "Intercept"]
 #bind all s tables
 allsums <- rbind(sumsCNDF, sumsCE, sumsDNDF, sumsDE)
 names(allsums) <- c("Estimate/edf", "SE/Ref.df", "t/F", "p", "Model", "Response")
-allsums[, Parameter := "s(DMI_NDF x DMI_protein)"]
+allsums[, Parameter := "s"]
 
 #bind p and s tables together
 summarytable <- rbind(allsump, allsums, fill = TRUE)
