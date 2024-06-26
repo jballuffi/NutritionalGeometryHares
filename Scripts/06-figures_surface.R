@@ -9,32 +9,6 @@ day <- readRDS("Output/data/dailyresultscleaned.rds")
 
 
 
-# figure for digestible intake rate and weight change ---------------------
-
-(DEintake <- 
-   ggplot(trials)+
-   geom_point(aes(x = DEI, y = Weight_change))+
-   geom_smooth(aes(x = DEI, y = Weight_change), method = "lm")+
-   geom_abline(intercept = 0, slope = 0, linetype = 2)+
-   ylab("Weight change (%/day)")+
-   xlab(expression(DE~intake~(kj/kg^0.75/day)))+
-   labs(title = "A")+
-   themerails)
-
-(DPintake <-
-    ggplot(trials)+
-    geom_point(aes(x = DPI, y = Weight_change))+
-    geom_smooth(aes(x = DPI, y = Weight_change), method = "lm")+
-    geom_abline(intercept = 0, slope = 0, linetype = 2)+
-    ylab("Weight change (%/day)")+
-    xlab(expression(DP~intake~(g/kg^0.75/day)))+
-    labs(title = "B")+
-    themerails)
-
-weight <- ggarrange(DEintake, DPintake,  ncol = 1, nrow =2)
-
-
-
 # fecal protein and weight change -----------------------------------------
 
 FP <- lm(Weight_change ~ CP_F, data = trials)
