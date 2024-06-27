@@ -7,6 +7,8 @@ library(tidymv)
 #read in results
 trials <- readRDS("Output/data/trialresultscleaned.rds")
 
+#nutritional rails
+rails <- fread("Output/data/dietdigestionrails.rds")
 
 
 # model weight change ~ crude NDF -------------------------------------
@@ -106,9 +108,16 @@ summarytable <- allsums %>% mutate_if(is.numeric, round, digits = 3)
 
 
 
-# visualizing GAMs ---------------------
+# make predictive datasheets of each model --------------------------------
 
 CNDF <- predict_gam(bodyCNDF)
+CE <- predict_gam(bodyCE)
+DNDF <- predict_gam(bodyDNDF)
+DE <- predict_gam(bodyDE)
+
+
+
+# figures of curved lines -------------------------------------------------
 
 ggplot(CNDF)+
   geom_smooth(aes(x = DMI_CP_bw, y = fit))
@@ -116,43 +125,45 @@ ggplot(CNDF)+
 ggplot(CNDF)+
   geom_smooth(aes(x = DMI_NDF_bw, y = fit))
 
-ggplot(CNDF)+
-  geom_raster(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit, fill = fit))+
-  geom_contour(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit), colour = "white")+
-  scale_fill_continuous(name = "Weight change (%/day)")+
-  theme_minimal()
-
-
-CE <- predict_gam(bodyCE)
-
 ggplot(CE)+
   geom_smooth(aes(x = DMI_CP_bw, y = fit))
-
-ggplot(CE)+
-  geom_raster(aes(x = DMI_energy_bw, y = DMI_CP_bw, z = fit, fill = fit))+
-  geom_contour(aes(x = DMI_energy_bw, y = DMI_CP_bw, z = fit), colour = "white")+
-  scale_fill_continuous(name = "Weight change (%/day)")+
-  theme_minimal()
-
-
-DNDF <- predict_gam(bodyDNDF)
-
-ggplot(DNDF)+
-  geom_raster(aes(x = DNDFI, y = DPI, z = fit, fill = fit))+
-  geom_contour(aes(x = DNDFI, y = DPI, z = fit), colour = "white")+
-  scale_fill_continuous(name = "Weight change (%/day)")+
-  theme_minimal()
-
-
-DE <- predict_gam(bodyDE)
 
 ggplot(DE)+
   geom_smooth(aes(x = DPI, y = fit))
 
+
+
+# visualizing GAMs ---------------------
+
+ggplot(CNDF)+
+  geom_raster(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit, fill = fit), data = CNDF)+
+  geom_contour(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit), bins = 5, colour = "white", data = CNDF)+
+  geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet), data = rails, size = .8)+
+  scale_fill_continuous(name = "Weight change (%/day)", type = "viridis")+
+  xlim(min(CNDF$DMI_NDF_bw), max(CNDF$DMI_NDF_bw))+
+  ylim(min(CNDF$DMI_CP_bw), max(CNDF$DMI_CP_bw))+
+  theme_minimal()
+
+ggplot(CE)+
+  geom_raster(aes(x = DMI_energy_bw, y = DMI_CP_bw, z = fit, fill = fit))+
+  geom_contour(aes(x = DMI_energy_bw, y = DMI_CP_bw, z = fit), bins = 5, colour = "white")+
+  scale_fill_continuous(name = "Weight change (%/day)", type = "viridis")+
+  theme_minimal()
+
+ggplot(DNDF)+
+  geom_raster(aes(x = DNDFI, y = DPI, z = fit, fill = fit))+
+  geom_contour(aes(x = DNDFI, y = DPI, z = fit), bins = 5, colour = "white")+
+  scale_fill_continuous(name = "Weight change (%/day)", type = "viridis")+
+  theme_minimal()
+
+
+
+
+
 ggplot(DE)+
   geom_raster(aes(x = DEI, y = DPI, z = fit, fill = fit))+
-  geom_contour(aes(x = DEI, y = DPI, z = fit), colour = "white")+
-  scale_fill_continuous(name = "Weight change (%/day)")+
+  geom_contour(aes(x = DEI, y = DPI, z = fit), bins = 5, colour = "white")+
+  scale_fill_continuous(name = "Weight change (%/day)", type = "viridis")+
   theme_minimal()
 
 
