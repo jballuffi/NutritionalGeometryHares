@@ -11,6 +11,7 @@ trials <- readRDS("Output/data/trialresultscleaned.rds")
 rails <- fread("Output/data/dietdigestionrails.rds")
 
 
+
 # model weight change ~ crude NDF -------------------------------------
 
 #bodyCNDF <- gam(Weight_change ~ s(DMI_NDF_bw, DMI_CP_bw), data = trials)
@@ -135,36 +136,55 @@ ggplot(DE)+
 
 # visualizing GAMs ---------------------
 
-ggplot(CNDF)+
+a <- ggplot()+
   geom_raster(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit, fill = fit), data = CNDF)+
-  geom_contour(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit), bins = 5, colour = "white", data = CNDF)+
-  geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet), data = rails, size = .8)+
-  scale_fill_continuous(name = "Weight change (%/day)", type = "viridis")+
+  geom_contour(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit), bins = 5, colour = "grey90", data = CNDF)+
+  scale_fill_continuous(name = "%/day", type = "viridis")+
+  geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet), size = .8, data = rails)+
   xlim(min(CNDF$DMI_NDF_bw), max(CNDF$DMI_NDF_bw))+
   ylim(min(CNDF$DMI_CP_bw), max(CNDF$DMI_CP_bw))+
-  theme_minimal()
+  xlab(expression(NDF~intake~(g/kg^0.75/day)))+
+  ylab(expression(CP~intake~(g/kg^0.75/day)))+
+  labs(title = "A) Crude NDF and protein")+
+  themerails
 
-ggplot(CE)+
-  geom_raster(aes(x = DMI_energy_bw, y = DMI_CP_bw, z = fit, fill = fit))+
-  geom_contour(aes(x = DMI_energy_bw, y = DMI_CP_bw, z = fit), bins = 5, colour = "white")+
-  scale_fill_continuous(name = "Weight change (%/day)", type = "viridis")+
-  theme_minimal()
+b <- ggplot()+
+  geom_raster(aes(x = DMI_energy_bw, y = DMI_CP_bw, z = fit, fill = fit), data = CE)+
+  geom_contour(aes(x = DMI_energy_bw, y = DMI_CP_bw, z = fit), bins = 5, colour = "grey90", data = CE)+
+  scale_fill_continuous(name = "%/day", type = "viridis")+
+  geom_line(aes(x = CE_IR, y = CP_IR, group = Diet), size = .8, data = rails)+
+  xlim(min(CE$DMI_energy_bw), max(CE$DMI_energy_bw))+
+  ylim(min(CE$DMI_CP_bw), max(CE$DMI_CP_bw))+
+  xlab(expression(CE~intake~(kj/kg^0.75/day)))+
+  ylab(expression(CP~intake~(g/kg^0.75/day)))+
+  labs(title = "B) Crude energy and protein")+
+  themerails
 
-ggplot(DNDF)+
-  geom_raster(aes(x = DNDFI, y = DPI, z = fit, fill = fit))+
-  geom_contour(aes(x = DNDFI, y = DPI, z = fit), bins = 5, colour = "white")+
-  scale_fill_continuous(name = "Weight change (%/day)", type = "viridis")+
-  theme_minimal()
+c <- ggplot()+
+  geom_raster(aes(x = DNDFI, y = DPI, z = fit, fill = fit), data = DNDF)+
+  geom_contour(aes(x = DNDFI, y = DPI, z = fit), bins = 5, colour = "grey90", data = DNDF)+
+  scale_fill_continuous(name = "%/day", type = "viridis")+
+  geom_line(aes(x = DNDF_IR, y = DP_IR, group = Diet), size = .8, data = rails, )+
+  xlim(min(DNDF$DNDFI), max(DNDF$DNDFI))+
+  ylim(min(DNDF$DPI), max(DNDF$DPI))+
+  xlab(expression(DNDF~intake~(g/kg^0.75/day)))+
+  ylab(expression(DP~intake~(g/kg^0.75/day)))+
+  labs(title = "C) Digestible NDF and protein")+
+  themerails
 
+d <- ggplot()+
+  geom_raster(aes(x = DEI, y = DPI, z = fit, fill = fit), data = DE)+
+  geom_contour(aes(x = DEI, y = DPI, z = fit), bins = 5, colour = "white", data = DE)+
+  scale_fill_continuous(name = "%/day", type = "viridis")+
+  geom_line(aes(x = DE_IR, y = DP_IR, group = Diet), size = .8, data = rails)+
+  xlim(min(DE$DEI), max(DE$DEI))+
+  ylim(min(DE$DPI), max(DE$DPI))+
+  xlab(expression(DE~intake~(kj/kg^0.75/day)))+
+  ylab(expression(DP~intake~(g/kg^0.75/day)))+
+  labs(title = "D) Digestible energy and protein")+
+  themerails
 
-
-
-
-ggplot(DE)+
-  geom_raster(aes(x = DEI, y = DPI, z = fit, fill = fit))+
-  geom_contour(aes(x = DEI, y = DPI, z = fit), bins = 5, colour = "white")+
-  scale_fill_continuous(name = "Weight change (%/day)", type = "viridis")+
-  theme_minimal()
+surfaceplot <- ggarrange(a, b, c, d, ncol = 2, nrow = 2)
 
 
 
@@ -194,8 +214,11 @@ weight <- ggarrange(DEintake, DPintake,  ncol = 1, nrow =2)
 
 
 
-# Save table --------------------------------------------------------------
+# Save --------------------------------------------------------------
 
 write.csv(summarytable, "Output/stats/GAMoutputs.csv")
 
+ggsave("Output/figures/weightchangedigestible.jpeg", weight, width = 5, height = 8, unit = "in")
+
+ggsave("Output/figures/surfaceplots.jpeg", surfaceplot, width = 12, height = 9, unit = "in")
         
