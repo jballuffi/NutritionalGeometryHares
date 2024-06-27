@@ -67,5 +67,3 @@ surface(dp, x = "NDF intake (g DM/kg^0.75/day)",
 
 
 # save ' ------------------------------------------------------------------
-
-ggsave("Output/figures/weightchangedigestible.jpeg", weight, width = 5, height = 8, unit = "in")
