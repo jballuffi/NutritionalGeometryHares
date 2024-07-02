@@ -5,7 +5,6 @@ lapply(dir('R', '*.R', full.names = TRUE), source)
 
 # read in cleaned results -------------------------------------------------
 
-
 #read in cleaned multi-choice results
 MC <- readRDS("Output/data/multichoiceresults.rds") #all results by diet
 targets <- readRDS("Output/data/multichoicesums.rds") #sums of nutrient intakes per trial
@@ -88,6 +87,8 @@ aovCP <- aov(CPdig)
 posthocCP <- TukeyHSD(x = aovCP, 'day$Diet', conf.level = 0.95)
 posthocCP
 
+diffDtoAcp <- round((day[Diet == "D", mean(DP)])/(day[Diet == "A", mean(DP)]), digits = 2)
+
 
 
 # NDF digestion for feeding trials ----------------------------------------
@@ -99,6 +100,10 @@ NDFdigpval <- round(aNDFdig$`Pr(>F)`[1], 5)
 aovNDF <- aov(NDFdig)
 posthocNDF <- TukeyHSD(x = aovNDF, 'day$Diet', conf.level = 0.95)
 posthocNDF
+
+diffAtoCndf <- round((day[Diet == "A", mean(DNDF)])/(day[Diet == "C", mean(DNDF)]), digits = 2)
+diffAtoDndf <- round((day[Diet == "A", mean(DNDF)])/(day[Diet == "D", mean(DNDF)]), digits = 2)
+diffBtoCndf <- round((day[Diet == "B", mean(DNDF)])/(day[Diet == "C", mean(DNDF)]), digits = 2)
 
 
 
