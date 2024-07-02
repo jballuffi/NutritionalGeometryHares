@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r naivetrials, include = FALSE}
 
 #source the multichoice script
-source("Scripts/05-stats_treatment.R")
+source("Scripts/06-stats_treatment.R")
 
 source("Scripts/07-stats_surface.R")
 ```
