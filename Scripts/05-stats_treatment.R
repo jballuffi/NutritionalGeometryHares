@@ -27,10 +27,12 @@ aovMC <- aov(lmMC)
 posthocMC <- TukeyHSD(x = aovMC, 'MC$Diet', conf.level = 0.95)
 posthocMC
 
-#how much more of diet B did hares eat than other diets
-effectofB <- round((MC[Diet == "B", mean(DMI_bw)])/(MC[, mean(DMI_bw)]), digits = 2)
 
-#sig difference between B and other diets
+#how many times more B than A
+diffBtoA <- round((MC[Diet == "B", mean(DMI_bw)]) / (MC[Diet == "A", mean(DMI_bw)]), digits = 2)
+
+diffBtoD <- round((MC[Diet == "B", mean(DMI_bw)]) / (MC[Diet == "D", mean(DMI_bw)]), digits = 2)
+
 
 
 # intake rate for normal feeding trials -----------------------------
@@ -46,6 +48,8 @@ posthocIR
 
 effectofA <- round((day[Diet == "A", mean(DMI_bw)])/(day[, mean(DMI_bw)]), digits = 2)
 
+diffAtoC <- round((day[Diet == "A", mean(DMI_bw)])/(day[Diet == "C", mean(DMI_bw)]), digits = 2)
+
 
 
 # weight change for feeding trials ----------------------------------------
@@ -57,6 +61,8 @@ WCpval <- round(aWC$`Pr(>F)`[1], 5)
 aovWC <- aov(WC)
 posthocWC <- TukeyHSD(x = aovWC, 'trials$Diet', conf.level = 0.95)
 posthocWC
+
+diffAtoBwc <- round((trials[Diet == "B", mean(Weight_change)]) / (trials[Diet == "A", mean(Weight_change)]), digits = 2)
 
 
 
