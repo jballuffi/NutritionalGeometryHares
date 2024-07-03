@@ -109,8 +109,8 @@ diffBtoCndf <- round((day[Diet == "B", mean(DNDF)])/(day[Diet == "C", mean(DNDF)
 
 # collect model outputs into one table ------------------------------------
 
-mods <- list(lmMC, IR, WC, DMD, CPdig, NDFdig, ADFdig)
-names <- c("multi-choice", "single choice", "weight", "DMD", "CP digestion", "NDF digestion", "ADF digestion")
+mods <- list(lmMC, IR, WC, DMD, CPdig, NDFdig)
+names <- c("multi-choice", "single choice", "weight", "DMD", "CP digestion", "NDF digestion")
 
 
 
