@@ -26,6 +26,7 @@ diets <- fread("Input/Diet_compositions.csv")
 #remove diet DM column from dietcomp. Will be calculated for each winter
 dietcomp[, DM_diet := NULL]
 
+
 #average diet DM by winter
 dietDM <- diets[, .(DM_diet = mean(DM)), by = .(Winter, Sample)]
 setnames(dietDM, "Sample", "Diet")
@@ -99,6 +100,8 @@ DT[, DMI_energy_bw := DMI_energy/(Weight_start^.75)]
 
 # remove food strikers ----------------------------------------------------
 
+totals <- DT[, .(DMI_bw = sum(DMI_bw)), by = ID] 
+strikers <- totals[DMI_bw < 20, ID]
 DT <- DT[!ID %in% strikers]
 
 
