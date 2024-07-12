@@ -100,6 +100,7 @@ MC[, DEI := DE_diet*DMI_bw] #digestible energy intake (kj/kg.75)
 totals <- MC[, .(DMI_bw = sum(DMI_bw), 
                  DMI_CP_bw = sum(DMI_CP_bw), 
                  DMI_NDF_bw = sum(DMI_NDF_bw),
+                 DMI_energy_bw = sum(DMI_energy_bw),
                  DMI_DP_bw = sum(DPI),
                  DMI_DNDF_bw = sum(DNDFI),
                  DMI_DEI_bw = sum(DEI)), by = ID]
