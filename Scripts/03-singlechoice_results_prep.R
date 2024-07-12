@@ -173,7 +173,7 @@ DT[, DMI_NDF := DMI*NDF_diet] #dry matter intake of NDF (g)
 DT[, DMI_ADF := DMI*ADF_diet] #dry matter intake of ADF (g)
 DT[, DMI_ADL := DMI*ADL_diet] #dry matter intake of ADL (g)
 DT[, DMI_C := DMI*C_diet]     #dry matter intake of carbon (g)
-DT[, DMI_energy := DMI*Energy_diet/1000] #intake of energy (kj)
+DT[, DMI_energy := DMI*Energy_diet] #intake of energy (kj)
 
 #convert weights from g to kg
 DT[, Weight_start := Weight_start/1000]
@@ -197,7 +197,7 @@ DT[, DP := (DMI_CP - DMF_CP)/DMI_CP] #digestible protein (%)
 DT[, DNDF := (DMI_NDF - DMF_NDF)/DMI_NDF] #digestible NDF (%)
 DT[, DADF := (DMI_ADF - DMF_ADF)/DMI_ADF] #digestible ADF (%)
 DT[, DADL := (DMI_ADL - DMF_ADL)/DMI_ADL] #digestible ADL (%)
-DT[, DE := DMD*Energy_diet/1000] #digestible energy (kj/g)
+DT[, DE := DMD*Energy_diet] #digestible energy (kj/g)
 
 #calculate total digestible protein in diets
 DT[, DP_diet := CP_diet*DP]
