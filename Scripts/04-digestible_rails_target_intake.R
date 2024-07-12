@@ -25,7 +25,7 @@ diets[, DP_diet := CP_diet*DP]
 diets[, DNDF_diet := NDF_diet*DNDF]
 
 #convert from j to kj
-diets[, Energy_diet := Energy_diet/1000]
+diets[, Energy_diet := Energy_diet]
 
 
 
