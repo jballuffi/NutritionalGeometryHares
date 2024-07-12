@@ -1,15 +1,17 @@
-
-#source the R folder to load any packages and functions
-lapply(dir('R', '*.R', full.names = TRUE), source)
-library(tidymv)
-
-
-#read in results
-trials <- readRDS("Output/data/trialresultscleaned.rds")
-
-#nutritional rails
-rails <- fread("Output/data/dietdigestionrails.rds")
-
+  
+  #source the R folder to load any packages and functions
+  lapply(dir('R', '*.R', full.names = TRUE), source)
+  library(tidymv)
+  
+  
+  #read in results
+  trials <- readRDS("Output/data/trialresultscleaned.rds")
+  
+  #nutritional rails
+  rails <- fread("Output/data/dietdigestionrails.rds")
+  
+  #target intake rates
+  MCsums <- readRDS("Output/data/multichoicesums.rds")
 
 
 # model weight change ~ crude NDF -------------------------------------
@@ -136,33 +138,39 @@ ggplot(DE)+
 
 # visualizing GAMs ---------------------
 
+#get target intake for each food component
+targets <- MCsums[, .(meanCPI = mean(DMI_CP_bw), meanNDFI = mean(DMI_NDF_bw), meanCEI = mean(DMI_energy_bw),
+                      meanDPI = mean(DMI_DP_bw), meanDNDFI = mean(DMI_DNDF_bw), meanDEI = mean(DMI_DEI_bw))]
+
 dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
 
-a <- ggplot()+
+(a <- ggplot()+
   geom_raster(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit, fill = fit), data = CNDF)+
   geom_contour(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit), bins = 5, colour = "grey90", data = CNDF)+
   scale_fill_continuous(name = "%/day", type = "viridis")+
   geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet, linetype = Diet), size = .8, data = rails)+
   scale_linetype_manual(values = dietlines, guide = NULL)+
+  geom_point(aes(x = meanNDFI, y = meanCPI), data = targets)+
   xlim(min(CNDF$DMI_NDF_bw), max(CNDF$DMI_NDF_bw))+
   ylim(min(CNDF$DMI_CP_bw), max(CNDF$DMI_CP_bw))+
   xlab(expression(NDF~intake~(g/kg^0.75/day)))+
   ylab(expression(CP~intake~(g/kg^0.75/day)))+
   labs(title = "A) Crude NDF and protein")+
-  themerails
+  themerails)
 
-b <- ggplot()+
+(b <- ggplot()+
   geom_raster(aes(x = DMI_energy_bw, y = DMI_CP_bw, z = fit, fill = fit), data = CE)+
   geom_contour(aes(x = DMI_energy_bw, y = DMI_CP_bw, z = fit), bins = 5, colour = "grey90", data = CE)+
   scale_fill_continuous(name = "%/day", type = "viridis")+
   geom_line(aes(x = CE_IR, y = CP_IR, group = Diet, linetype = Diet), size = .8, data = rails)+
   scale_linetype_manual(values = dietlines, guide = NULL)+
+  geom_point(aes(x = meanCEI, y = meanCPI), data = targets)+
   xlim(min(CE$DMI_energy_bw), max(CE$DMI_energy_bw))+
   ylim(min(CE$DMI_CP_bw), max(CE$DMI_CP_bw))+
   xlab(expression(CE~intake~(kj/kg^0.75/day)))+
   ylab(expression(CP~intake~(g/kg^0.75/day)))+
   labs(title = "B) Crude energy and protein")+
-  themerails
+  themerails)
 
 c <- ggplot()+
   geom_raster(aes(x = DNDFI, y = DPI, z = fit, fill = fit), data = DNDF)+
@@ -170,6 +178,7 @@ c <- ggplot()+
   scale_fill_continuous(name = "%/day", type = "viridis")+
   geom_line(aes(x = DNDF_IR, y = DP_IR, group = Diet, linetype = Diet), size = .8, data = rails, )+
   scale_linetype_manual(values = dietlines, guide = NULL)+
+  geom_point(aes(x = meanDNDFI, y = meanDPI), data = targets)+
   xlim(min(DNDF$DNDFI), max(DNDF$DNDFI))+
   ylim(min(DNDF$DPI), max(DNDF$DPI))+
   xlab(expression(DNDF~intake~(g/kg^0.75/day)))+
@@ -183,6 +192,7 @@ d <- ggplot()+
   scale_fill_continuous(name = "%/day", type = "viridis")+
   geom_line(aes(x = DE_IR, y = DP_IR, group = Diet, linetype = Diet), size = .8, data = rails)+
   scale_linetype_manual(values = dietlines)+
+  geom_point(aes(x = meanDEI, y = meanDPI), data = targets)+
   xlim(min(DE$DEI), max(DE$DEI))+
   ylim(min(DE$DPI), max(DE$DPI))+
   xlab(expression(DE~intake~(kj/kg^0.75/day)))+
