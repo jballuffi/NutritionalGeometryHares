@@ -136,11 +136,14 @@ ggplot(DE)+
 
 # visualizing GAMs ---------------------
 
+dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
+
 a <- ggplot()+
   geom_raster(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit, fill = fit), data = CNDF)+
   geom_contour(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit), bins = 5, colour = "grey90", data = CNDF)+
   scale_fill_continuous(name = "%/day", type = "viridis")+
-  geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet), size = .8, data = rails)+
+  geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet, linetype = Diet), size = .8, data = rails)+
+  scale_linetype_manual(values = dietlines, guide = NULL)+
   xlim(min(CNDF$DMI_NDF_bw), max(CNDF$DMI_NDF_bw))+
   ylim(min(CNDF$DMI_CP_bw), max(CNDF$DMI_CP_bw))+
   xlab(expression(NDF~intake~(g/kg^0.75/day)))+
@@ -152,7 +155,8 @@ b <- ggplot()+
   geom_raster(aes(x = DMI_energy_bw, y = DMI_CP_bw, z = fit, fill = fit), data = CE)+
   geom_contour(aes(x = DMI_energy_bw, y = DMI_CP_bw, z = fit), bins = 5, colour = "grey90", data = CE)+
   scale_fill_continuous(name = "%/day", type = "viridis")+
-  geom_line(aes(x = CE_IR, y = CP_IR, group = Diet), size = .8, data = rails)+
+  geom_line(aes(x = CE_IR, y = CP_IR, group = Diet, linetype = Diet), size = .8, data = rails)+
+  scale_linetype_manual(values = dietlines, guide = NULL)+
   xlim(min(CE$DMI_energy_bw), max(CE$DMI_energy_bw))+
   ylim(min(CE$DMI_CP_bw), max(CE$DMI_CP_bw))+
   xlab(expression(CE~intake~(kj/kg^0.75/day)))+
@@ -164,7 +168,8 @@ c <- ggplot()+
   geom_raster(aes(x = DNDFI, y = DPI, z = fit, fill = fit), data = DNDF)+
   geom_contour(aes(x = DNDFI, y = DPI, z = fit), bins = 5, colour = "grey90", data = DNDF)+
   scale_fill_continuous(name = "%/day", type = "viridis")+
-  geom_line(aes(x = DNDF_IR, y = DP_IR, group = Diet), size = .8, data = rails, )+
+  geom_line(aes(x = DNDF_IR, y = DP_IR, group = Diet, linetype = Diet), size = .8, data = rails, )+
+  scale_linetype_manual(values = dietlines, guide = NULL)+
   xlim(min(DNDF$DNDFI), max(DNDF$DNDFI))+
   ylim(min(DNDF$DPI), max(DNDF$DPI))+
   xlab(expression(DNDF~intake~(g/kg^0.75/day)))+
@@ -176,7 +181,8 @@ d <- ggplot()+
   geom_raster(aes(x = DEI, y = DPI, z = fit, fill = fit), data = DE)+
   geom_contour(aes(x = DEI, y = DPI, z = fit), bins = 5, colour = "white", data = DE)+
   scale_fill_continuous(name = "%/day", type = "viridis")+
-  geom_line(aes(x = DE_IR, y = DP_IR, group = Diet), size = .8, data = rails)+
+  geom_line(aes(x = DE_IR, y = DP_IR, group = Diet, linetype = Diet), size = .8, data = rails)+
+  scale_linetype_manual(values = dietlines)+
   xlim(min(DE$DEI), max(DE$DEI))+
   ylim(min(DE$DPI), max(DE$DPI))+
   xlab(expression(DE~intake~(kj/kg^0.75/day)))+
