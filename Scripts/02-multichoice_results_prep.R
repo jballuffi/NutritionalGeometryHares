@@ -96,22 +96,12 @@ DT[, DMI_C_bw := DMI_C/(Weight_start^.75)]
 DT[, DMI_energy_bw := DMI_energy/(Weight_start^.75)]
 
 
-# Sum nutrient intakes by individual------------------------------------------------------------
-
-#calculate total protein and fibre consumed from all diets in one day
-totals <- DT[, .(sum(DMI_bw), sum(DMI_CP_bw), sum(DMI_NDF_bw)), by = ID]
-names(totals) <- c("ID","DMI_bw", "DMI_CP_bw", "DMI_NDF_bw")
-
 
 # remove food strikers ----------------------------------------------------
 
-#collect ID's of those who ate under 30 g of their weight 
-strikers <- totals[DMI_bw < 20, ID] #remove food strikers
-
-totals <- totals[!ID %in% strikers]
 DT <- DT[!ID %in% strikers]
 
 
-saveRDS(totals, "Output/data/multichoicesums.rds")
+
 saveRDS(DT, "Output/data/multichoiceresults.rds")
 
