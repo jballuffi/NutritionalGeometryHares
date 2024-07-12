@@ -20,7 +20,7 @@ diets <- diets[, .(DM_diet = mean(DM, na.rm = TRUE),
                    ADF_diet = mean(ADF_diet/100, na.rm = TRUE), 
                    ADL_diet = mean(ADL_diet/100, na.rm = TRUE),
                    C_diet = mean(C_diet/100, na.rm = TRUE), 
-                   Energy_diet = mean(Energy_diet, na.rm = TRUE)), Sample]
+                   Energy_diet = mean(Energy_diet, na.rm = TRUE)/1000), Sample]
 
 setnames(diets, "Sample", "Diet")
 
