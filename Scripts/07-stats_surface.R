@@ -197,7 +197,7 @@ d <- ggplot()+
   ylim(min(DE$DPI), max(DE$DPI))+
   xlab(expression(DE~intake~(kj/kg^0.75/day)))+
   ylab(expression(DP~intake~(g/kg^0.75/day)))+
-  labs(title = "D) Digestible energy and protein")+
+  labs(title = ") Digestible energy and protein")+
   themerails
 
 surfaceplot <- ggarrange(a, b, c, d, ncol = 2, nrow = 2)
@@ -217,7 +217,7 @@ effs_lmDE <- as.data.table(ggpredict(lmDE, terms = c("DEI")))
     geom_abline(intercept = 0, slope = 0, linetype = 2)+
     ylab("Weight change (%/day)")+
     xlab(expression(DE~intake~(kj/kg^0.75/day)))+
-    labs(title = "B")+
+    labs(title = "A")+
     themerails)
 
 lmDP <- lm(Weight_change ~ DPI, trials)
