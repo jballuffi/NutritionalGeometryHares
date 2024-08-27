@@ -206,20 +206,28 @@ surfaceplot <- ggarrange(a, b, c, d, ncol = 2, nrow = 2)
 
 # lisa figures --------------------------------------------------------------------
 
+lmDE <- lm(Weight_change ~ DEI, trials)
+effs_lmDE <- as.data.table(ggpredict(lmDE, terms = c("DEI")))
+
 (DEintake <-
-   ggplot(trials)+
-   geom_point(aes(x = DEI, y = Weight_change))+
-   geom_smooth(aes(x = DEI, y = Weight_change), method = "gam")+
-   geom_abline(intercept = 0, slope = 0, linetype = 2)+
-   ylab("Weight change (%/day)")+
-   xlab(expression(DE~intake~(kj/kg^0.75/day)))+
-   labs(title = "B")+
-   themerails)
+    ggplot()+
+    geom_point(aes(x = DEI, y = Weight_change), data = trials)+
+    geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), colour = "grey80", alpha = .3, data = effs_lmDE)+
+    geom_line(aes(x = x, y = predicted), linewidth = 1, data = effs_lmDE)+
+    geom_abline(intercept = 0, slope = 0, linetype = 2)+
+    ylab("Weight change (%/day)")+
+    xlab(expression(DE~intake~(kj/kg^0.75/day)))+
+    labs(title = "B")+
+    themerails)
+
+lmDP <- lm(Weight_change ~ DPI, trials)
+effs_lmDP <- as.data.table(ggpredict(lmDP, terms = c("DPI")))
 
 (DPintake <-
-    ggplot(trials)+
-    geom_point(aes(x = DPI, y = Weight_change))+
-    geom_smooth(aes(x = DPI, y = Weight_change), method = "gam")+
+    ggplot()+
+    geom_point(aes(x = DPI, y = Weight_change), data = trials)+
+    geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), colour = "grey80", alpha = .3, data = effs_lmDP)+
+    geom_line(aes(x = x, y = predicted), linewidth = 1, data = effs_lmDP)+
     geom_abline(intercept = 0, slope = 0, linetype = 2)+
     ylab("Weight change (%/day)")+
     xlab(expression(DP~intake~(g/kg^0.75/day)))+
