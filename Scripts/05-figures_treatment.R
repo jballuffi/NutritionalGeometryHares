@@ -39,19 +39,20 @@ names(Multimeans) <-  c("Diet", "Intake_mean", "Intake_SD")
 
 #rail plot for target intake according to naiive multi choice trials
 (Mrail <-
-    ggplot(rails)+
-    geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
-    geom_point(aes(x = DMI_NDF_bw, y = DMI_CP_bw), size = 2, data = sums)+
-    geom_point(aes(x = mean(DMI_NDF_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sums)+
+    ggplot()+
+    geom_line(aes(y = CP_IR, x = CE_IR, group = Diet), data = rails)+
+    geom_point(aes(x = DMI_energy_bw, y = DMI_CP_bw), size = 2, data = sums)+
+    geom_point(aes(x = mean(DMI_energy_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sums)+
     ylab(expression(Protein~intake~(gDM/kg^0.75/day)))+
-    xlab(expression(NDF~intake~(gDM/kg^0.75/day)))+
+    xlab(expression(Crude~energy~intake~(kJ/kg^0.75/day)))+
     ggtitle("Multi-choice", subtitle = "B")+
     themerails)
 
 
 #calculate mean intakes in single choice trials
-Singlemeans <- day[, .(mean(DMI_bw), sd(DMI_bw)/(sqrt(.N)), mean(DMI_CP_bw), sd(DMI_CP_bw)/(sqrt(.N)), mean(DMI_NDF_bw), sd(DMI_NDF_bw)/(sqrt(.N))), by = Diet]
-names(Singlemeans) <-  c("Diet", "DMI_mean", "DMI_sd", "CP", "CPsd", "NDF", "NDFsd")
+Singlemeans <- day[, .(mean(DMI_bw), sd(DMI_bw)/(sqrt(.N)), mean(DMI_CP_bw), sd(DMI_CP_bw)/(sqrt(.N)),
+                       mean(DMI_NDF_bw), sd(DMI_NDF_bw)/(sqrt(.N)), mean(DMI_energy_bw), sd(DMI_energy_bw)/(sqrt(.N)) ), by = Diet]
+names(Singlemeans) <-  c("Diet", "DMI_mean", "DMI_sd", "CP", "CPsd", "NDF", "NDFsd", "CE", "CEsd")
 
 #bar graph by treatment
 (Sbar<-
@@ -65,14 +66,14 @@ names(Singlemeans) <-  c("Diet", "DMI_mean", "DMI_sd", "CP", "CPsd", "NDF", "NDF
 
 #rail plot showing intake (rule of compromise)
 (Srail <-
-    ggplot(rails)+
-    geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
-    geom_point(aes(x = mean(DMI_NDF_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sums)+
-    geom_point(aes(x = NDF, y = CP), size = 2, data = Singlemeans)+
-    geom_errorbar(aes(x = NDF, y = CP, ymin = CP - CPsd, ymax = CP + CPsd), width = .5, data = Singlemeans)+
-    geom_errorbar(aes(x = NDF, y = CP,xmin = NDF - NDFsd, xmax = NDF + NDFsd), width = .5, data = Singlemeans)+
+    ggplot()+
+    geom_line(aes(y = CP_IR, x = CE_IR, group = Diet), data = rails)+
+    geom_point(aes(x = mean(DMI_energy_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sums)+
+    geom_point(aes(x = CE, y = CP), size = 2, data = Singlemeans)+
+    geom_errorbar(aes(x = CE, y = CP, ymin = CP - CPsd, ymax = CP + CPsd), width = .5, data = Singlemeans)+
+    geom_errorbar(aes(x = CE, y = CP,xmin = CE - CEsd, xmax = CE + CEsd), width = .5, data = Singlemeans)+
     ylab(expression(Protein~intake~(gDM/kg^0.75/day)))+
-    xlab(expression(NDF~intake~(gDM/kg^0.75/day)))+
+    xlab(expression(Crude~energy~intake~(kJ/kg^0.75/day)))+
     ggtitle("Single-choice", subtitle = "D")+
     themerails)
 
