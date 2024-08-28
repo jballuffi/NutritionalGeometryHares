@@ -33,21 +33,25 @@ dietintakes<- list(
   data.table(IR = seq(1, 120, by = 1), 
                 CP = diets[Diet == "A", return(CP_diet)],
                 NDF = diets[Diet == "A", return(NDF_diet)],
+                CE = diets[Diet == "A", return(Energy_diet)],
                 Diet = "A"),
 #diet B
   data.table(IR = seq(1, 120, by = 1), 
                 CP = diets[Diet == "B", return(CP_diet)],
                 NDF = diets[Diet == "B", return(NDF_diet)],
+                CE = diets[Diet == "B", return(Energy_diet)],
                 Diet = "B"),
 #diet c
   data.table(IR = seq(1, 120, by = 1), 
                 CP = diets[Diet == "C", return(CP_diet)],
                 NDF = diets[Diet == "C", return(NDF_diet)],
+                CE = diets[Diet == "C", return(Energy_diet)],
                 Diet = "C"),
 #diet D
   data.table(IR = seq(1, 120, by = 1), 
                 CP = diets[Diet == "D", return(CP_diet)],
                 NDF = diets[Diet == "D", return(NDF_diet)],
+                CE = diets[Diet == "D", return(Energy_diet)],
                 Diet = "D")
 )
 
@@ -55,7 +59,7 @@ dietintakes<- list(
 dietrails <- rbindlist(dietintakes)
 
 #calculate the intake rates of CP and NDF
-dietrails[, c("CP_IR", "NDF_IR") := .(IR*CP, IR*NDF)]
+dietrails[, c("CP_IR", "NDF_IR", "CE_IR") := .(IR*CP, IR*NDF, IR*CE)] #CE intake is kJ
 
 #create columnn indicating that this is a diet
 dietrails[, Type := "Diet"]
@@ -100,11 +104,10 @@ foragerails[, Type := "Forage"]
 
 
 
-
 # collect all intakes and plot rails --------------------------------------
 
 #rbindlist the diet and forage rails in one
-allrails <- rbind(foragerails, dietrails)
+allrails <- rbind(foragerails, dietrails, fill = TRUE)
 
 #plot just the diet rails
 (dietrailplot <-
@@ -112,6 +115,12 @@ allrails <- rbind(foragerails, dietrails)
   geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
   labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)")+
   themerails)
+
+(dietrailCE <- 
+    ggplot(dietrails)+
+    geom_line(aes(y = CP_IR, x = CE_IR, group = Diet))+
+    labs(y = "CP Intake (g DM/day)", x = "CE Intake (kJ/day)")+
+    themerails)
 
 #plot diet and forage rails
 (foragerailplot <- 
