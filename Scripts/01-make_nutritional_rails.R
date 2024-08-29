@@ -12,8 +12,9 @@ wp <- fread("Input/Plants_winter2021_compositions_cleaned.csv")
 
 
 
-# summarize diet compositions based on lab results ------------------------
+# Make diet rails ------------------------
 
+#summarize analysis of diets
 diets <- diets[, .(DM_diet = mean(DM, na.rm = TRUE),
                    CP_diet = mean(CP_diet/100, na.rm = TRUE), 
                    NDF_diet = mean(NDF_diet/100, na.rm = TRUE),
@@ -67,7 +68,7 @@ dietrails[, Type := "Diet"]
 
 
 
-# forage rails ------------------------------------------------------------
+# make natural forage rails ------------------------------------------------------------
 
 #collect avg nutritional compositions by species
 wp_means <- wp[, .((mean(CP_DM))/100,(mean(NDF_DM))/100), by = Species]
@@ -104,37 +105,39 @@ foragerails[, Type := "Forage"]
 
 
 
-# collect all intakes and plot rails --------------------------------------
+# lot rails --------------------------------------
 
 #rbindlist the diet and forage rails in one
 allrails <- rbind(foragerails, dietrails, fill = TRUE)
 
-#plot just the diet rails
+#plot just the diet rails in NDF and CP
 (dietrailNDF <-
   ggplot(dietrails)+
   geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
   labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)")+
   themerails)
 
+#plot just diet rails in CE and CP
 (dietrailCE <- 
     ggplot(dietrails)+
     geom_line(aes(y = CP_IR, x = CE_IR, group = Diet))+
     labs(y = "CP Intake (g DM/day)", x = "CE Intake (kJ/day)")+
     themerails)
 
-#plot diet and forage rails
+#plot diet and forage rails in NDF and CP
 (foragerailplot <- 
   ggplot(allrails)+
   geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet, linetype = Type))+
+  scale_linetype_manual(values = c("Diet" = 1, "Forage" = 2), guide = NULL)+
   labs(y = "Protein intake (g DM/day)", x = "NDF intake (g DM/day)")+
   themerails)
 #how do I add labels to these lines???
 
 
 
-ggsave("Output/figures/dietrailswithforage.jpeg", foragerailplot, width = 4.5, height = 3, unit = "in")
-ggsave("Output/figures/dietrailsNDF.jpeg", dietrailNDF, width = 4.5, height = 3, unit = "in")
-ggsave("Output/figures/dietrailsCE.jpeg", dietrailCE, width = 4.5, height = 3, unit = "in")
+ggsave("Output/figures/dietrailswithforage.jpeg", foragerailplot, width = 3.5, height = 3, unit = "in")
+ggsave("Output/figures/dietrailsNDF.jpeg", dietrailNDF, width = 3.5, height = 3, unit = "in")
+ggsave("Output/figures/dietrailsCE.jpeg", dietrailCE, width = 3.5, height = 3, unit = "in")
 
 
 
