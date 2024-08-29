@@ -63,10 +63,6 @@ sumsDE[, Model := "Digestible energy"]
 #bind all s tables
 allsums <- rbind(sumsCE, sumsDE)
 
-# #bind p and s tables together
-# summarytable <- rbind(allsump, allsums, fill = TRUE)
-# setorder(summarytable, Response, Model)
-
 setcolorder(allsums, c("Model", "edf", "Ref.df", "F", "p-value"))
 
 #round the table to 2 decimal places
@@ -83,27 +79,11 @@ DE <- predict_gam(bodyDE)
 
 
 
-# figures of curved lines -------------------------------------------------
-
-ggplot(CNDF)+
-  geom_smooth(aes(x = DMI_CP_bw, y = fit))
-
-ggplot(CNDF)+
-  geom_smooth(aes(x = DMI_NDF_bw, y = fit))
-
-ggplot(CE)+
-  geom_smooth(aes(x = DMI_CP_bw, y = fit))
-
-ggplot(DE)+
-  geom_smooth(aes(x = DPI, y = fit))
-
-
-
 # visualizing GAMs ---------------------
 
 #get target intake for each food component
-targets <- MCsums[, .(meanCPI = mean(DMI_CP_bw), meanNDFI = mean(DMI_NDF_bw), meanCEI = mean(DMI_energy_bw),
-                      meanDPI = mean(DMI_DP_bw), meanDNDFI = mean(DMI_DNDF_bw), meanDEI = mean(DMI_DEI_bw))]
+targets <- MCsums[, .(meanCPI = mean(DMI_CP_bw), meanCEI = mean(DMI_energy_bw),
+                      meanDPI = mean(DMI_DP_bw),  meanDEI = mean(DMI_DEI_bw))]
 
 dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
 
@@ -136,37 +116,6 @@ dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
   themerails)
 
 surfaceplot <- ggarrange(a, b, ncol = 1, nrow = 2)
-
-
-
-#extas
-(c <- ggplot()+
-    geom_raster(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit, fill = fit), data = CNDF)+
-    geom_contour(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit), bins = 5, colour = "grey90", data = CNDF)+
-    scale_fill_continuous(name = "%/day", type = "viridis")+
-    geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet, linetype = Diet), size = .8, data = rails)+
-    scale_linetype_manual(values = dietlines, guide = NULL)+
-    geom_point(aes(x = meanNDFI, y = meanCPI), data = targets)+
-    xlim(min(CNDF$DMI_NDF_bw), max(CNDF$DMI_NDF_bw))+
-    ylim(min(CNDF$DMI_CP_bw), max(CNDF$DMI_CP_bw))+
-    xlab(expression(NDF~intake~(g/kg^0.75/day)))+
-    ylab(expression(CP~intake~(g/kg^0.75/day)))+
-    labs(title = "A) Crude NDF and protein")+
-    themerails)
-
-d <- ggplot()+
-  geom_raster(aes(x = DNDFI, y = DPI, z = fit, fill = fit), data = DNDF)+
-  geom_contour(aes(x = DNDFI, y = DPI, z = fit), bins = 5, colour = "grey90", data = DNDF)+
-  scale_fill_continuous(name = "%/day", type = "viridis")+
-  geom_line(aes(x = DNDF_IR, y = DP_IR, group = Diet, linetype = Diet), size = .8, data = rails, )+
-  scale_linetype_manual(values = dietlines, guide = NULL)+
-  geom_point(aes(x = meanDNDFI, y = meanDPI), data = targets)+
-  xlim(min(DNDF$DNDFI), max(DNDF$DNDFI))+
-  ylim(min(DNDF$DPI), max(DNDF$DPI))+
-  xlab(expression(DNDF~intake~(g/kg^0.75/day)))+
-  ylab(expression(DP~intake~(g/kg^0.75/day)))+
-  labs(title = "C) Digestible NDF and protein")+
-  themerails
 
 
 
