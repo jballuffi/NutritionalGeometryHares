@@ -121,7 +121,7 @@ allrails <- rbind(foragerails, dietrails, fill = TRUE)
 (dietrailCE <- 
     ggplot(dietrails)+
     geom_line(aes(y = CP_IR, x = CE_IR, group = Diet))+
-    labs(y = "CP Intake (g DM/day)", x = "CE Intake (kJ/day)")+
+    labs(y = "CP Intake (g DM/day)", x = "CE Intake (kJ/day)", title = "B")+
     themerails)
 
 #plot diet and forage rails in NDF and CP
@@ -129,15 +129,17 @@ allrails <- rbind(foragerails, dietrails, fill = TRUE)
   ggplot(allrails)+
   geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet, linetype = Type))+
   scale_linetype_manual(values = c("Diet" = 1, "Forage" = 2), guide = NULL)+
-  labs(y = "Protein intake (g DM/day)", x = "NDF intake (g DM/day)")+
+  labs(y = "Protein intake (g DM/day)", x = "NDF intake (g DM/day)", title = "A")+
   themerails)
-#how do I add labels to these lines???
+
+dietdesign <- ggarrange(foragerailplot, dietrailCE, ncol = 1, nrow = 2)
 
 
 
 ggsave("Output/figures/dietrailswithforage.jpeg", foragerailplot, width = 3.5, height = 3, unit = "in")
 ggsave("Output/figures/dietrailsNDF.jpeg", dietrailNDF, width = 3.5, height = 3, unit = "in")
 ggsave("Output/figures/dietrailsCE.jpeg", dietrailCE, width = 3.5, height = 3, unit = "in")
+ggsave("Output/figures/dietdesign.jpeg", dietdesign, width = 3.5, height = 6, unit = "in")
 
 
 
