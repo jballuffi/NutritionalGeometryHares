@@ -1,13 +1,7 @@
 "","Model","edf","Ref.df","F","p-value"
-"1","Crude NDF",2.362,2.89,4.036,0.017
-"2","Crude NDF",5.03,6.112,2.382,0.044
-"3","Crude NDF",0,27,0,0.204
-"4","Crude energy",1.968,2.469,2.581,0.067
-"5","Crude energy",4.975,6.073,3.959,0.002
-"6","Crude energy",0,27,0,0.304
-"7","Digestible NDF",1,1,1.198,0.279
-"8","Digestible NDF",4.361,5.077,1.407,0.242
-"9","Digestible NDF",11.041,27,0.732,0.035
-"10","Digestible energy",1.171,1.239,0.239,0.78
-"11","Digestible energy",4.013,4.914,2.983,0.017
-"12","Digestible energy",1.891,27,0.103,0.133
+"1","Crude energy",1.97,2.47,2.58,0.07
+"2","Crude energy",4.97,6.07,3.96,0
+"3","Crude energy",0,27,0,0.3
+"4","Digestible energy",1.17,1.24,0.24,0.78
+"5","Digestible energy",4.01,4.91,2.98,0.02
+"6","Digestible energy",1.89,27,0.1,0.13

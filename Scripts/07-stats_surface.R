@@ -14,24 +14,6 @@ rails <- fread("Output/data/dietdigestionrails.rds")
 MCsums <- readRDS("Output/data/multichoicesums.rds")
 
 
-# model weight change ~ crude NDF -------------------------------------
-
-#bodyCNDF <- gam(Weight_change ~ s(DMI_NDF_bw, DMI_CP_bw), data = trials)
-bodyCNDF <- gam(Weight_change ~ s(DMI_NDF_bw) + s(DMI_CP_bw) + s(DMI_NDF_bw, DMI_CP_bw), data = trials)
-
-#save summary of model
-sumCNDF <- summary(bodyCNDF)
-  
-#make p-table, and indicate model, this is for intercept stuff
-sumpCNDF <- as.data.table(round((sumCNDF$p.table), 4))
-sumpCNDF[, Model := "Crude NDF"]
-sumpCNDF[, `Dev. Explained` := round(sumCNDF$dev.expl, 2)]
-  
-#make s-table, and indicate model, this is for variable stuff
-sumsCNDF <- as.data.table(round((sumCNDF$s.table), 4))
-sumsCNDF[, Model := "Crude NDF"]
-
-
 
 # model weight change ~ crude energy --------------------
 
@@ -49,25 +31,6 @@ sumpCE[, `Dev. Explained` := round(sumCE$dev.expl, 2)]
 #make s-table, and indicate model, this is for variable stuff
 sumsCE <- as.data.table(round((sumCE$s.table), 4))
 sumsCE[, Model := "Crude energy"]
-
-
-
-# model weight change ~ digestible NDF -----------------------------------
-
-#bodyDNDF <- gam(Weight_change ~ s(DNDFI, DPI), data = trials)
-bodyDNDF <- gam(Weight_change ~ s(DNDFI) + s(DPI) + s(DNDFI, DPI), data = trials)
-
-#save summary of model
-sumDNDF <- summary(bodyDNDF)
-
-#make p-table, and indicate model, this is for intercept stuff
-sumpDNDF <- as.data.table(round((sumDNDF$p.table), 4))
-sumpDNDF[, Model := "Digestible NDF"]
-sumpDNDF[, `Dev. Explained` := round(sumDNDF$dev.expl, 2)]
-
-#make s-table, and indicate model, this is for variable stuff
-sumsDNDF <- as.data.table(round((sumDNDF$s.table), 4))
-sumsDNDF[, Model := "Digestible NDF"]
 
 
 
@@ -98,7 +61,7 @@ sumsDE[, Model := "Digestible energy"]
 # allsump[, Parameter := "Intercept"]
 
 #bind all s tables
-allsums <- rbind(sumsCNDF, sumsCE, sumsDNDF, sumsDE)
+allsums <- rbind(sumsCE, sumsDE)
 
 # #bind p and s tables together
 # summarytable <- rbind(allsump, allsums, fill = TRUE)
@@ -107,7 +70,7 @@ allsums <- rbind(sumsCNDF, sumsCE, sumsDNDF, sumsDE)
 setcolorder(allsums, c("Model", "edf", "Ref.df", "F", "p-value"))
 
 #round the table to 2 decimal places
-summarytable <- allsums %>% mutate_if(is.numeric, round, digits = 3)
+summarytable <- allsums %>% mutate_if(is.numeric, round, digits = 2)
 
 
 
@@ -176,7 +139,7 @@ surfaceplot <- ggarrange(a, b, ncol = 1, nrow = 2)
 
 
 
-
+#extas
 (c <- ggplot()+
     geom_raster(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit, fill = fit), data = CNDF)+
     geom_contour(aes(x = DMI_NDF_bw, y = DMI_CP_bw, z = fit), bins = 5, colour = "grey90", data = CNDF)+
