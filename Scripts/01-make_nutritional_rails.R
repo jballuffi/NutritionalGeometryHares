@@ -110,7 +110,7 @@ foragerails[, Type := "Forage"]
 allrails <- rbind(foragerails, dietrails, fill = TRUE)
 
 #plot just the diet rails
-(dietrailplot <-
+(dietrailNDF <-
   ggplot(dietrails)+
   geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
   labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)")+
@@ -133,7 +133,10 @@ allrails <- rbind(foragerails, dietrails, fill = TRUE)
 
 
 ggsave("Output/figures/dietrailswithforage.jpeg", foragerailplot, width = 4.5, height = 3, unit = "in")
-ggsave("Output/figures/dietrails.jpeg", dietrailplot, width = 4, height = 3, unit = "in")
+ggsave("Output/figures/dietrailsNDF.jpeg", dietrailNDF, width = 4.5, height = 3, unit = "in")
+ggsave("Output/figures/dietrailsCE.jpeg", dietrailCE, width = 4.5, height = 3, unit = "in")
+
+
 
 fwrite(allrails, "Output/data/dietrailsandforage.rds")
 fwrite(dietrails, "Output/data/dietrails.rds")
