@@ -132,4 +132,4 @@ digmelt <- digmelt[!digestibility < -0.2]
 #save plots
 ggsave("Output/figures/intakebarandrail.jpeg", Intake, width = 8, height = 8, unit = "in")
 ggsave("Output/figures/weightchangebar.jpeg", WeightChange, width = 4, height = 4, unit = "in")
-ggsave("Output/figures/dietdigestion.jpeg", dietdigest, width = 5, height = 12 )
+ggsave("Output/figures/dietdigestion.jpeg", dietdigest, width = 5, height = 8 )
