@@ -99,15 +99,15 @@ Intake <- ggarrange(Mbar, Mrail, Sbar, Srail, nrow = 2, ncol = 2)
 # Digestibility by diet ---------------------------------------------------
 
 #subset to just digestibility columns
-dig <- day[, .(Diet, DMD, DP, DNDF)]
+dig <- day[, .(Diet, DMD, DP)]
 
 #melt columns to have nutrient as a new variable
-digmelt <- melt(dig, measure.vars = c("DMD", "DP", "DNDF"), 
+digmelt <- melt(dig, measure.vars = c("DMD", "DP"), 
                 variable.name = "nutrient", 
                 value.name = "digestibility")
 
 #re-order the nutrients for facet wrap
-digmelt[, nutrient := factor(nutrient, levels = c("DMD", "DP", "DNDF"))]
+digmelt[, nutrient := factor(nutrient, levels = c("DMD", "DP"))]
 
 #remove stuff that's not possible
 digmelt <- digmelt[!digestibility < -0.2]
