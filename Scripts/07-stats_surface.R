@@ -72,9 +72,8 @@ summarytable <- allsums %>% mutate_if(is.numeric, round, digits = 2)
 
 # make predictive datasheets of each model --------------------------------
 
-CNDF <- predict_gam(bodyCNDF)
+
 CE <- predict_gam(bodyCE)
-DNDF <- predict_gam(bodyDNDF)
 DE <- predict_gam(bodyDE)
 
 
