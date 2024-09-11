@@ -26,7 +26,7 @@ sumCE <- summary(bodyCE)
 #make p-table, and indicate model, this is for intercept stuff
 sumpCE <- as.data.table(round((sumCE$p.table), 4))
 sumpCE[, Model := "Crude energy"]
-sumpCE[, `Dev. Explained` := round(sumCE$dev.expl, 2)]
+sumpCE[, `Dev. Explained` := round(sumCE$dev.expl, 1)]
 
 #make s-table, and indicate model, this is for variable stuff
 sumsCE <- as.data.table(round((sumCE$s.table), 4))
@@ -45,7 +45,7 @@ sumDE <- summary(bodyDE)
 #make p-table, and indicate model, this is for intercept stuff
 sumpDE <- as.data.table(round((sumDE$p.table), 4))
 sumpDE[, Model := "Digestible energy"]
-sumpDE[, `Dev. Explained` := round(sumDE$dev.expl, 2)]
+sumpDE[, `Dev. Explained` := round(sumDE$dev.expl, 1)]
 
 #make s-table, and indicate model, this is for variable stuff
 sumsDE <- as.data.table(round((sumDE$s.table), 4))
