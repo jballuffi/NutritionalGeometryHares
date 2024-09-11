@@ -51,8 +51,8 @@ names(Multimeans) <-  c("Diet", "Intake_mean", "Intake_SD")
 
 #calculate mean intakes in single choice trials
 Singlemeans <- day[, .(mean(DMI_bw), sd(DMI_bw)/(sqrt(.N)), mean(DMI_CP_bw), sd(DMI_CP_bw)/(sqrt(.N)),
-                       mean(DMI_NDF_bw), sd(DMI_NDF_bw)/(sqrt(.N)), mean(DMI_energy_bw), sd(DMI_energy_bw)/(sqrt(.N)) ), by = Diet]
-names(Singlemeans) <-  c("Diet", "DMI_mean", "DMI_sd", "CP", "CPsd", "NDF", "NDFsd", "CE", "CEsd")
+                       mean(DMI_energy_bw), sd(DMI_energy_bw)/(sqrt(.N)) ), by = Diet]
+names(Singlemeans) <-  c("Diet", "DMI_mean", "DMI_sd", "CP", "CPsd", "CE", "CEsd")
 
 #bar graph by treatment
 (Sbar<-
@@ -120,12 +120,6 @@ digmelt <- digmelt[!digestibility < -0.2]
     facet_wrap(~nutrient, nrow = 3, ncol = 1, scales = "free_y")+
     themerails+
     theme(strip.background = element_blank()))
-
-
-
-# Rail plot with DP and DMD ------------------------------------------------------
-
-#need to make rails with DMD and DP etc
 
 
 
