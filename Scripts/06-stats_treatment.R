@@ -91,20 +91,6 @@ diffDtoAcp <- round((day[Diet == "D", mean(DP)])/(day[Diet == "A", mean(DP)]), d
 
 
 
-# NDF digestion for feeding trials ----------------------------------------
-
-#NDF digestion by day
-NDFdig <- lm(day$DNDF ~ day$Diet)
-aNDFdig <- anova(NDFdig)
-NDFdigpval <- round(aNDFdig$`Pr(>F)`[1], 5)
-aovNDF <- aov(NDFdig)
-posthocNDF <- TukeyHSD(x = aovNDF, 'day$Diet', conf.level = 0.95)
-posthocNDF
-
-diffAtoCndf <- round((day[Diet == "A", mean(DNDF)])/(day[Diet == "C", mean(DNDF)]), digits = 2)
-diffAtoDndf <- round((day[Diet == "A", mean(DNDF)])/(day[Diet == "D", mean(DNDF)]), digits = 2)
-diffBtoCndf <- round((day[Diet == "B", mean(DNDF)])/(day[Diet == "C", mean(DNDF)]), digits = 2)
-
 
 
 # collect model outputs into one table ------------------------------------
