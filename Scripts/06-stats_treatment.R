@@ -18,6 +18,15 @@ day<- readRDS("Output/data/dailyresultscleaned.rds") # by day
 
 # stats for multi-choice trials ----------------------------------------------------
 
+meanDMImc <- round(mean(targets$DMI_bw, na.rm = TRUE), digits = 1)
+seDMImc <- round(sd(targets$DMI_bw, na.rm = TRUE)/sqrt(length(targets)), digits = 1)
+
+meanCPmc <- round(mean(targets$DMI_CP_bw), digits = 1)
+seCPmc <- round(sd(targets$DMI_CP_bw)/sqrt(length(targets)), digits = 1)
+
+meanCEmc <- round(mean(targets$DMI_energy_bw), digits = 1)
+seCEmc <- round(sd(targets$DMI_energy_bw)/sqrt(length(targets)), digits = 1)
+
 #ANOVA testing for significance between treatments
 lmMC <- lm(MC$DMI_bw ~ MC$Diet)
 aMC <- anova(lmMC)
@@ -28,9 +37,9 @@ posthocMC
 
 
 #how many times more B than A
-diffBtoA <- round((MC[Diet == "B", mean(DMI_bw)]) / (MC[Diet == "A", mean(DMI_bw)]), digits = 2)
+diffBtoA <- round((MC[Diet == "B", mean(DMI_bw)]) / (MC[Diet == "A", mean(DMI_bw)]), digits = 1)
 
-diffBtoD <- round((MC[Diet == "B", mean(DMI_bw)]) / (MC[Diet == "D", mean(DMI_bw)]), digits = 2)
+diffBtoD <- round((MC[Diet == "B", mean(DMI_bw)]) / (MC[Diet == "D", mean(DMI_bw)]), digits = 1)
 
 
 
@@ -94,8 +103,8 @@ diffDtoAcp <- round((day[Diet == "D", mean(DP)])/(day[Diet == "A", mean(DP)]), d
 
 # collect model outputs into one table ------------------------------------
 
-mods <- list(lmMC, IR, WC, DMD, CPdig, NDFdig)
-names <- c("multi-choice", "single choice", "weight", "DMD", "CP digestion", "NDF digestion")
+mods <- list(lmMC, IR, WC, DMD, CPdig)
+names <- c("multi-choice", "single choice", "weight", "DMD", "CP digestion")
 
 
 
