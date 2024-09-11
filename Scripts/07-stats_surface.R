@@ -154,7 +154,7 @@ effs_lmDP <- as.data.table(ggpredict(lmDP, terms = c("DPI")))
 effs_lmDP[, predicted_round := round(predicted, digits = 1)]
 
 #get predicted Energy intake for body maintanence
-reqDP <- effs_lmDP[predicted_round == 0.0, return(as.numeric(x))]
+reqDP <- effs_lmDP[predicted_round == 0.2, return(as.numeric(x))]
 
 
 
