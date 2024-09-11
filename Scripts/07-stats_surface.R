@@ -118,10 +118,18 @@ surfaceplot <- ggarrange(a, b, ncol = 1, nrow = 2)
 
 
 
-# lisa figures --------------------------------------------------------------------
+# Linear relationship between DE and weight change --------------------------------------------------------------------
 
+#run linear model and make prediction table
 lmDE <- lm(Weight_change ~ DEI, trials)
 effs_lmDE <- as.data.table(ggpredict(lmDE, terms = c("DEI")))
+
+#create rounded predictions
+effs_lmDE[, predicted_round := round(predicted, digits = 1)]
+
+#get predicted Energy intake for body maintanence
+reqDE <- effs_lmDE[predicted_round == 0.0, return(as.numeric(x))]
+
 
 (DEintake <-
     ggplot()+
@@ -134,8 +142,21 @@ effs_lmDE <- as.data.table(ggpredict(lmDE, terms = c("DEI")))
     labs(title = "A")+
     themerails)
 
+
+
+# Linear relationship beween DP and weight change -------------------------
+
+#run linear model and make prediction table
 lmDP <- lm(Weight_change ~ DPI, trials)
 effs_lmDP <- as.data.table(ggpredict(lmDP, terms = c("DPI")))
+
+#create rounded predictions
+effs_lmDP[, predicted_round := round(predicted, digits = 1)]
+
+#get predicted Energy intake for body maintanence
+reqDP <- effs_lmDP[predicted_round == 0.0, return(as.numeric(x))]
+
+
 
 (DPintake <-
     ggplot()+
@@ -149,6 +170,14 @@ effs_lmDP <- as.data.table(ggpredict(lmDP, terms = c("DPI")))
     themerails)
 
 weight <- ggarrange(DEintake, DPintake,  ncol = 1, nrow =2)
+
+
+
+# CE and CP ---------------------------------------------------------------
+
+lmCP <- lm(Weight_change ~ DMI_CP_bw, trials)
+
+lmCE <- lm(Weight_change ~ DMI_energy_bw, trials)
 
 
 
