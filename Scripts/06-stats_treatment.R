@@ -92,7 +92,6 @@ diffDtoAcp <- round((day[Diet == "D", mean(DP)])/(day[Diet == "A", mean(DP)]), d
 
 
 
-
 # collect model outputs into one table ------------------------------------
 
 mods <- list(lmMC, IR, WC, DMD, CPdig, NDFdig)
