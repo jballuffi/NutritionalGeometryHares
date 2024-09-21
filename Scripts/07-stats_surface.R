@@ -118,7 +118,7 @@ surfaceplot <- ggarrange(a, b, ncol = 1, nrow = 2)
 
 
 
-# Linear relationship between DE and weight change --------------------------------------------------------------------
+# Linear relationship between DEI and weight change --------------------------------------------------------------------
 
 #run linear model and make prediction table
 lmDE <- lm(Weight_change ~ DEI, trials)
@@ -129,7 +129,6 @@ effs_lmDE[, predicted_round := round(predicted, digits = 1)]
 
 #get predicted Energy intake for body maintanence
 reqDE <- effs_lmDE[predicted_round == 0.0, return(as.numeric(x))]
-
 
 (DEintake <-
     ggplot()+
@@ -144,7 +143,7 @@ reqDE <- effs_lmDE[predicted_round == 0.0, return(as.numeric(x))]
 
 
 
-# Linear relationship beween DP and weight change -------------------------
+# Linear relationship beween DPI and weight change -------------------------
 
 #run linear model and make prediction table
 lmDP <- lm(Weight_change ~ DPI, trials)
@@ -155,8 +154,6 @@ effs_lmDP[, predicted_round := round(predicted, digits = 1)]
 
 #get predicted Energy intake for body maintanence
 reqDP <- effs_lmDP[predicted_round == 0.2, return(as.numeric(x))]
-
-
 
 (DPintake <-
     ggplot()+
@@ -175,8 +172,17 @@ weight <- ggarrange(DEintake, DPintake,  ncol = 1, nrow =2)
 
 # CE and CP ---------------------------------------------------------------
 
+#linear model for CPI
 lmCP <- lm(Weight_change ~ DMI_CP_bw, trials)
+effs_lmCP <- as.data.table(ggpredict(lmCP, terms = c("DMI_CP_bw")))
+#create rounded predictions
+effs_lmCP[, predicted_round := round(predicted, digits = 1)]
+#get predicted Energy intake for body maintanence
+reqCP <- effs_lmCP[predicted_round == 0.0, return(as.numeric(x))]
 
+
+
+#linear model for CEI
 lmCE <- lm(Weight_change ~ DMI_energy_bw, trials)
 
 
