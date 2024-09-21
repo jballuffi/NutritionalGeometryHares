@@ -34,4 +34,4 @@ In terms of CE (x-axis) and CP (y-axis), hares lost weight until protein intake 
 
 The surface map for digestible energy and protein intake revealed one area in the centre of the plot, between Diets B and C where weight maintenance can occur, and again at the highest levels of DP intake, toward the highest intakes on Diet D (Figure 5D). The GAM for this map showed DP intake had a significant, non-linear effect on hare weight change (rsq = `r round(sumDE$r.sq, 2)` ; deviation explained = `r round(sumDE$dev.expl, 2)`; Table 2)
 
-Based on linear regressions, our feeding trials estimated that hares require `r reqDE` kJ/kg^0.75 of digestible energy and `r reqDP` g DM/kg^0.75 of digestible protein per day to maintain body weight.
+Based on linear regressions, our feeding trials estimated that hares require `r reqDE` kJ/kg^0.75 of DE, `r reqCP` g DM/kg^0.75 of CP, and `r reqDP` g DM/kg^0.75 of DP per day to maintain body weight. The relationship between CE intake and weight change was non-significant.
