@@ -120,7 +120,7 @@ Intake <- ggarrange(Mbar, Mrail, Sbar, Srail, nrow = 2, ncol = 2)
     geom_text(aes(x = 2, y = 70, label = "A, D"), family = "serif")+
     geom_text(aes(x = 3, y = 70, label = "A"), family = "serif")+
     geom_text(aes(x = 4, y = 70, label = "A"), family = "serif")+
-    labs(y = "Apparent digestability (%)", x = "")+
+    labs(y = "Apparent digestability (%)", x = "", title = "Dry matter")+
     themerails+
     theme(strip.background = element_blank()))
 
@@ -132,7 +132,7 @@ Intake <- ggarrange(Mbar, Mrail, Sbar, Srail, nrow = 2, ncol = 2)
     geom_text(aes(x = 2, y = 81, label = "A, C, D"), family = "serif")+
     geom_text(aes(x = 3, y = 85, label = "A, B, D"), family = "serif")+
     geom_text(aes(x = 4, y = 93, label = "A, B, C"), family = "serif")+
-    labs(y = "Apparent digestability (%)", x = "Diet")+
+    labs(y = "Apparent digestability (%)", x = "Diet", title = "Protein")+
     themerails+
     theme(strip.background = element_blank()))
 
