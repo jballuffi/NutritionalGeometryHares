@@ -132,7 +132,7 @@ reqDE <- effs_lmDE[predicted_round == 0.0, return(as.numeric(x))]
 
 (DEintake <-
     ggplot()+
-    geom_point(aes(x = DEI, y = Weight_change), data = trials)+
+    geom_point(aes(x = DEI, y = Weight_change), shape = 1, data = trials)+
     geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), colour = "grey80", alpha = .3, data = effs_lmDE)+
     geom_line(aes(x = x, y = predicted), linewidth = 1, data = effs_lmDE)+
     geom_abline(intercept = 0, slope = 0, linetype = 2)+
@@ -157,7 +157,7 @@ reqDP <- effs_lmDP[predicted_round == 0.2, return(as.numeric(x))]
 
 (DPintake <-
     ggplot()+
-    geom_point(aes(x = DPI, y = Weight_change), data = trials)+
+    geom_point(aes(x = DPI, y = Weight_change), shape = 1, data = trials)+
     geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), colour = "grey80", alpha = .3, data = effs_lmDP)+
     geom_line(aes(x = x, y = predicted), linewidth = 1, data = effs_lmDP)+
     geom_abline(intercept = 0, slope = 0, linetype = 2)+
