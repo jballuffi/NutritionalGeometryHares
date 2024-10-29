@@ -131,7 +131,7 @@ foragelabs[Diet == "BEGL", Diet := "B. glandulosa"][Diet == "PIGL", Diet := "P. 
     ggplot()+
     geom_line(aes(x = CE_IR, y = CP_IR, group = Diet), data = dietrails)+
     geom_text(aes(x = max_CE + 70, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
-    labs(y = "CP Intake (g DM/day)", x = "CE Intake (kJ/day)", title = "B")+
+    labs(y = "CP Intake (g DM/day)", x = "GE Intake (kJ/day)", title = "B")+
     themerails)
 
 #plot diet and forage rails in NDF and CP
