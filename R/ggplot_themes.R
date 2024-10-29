@@ -3,8 +3,8 @@
 library(ggplot2)
 
 #create theme for ggplots
-themerails<-theme(axis.title = element_text(size=13),
-                  axis.text = element_text(size=10),
+themerails<-theme(axis.title = element_text(size=13, family = "serif"),
+                  axis.text = element_text(size=10, family = "serif"),
                   axis.line.x.top = element_blank(),
                   axis.line.y.right = element_blank(),
                   axis.line.x.bottom = element_line(size=.5),
@@ -14,8 +14,8 @@ themerails<-theme(axis.title = element_text(size=13),
                   panel.background = element_blank())
 
 
-themepoints <- theme(axis.title = element_text(size=13),
-                        axis.text = element_text(size=10),
+themepoints <- theme(axis.title = element_text(size=13, family = "serif"),
+                        axis.text = element_text(size=10, family = "serif"),
                         legend.position = "top",
                         legend.key = element_blank(),
                         legend.title = element_blank(),
