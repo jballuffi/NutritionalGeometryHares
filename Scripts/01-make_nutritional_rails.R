@@ -110,27 +110,39 @@ foragerails[, Type := "Forage"]
 #rbindlist the diet and forage rails in one
 allrails <- rbind(foragerails, dietrails, fill = TRUE)
 
+#get label locations for diets and forage. 
+#Using the max intake rates so labels can be placed at the end of rails
+dietlabs <- dietrails[, .(max_CP = max(CP_IR), max_CE = max(CE_IR), max_NDF = max(NDF_IR)), Diet]
+foragelabs <- foragerails[, .(max_CP = max(CP_IR), max_NDF = max(NDF_IR)), Diet]
+
+#rename species codes as species names
+foragelabs[Diet == "BEGL", Diet := "B. glandulosa"][Diet == "PIGL", Diet := "P. glauca"][Diet == "SASP", Diet := "Salix spp."]
+
 #plot just the diet rails in NDF and CP
 (dietrailNDF <-
-  ggplot(dietrails)+
-  geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet))+
+  ggplot()+
+  geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet), data = dietrails)+
+  geom_text(aes(x = max_NDF + 2, y = max_CP + 1, label = Diet), family = "serif", data = dietlabs)+
   labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)")+
   themerails)
 
 #plot just diet rails in CE and CP
 (dietrailCE <- 
-    ggplot(dietrails)+
-    geom_line(aes(y = CP_IR, x = CE_IR, group = Diet))+
+    ggplot()+
+    geom_line(aes(x = CE_IR, y = CP_IR, group = Diet), data = dietrails)+
+    geom_text(aes(x = max_CE + 70, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
     labs(y = "CP Intake (g DM/day)", x = "CE Intake (kJ/day)", title = "B")+
     themerails)
 
 #plot diet and forage rails in NDF and CP
 (foragerailplot <- 
-  ggplot(allrails)+
-  geom_line(aes(y = CP_IR, x = NDF_IR, group = Diet, linetype = Type))+
-  scale_linetype_manual(values = c("Diet" = 1, "Forage" = 2), guide = NULL)+
-  labs(y = "Protein intake (g DM/day)", x = "NDF intake (g DM/day)", title = "A")+
-  themerails)
+    ggplot()+
+    geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet, linetype = Type), data = allrails)+
+    geom_text(aes(x = max_NDF + 2, y = max_CP + 1, label = Diet), family = "serif", data = dietlabs)+
+    geom_text(aes(x = max_NDF + 5, y = max_CP + 1, label = Diet), angle = 19, size = 4, family = "serif", fontface = 3, data = foragelabs)+
+    scale_linetype_manual(values = c("Diet" = 1, "Forage" = 2), guide = NULL)+
+    labs(y = "Protein intake (g DM/day)", x = "NDF intake (g DM/day)", title = "A", fontface = 6)+
+    themerails)
 
 dietdesign <- ggarrange(foragerailplot, dietrailCE, ncol = 1, nrow = 2)
 
