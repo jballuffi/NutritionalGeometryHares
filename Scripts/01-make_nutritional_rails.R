@@ -141,7 +141,7 @@ foragelabs[Diet == "BEGL", Diet := "B. glandulosa"][Diet == "PIGL", Diet := "P. 
     geom_text(aes(x = max_NDF + 2, y = max_CP + 1, label = Diet), family = "serif", data = dietlabs)+
     geom_text(aes(x = max_NDF + 9, y = max_CP + 1, label = Diet), angle = 19, size = 2.6, family = "serif", fontface = 3, data = foragelabs)+
     scale_linetype_manual(values = c("Diet" = 1, "Forage" = 2), guide = NULL)+
-    labs(y = "Protein intake (g DM/day)", x = "NDF intake (g DM/day)", title = "A", fontface = 6)+
+    labs(y = "CP intake (g DM/day)", x = "NDF intake (g DM/day)", title = "A", fontface = 6)+
     themerails)
 
 dietdesign <- ggarrange(foragerailplot, dietrailCE, ncol = 1, nrow = 2)
