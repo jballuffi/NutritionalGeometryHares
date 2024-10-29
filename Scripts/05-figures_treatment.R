@@ -18,21 +18,23 @@ sums <- readRDS("Output/data/multichoicesums.rds")
 
 
 
-
 # intake rate figures (4 panel) -----------------------
-
 
 #calculate mean intakes in mutlichoice trials
 Multimeans <- MC[, .(mean(DMI_bw), sd(DMI_bw)/sqrt(.N)), by = Diet]
 names(Multimeans) <-  c("Diet", "Intake_mean", "Intake_SD")
+
+#make position for diet labels. Take max intakes so that labels are placed at the end of rails
+dietlabs <- rails[, .(max_CP = max(CP_IR), max_CE = max(CE_IR), max_NDF = max(NDF_IR)), Diet]
+
 
 #bar graph
 (Mbar<-
     ggplot(Multimeans)+
     geom_bar(aes(y = Intake_mean, x = Diet), width = .75, stat = "identity", fill = "grey70")+
     geom_errorbar(aes(x = Diet, ymax = Intake_mean + Intake_SD, ymin = Intake_mean - Intake_SD), width = .2, color = "grey30")+
-    geom_text(aes(x = 1, y = 13, label = "B"))+
-    geom_text(aes(x = 2, y = 29, label = "A"))+
+    geom_text(aes(x = 1, y = 13, label = "B"), family = "serif")+
+    geom_text(aes(x = 2, y = 29, label = "A"), family = "serif")+
     ylab(expression(Daily~intake~(gDM/kg^0.75/day)))+
     xlab(expression(Diet))+
     ggtitle("Multi-choice", subtitle = "A")+
@@ -42,13 +44,10 @@ names(Multimeans) <-  c("Diet", "Intake_mean", "Intake_SD")
 #rail plot for target intake according to naiive multi choice trials
 (Mrail <-
     ggplot()+
-    geom_line(aes(y = CP_IR, x = CE_IR, group = Diet), data = rails)+
+    geom_line(aes(x = CE_IR, y = CP_IR, group = Diet), data = rails)+
     geom_point(aes(x = DMI_energy_bw, y = DMI_CP_bw), size = 2, data = sums)+
     geom_point(aes(x = mean(DMI_energy_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sums)+
-    geom_text(aes(x = 2300, y = 8, label = "A"))+
-    geom_text(aes(x = 2300, y = 11, label = "B"))+
-    geom_text(aes(x = 2300, y = 15, label = "C"))+
-    geom_text(aes(x = 2300, y = 20, label = "D"))+
+    geom_text(aes(x = max_CE + 50, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
     ylab(expression(Protein~intake~(gDM/kg^0.75/day)))+
     xlab(expression(Crude~energy~intake~(kJ/kg^0.75/day)))+
     ggtitle("Multi-choice", subtitle = "B")+
@@ -65,13 +64,13 @@ names(Singlemeans) <-  c("Diet", "DMI_mean", "DMI_sd", "CP", "CPsd", "CE", "CEsd
     ggplot(Singlemeans)+
     geom_bar(aes(y = DMI_mean, x = Diet), width = .75, stat = "identity", fill = "grey70")+
     geom_errorbar(aes(x = Diet, ymax = DMI_mean + DMI_sd, ymin = DMI_mean - DMI_sd), width = .2, color = "grey30")+
-    geom_text(aes(x = 1, y = 121, label = "B, C, D"))+
-    geom_text(aes(x = 2, y = 105, label = "A"))+
-    geom_text(aes(x = 3, y = 97, label = "A"))+
-    geom_text(aes(x = 4, y = 100, label = "A"))+
+    geom_text(aes(x = 1, y = 121, label = "B, C, D"), family = "serif")+
+    geom_text(aes(x = 2, y = 105, label = "A"), family = "serif")+
+    geom_text(aes(x = 3, y = 97, label = "A"), family = "serif")+
+    geom_text(aes(x = 4, y = 100, label = "A"), family = "serif")+
     ylab(expression(Daily~intake~(gDM/kg^0.75/day)))+
     xlab(expression(Diet))+
-    ggtitle("Single-choice", subtitle = "C")+
+    ggtitle("No-choice", subtitle = "C")+
     themerails)
 
 #rail plot showing intake (rule of compromise)
@@ -82,10 +81,7 @@ names(Singlemeans) <-  c("Diet", "DMI_mean", "DMI_sd", "CP", "CPsd", "CE", "CEsd
     geom_point(aes(x = CE, y = CP), size = 2, data = Singlemeans)+
     geom_errorbar(aes(x = CE, y = CP, ymin = CP - CPsd, ymax = CP + CPsd), width = .5, data = Singlemeans)+
     geom_errorbar(aes(x = CE, y = CP,xmin = CE - CEsd, xmax = CE + CEsd), width = .5, data = Singlemeans)+
-    geom_text(aes(x = 2300, y = 8, label = "A"))+
-    geom_text(aes(x = 2300, y = 11, label = "B"))+
-    geom_text(aes(x = 2300, y = 15, label = "C"))+
-    geom_text(aes(x = 2300, y = 20, label = "D"))+
+    geom_text(aes(x = max_CE + 50, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
     ylab(expression(Protein~intake~(gDM/kg^0.75/day)))+
     xlab(expression(Crude~energy~intake~(kJ/kg^0.75/day)))+
     ggtitle("Single-choice", subtitle = "D")+
@@ -104,10 +100,10 @@ Intake <- ggarrange(Mbar, Mrail, Sbar, Srail, nrow = 2, ncol = 2)
    ggplot(trials)+
    geom_boxplot(aes(x = Diet, y = Weight_change), outlier.shape = NA, width = .75)+
    geom_jitter(aes(x = Diet, y = Weight_change), shape = 1, size = 2, width = .25)+
-   geom_text(aes(x = 1, y = .8, label = "B, C, D"))+
-   geom_text(aes(x = 2, y = 1.4, label = "A"))+
-   geom_text(aes(x = 3, y = 1.6, label = "A"))+
-   geom_text(aes(x = 4, y = 1.4, label = "A"))+
+   geom_text(aes(x = 1, y = .8, label = "B, C, D"), family = "serif")+
+   geom_text(aes(x = 2, y = 1.4, label = "A"), family = "serif")+
+   geom_text(aes(x = 3, y = 1.6, label = "A"), family = "serif")+
+   geom_text(aes(x = 4, y = 1.4, label = "A"), family = "serif")+
    labs(y = "Weight change (%/Day)")+
    ylim(-2.5, 1.7)+
    themerails)
@@ -120,10 +116,10 @@ Intake <- ggarrange(Mbar, Mrail, Sbar, Srail, nrow = 2, ncol = 2)
 (DMDplot <- 
     ggplot(day)+
     geom_boxplot(aes(x = Diet, y = DMD*100), outlier.shape = NA)+
-    geom_text(aes(x = 1, y = 50, label = "B, C, D"))+
-    geom_text(aes(x = 2, y = 70, label = "A, D"))+
-    geom_text(aes(x = 3, y = 70, label = "A"))+
-    geom_text(aes(x = 4, y = 70, label = "A"))+
+    geom_text(aes(x = 1, y = 50, label = "B, C, D"), family = "serif")+
+    geom_text(aes(x = 2, y = 70, label = "A, D"), family = "serif")+
+    geom_text(aes(x = 3, y = 70, label = "A"), family = "serif")+
+    geom_text(aes(x = 4, y = 70, label = "A"), family = "serif")+
     labs(y = "Apparent digestability (%)", x = "")+
     themerails+
     theme(strip.background = element_blank()))
@@ -132,10 +128,10 @@ Intake <- ggarrange(Mbar, Mrail, Sbar, Srail, nrow = 2, ncol = 2)
 (DPplot <- 
     ggplot(day)+
     geom_boxplot(aes(x = Diet, y = DP*100), outlier.shape = NA)+
-    geom_text(aes(x = 1, y = 70, label = "B, C, D"))+
-    geom_text(aes(x = 2, y = 81, label = "A, C, D"))+
-    geom_text(aes(x = 3, y = 85, label = "A, B, D"))+
-    geom_text(aes(x = 4, y = 93, label = "A, B, C"))+
+    geom_text(aes(x = 1, y = 70, label = "B, C, D"), family = "serif")+
+    geom_text(aes(x = 2, y = 81, label = "A, C, D"), family = "serif")+
+    geom_text(aes(x = 3, y = 85, label = "A, B, D"), family = "serif")+
+    geom_text(aes(x = 4, y = 93, label = "A, B, C"), family = "serif")+
     labs(y = "Apparent digestability (%)", x = "Diet")+
     themerails+
     theme(strip.background = element_blank()))

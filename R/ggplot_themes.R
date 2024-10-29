@@ -3,7 +3,8 @@
 library(ggplot2)
 
 #create theme for ggplots
-themerails<-theme(title = element_text(family = "serif"),
+themerails<-theme(text = element_text(family = "serif"),
+                  title = element_text(family = "serif"),
                   axis.title = element_text(size=13, family = "serif"),
                   axis.text = element_text(size=10, family = "serif"),
                   axis.line.x.top = element_blank(),
@@ -15,7 +16,8 @@ themerails<-theme(title = element_text(family = "serif"),
                   panel.background = element_blank())
 
 
-themepoints <- theme(title = element_text(family = "serif"),
+themepoints <- theme(text = element_text(family = "serif"),
+                        title = element_text(family = "serif"),
                         axis.title = element_text(size=13, family = "serif"),
                         axis.text = element_text(size=10, family = "serif"),
                         legend.position = "top",
