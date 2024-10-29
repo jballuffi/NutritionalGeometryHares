@@ -45,11 +45,11 @@ dietlabs <- rails[, .(max_CP = max(CP_IR), max_CE = max(CE_IR), max_NDF = max(ND
 (Mrail <-
     ggplot()+
     geom_line(aes(x = CE_IR, y = CP_IR, group = Diet), data = rails)+
-    geom_point(aes(x = DMI_energy_bw, y = DMI_CP_bw), size = 2, data = sums)+
+    geom_point(aes(x = DMI_energy_bw, y = DMI_CP_bw), shape = 1, size = 2, data = sums)+
     geom_point(aes(x = mean(DMI_energy_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sums)+
     geom_text(aes(x = max_CE + 50, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
-    ylab(expression(Protein~intake~(gDM/kg^0.75/day)))+
-    xlab(expression(Crude~energy~intake~(kJ/kg^0.75/day)))+
+    ylab(expression(CP~intake~(gDM/kg^0.75/day)))+
+    xlab(expression(CE~intake~(kJ/kg^0.75/day)))+
     ggtitle("Multi-choice", subtitle = "B")+
     themerails)
 
@@ -78,7 +78,7 @@ names(Singlemeans) <-  c("Diet", "DMI_mean", "DMI_sd", "CP", "CPsd", "CE", "CEsd
     ggplot()+
     geom_line(aes(y = CP_IR, x = CE_IR, group = Diet), data = rails)+
     geom_point(aes(x = mean(DMI_energy_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sums)+
-    geom_point(aes(x = CE, y = CP), size = 2, data = Singlemeans)+
+    geom_point(aes(x = CE, y = CP), size = 2, shape = 1, data = Singlemeans)+
     geom_errorbar(aes(x = CE, y = CP, ymin = CP - CPsd, ymax = CP + CPsd), width = .5, data = Singlemeans)+
     geom_errorbar(aes(x = CE, y = CP,xmin = CE - CEsd, xmax = CE + CEsd), width = .5, data = Singlemeans)+
     geom_text(aes(x = max_CE + 50, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
@@ -120,7 +120,7 @@ Intake <- ggarrange(Mbar, Mrail, Sbar, Srail, nrow = 2, ncol = 2)
     geom_text(aes(x = 2, y = 70, label = "A, D"), family = "serif")+
     geom_text(aes(x = 3, y = 70, label = "A"), family = "serif")+
     geom_text(aes(x = 4, y = 70, label = "A"), family = "serif")+
-    labs(y = "Apparent digestability (%)", x = "", title = "Dry matter")+
+    labs(y = "Apparent digestability (%)", x = "", title = "A) Dry matter")+
     themerails+
     theme(strip.background = element_blank()))
 
@@ -132,7 +132,7 @@ Intake <- ggarrange(Mbar, Mrail, Sbar, Srail, nrow = 2, ncol = 2)
     geom_text(aes(x = 2, y = 81, label = "A, C, D"), family = "serif")+
     geom_text(aes(x = 3, y = 85, label = "A, B, D"), family = "serif")+
     geom_text(aes(x = 4, y = 93, label = "A, B, C"), family = "serif")+
-    labs(y = "Apparent digestability (%)", x = "Diet", title = "Protein")+
+    labs(y = "Apparent digestability (%)", x = "Diet", title = "B) Protein")+
     themerails+
     theme(strip.background = element_blank()))
 
