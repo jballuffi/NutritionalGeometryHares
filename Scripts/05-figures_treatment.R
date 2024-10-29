@@ -82,8 +82,8 @@ names(Singlemeans) <-  c("Diet", "DMI_mean", "DMI_sd", "CP", "CPsd", "CE", "CEsd
     geom_errorbar(aes(x = CE, y = CP, ymin = CP - CPsd, ymax = CP + CPsd), width = .5, data = Singlemeans)+
     geom_errorbar(aes(x = CE, y = CP,xmin = CE - CEsd, xmax = CE + CEsd), width = .5, data = Singlemeans)+
     geom_text(aes(x = max_CE + 50, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
-    ylab(expression(Protein~intake~(gDM/kg^0.75/day)))+
-    xlab(expression(Crude~energy~intake~(kJ/kg^0.75/day)))+
+    ylab(expression(CP~intake~(gDM/kg^0.75/day)))+
+    xlab(expression(CE~intake~(kJ/kg^0.75/day)))+
     ggtitle("Single-choice", subtitle = "D")+
     themerails)
 
