@@ -105,7 +105,7 @@ foragerails[, Type := "Forage"]
 
 
 
-# lot rails --------------------------------------
+# plot rails --------------------------------------
 
 #rbindlist the diet and forage rails in one
 allrails <- rbind(foragerails, dietrails, fill = TRUE)
@@ -139,7 +139,7 @@ foragelabs[Diet == "BEGL", Diet := "B. glandulosa"][Diet == "PIGL", Diet := "P. 
     ggplot()+
     geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet, linetype = Type), data = allrails)+
     geom_text(aes(x = max_NDF + 2, y = max_CP + 1, label = Diet), family = "serif", data = dietlabs)+
-    geom_text(aes(x = max_NDF + 5, y = max_CP + 1, label = Diet), angle = 19, size = 4, family = "serif", fontface = 3, data = foragelabs)+
+    geom_text(aes(x = max_NDF + 9, y = max_CP + 1, label = Diet), angle = 19, size = 2.6, family = "serif", fontface = 3, data = foragelabs)+
     scale_linetype_manual(values = c("Diet" = 1, "Forage" = 2), guide = NULL)+
     labs(y = "Protein intake (g DM/day)", x = "NDF intake (g DM/day)", title = "A", fontface = 6)+
     themerails)
@@ -148,12 +148,12 @@ dietdesign <- ggarrange(foragerailplot, dietrailCE, ncol = 1, nrow = 2)
 
 
 
+# save figures and data output --------------------------------------------
+
 ggsave("Output/figures/dietrailswithforage.jpeg", foragerailplot, width = 3.5, height = 3, unit = "in")
 ggsave("Output/figures/dietrailsNDF.jpeg", dietrailNDF, width = 3.5, height = 3, unit = "in")
 ggsave("Output/figures/dietrailsCE.jpeg", dietrailCE, width = 3.5, height = 3, unit = "in")
 ggsave("Output/figures/dietdesign.jpeg", dietdesign, width = 3.5, height = 6, unit = "in")
-
-
 
 fwrite(allrails, "Output/data/dietrailsandforage.rds")
 fwrite(dietrails, "Output/data/dietrails.rds")
