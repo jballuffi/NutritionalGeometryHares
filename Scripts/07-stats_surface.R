@@ -95,9 +95,9 @@ dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
   geom_point(aes(x = meanCEI, y = meanCPI), data = targets)+
   xlim(min(CE$DMI_energy_bw), max(CE$DMI_energy_bw))+
   ylim(min(CE$DMI_CP_bw), max(CE$DMI_CP_bw))+
-  xlab(expression(CE~intake~(kj/kg^0.75/day)))+
+  xlab(expression(GE~intake~(kj/kg^0.75/day)))+
   ylab(expression(CP~intake~(g/kg^0.75/day)))+
-  labs(title = "A) Crude energy and protein")+
+  labs(title = "A)")+
   themerails)
 
 (b <- ggplot()+
@@ -111,7 +111,7 @@ dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
   ylim(min(DE$DPI), max(DE$DPI))+
   xlab(expression(DE~intake~(kj/kg^0.75/day)))+
   ylab(expression(DP~intake~(g/kg^0.75/day)))+
-  labs(title = "B) Digestible energy and protein")+
+  labs(title = "B)")+
   themerails)
 
 surfaceplot <- ggarrange(a, b, ncol = 1, nrow = 2)
