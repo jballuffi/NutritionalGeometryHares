@@ -13,6 +13,18 @@ day <- readRDS("Output/data/dailyresultscleaned.rds")
 
 
 
+
+# Weight change in response to %protein -----------------------------------
+
+ggplot(trials)+
+  geom_point(aes(x = CP_diet, y = Weight_change))+
+  geom_smooth(aes(x = CP_diet, y = Weight_change))+
+  ylab("Weight change (%/day)")+
+  xlab("Crude protein content (%)")+
+  #scale_x_continuous("\n Protein Intake (g DM/k^0.75/day) \n", n.breaks =5) +
+  themerails
+
+
 # weight change in response to crude matter intake ----------------------------
 
 (DMintake <- 
