@@ -55,11 +55,6 @@ sumsDE[, Model := "Digestible energy"]
 
 # Merge output tables -----------------------------------------------------
 
-# #bind all p tables
-# allsump <- rbind(sumpCNDF, sumpCE, sumpDNDF, sumpDE)
-# names(allsump) <- c("Estimate/edf", "SE/Ref.df", "t/F", "p", "Model", "Response", "Dev. Explained")
-# allsump[, Parameter := "Intercept"]
-
 #bind all s tables
 allsums <- rbind(sumsCE, sumsDE)
 
@@ -70,20 +65,17 @@ summarytable <- allsums %>% mutate_if(is.numeric, round, digits = 2)
 
 
 
-# make predictive datasheets of each model --------------------------------
+# make surface heat maps for each model --------------------------------
 
+#create predictive datasets based on gams
+CE <- as.data.table(predict_gam(bodyCE))
+DE <- as.data.table(predict_gam(bodyDE))
 
-CE <- predict_gam(bodyCE)
-DE <- predict_gam(bodyDE)
+#remove cases with high standard error
+CE <- CE[`se.fit` < 0.4]
+DE <- DE[`se.fit` < 0.4]
 
-
-
-# visualizing GAMs ---------------------
-
-#get target intake for each food component
-targets <- MCsums[, .(meanCPI = mean(DMI_CP_bw), meanCEI = mean(DMI_energy_bw),
-                      meanDPI = mean(DMI_DP_bw),  meanDEI = mean(DMI_DEI_bw))]
-
+#set line types for diets
 dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
 
 (a <- ggplot()+
@@ -92,7 +84,6 @@ dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
   scale_fill_continuous(name = "%/day", type = "viridis")+
   geom_line(aes(x = CE_IR, y = CP_IR, group = Diet, linetype = Diet), size = .8, data = rails)+
   scale_linetype_manual(values = dietlines, guide = NULL)+
-  geom_point(aes(x = meanCEI, y = meanCPI), data = targets)+
   xlim(min(CE$DMI_energy_bw), max(CE$DMI_energy_bw))+
   ylim(min(CE$DMI_CP_bw), max(CE$DMI_CP_bw))+
   xlab(expression(GE~intake~(kj/kg^0.75/day)))+
@@ -106,11 +97,10 @@ dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
   scale_fill_continuous(name = "%/day", type = "viridis", guide = NULL)+
   geom_line(aes(x = DE_IR, y = DP_IR, group = Diet, linetype = Diet), size = .8, data = rails)+
   scale_linetype_manual(values = dietlines)+
-  geom_point(aes(x = meanDEI, y = meanDPI), data = targets)+
   xlim(min(DE$DEI), max(DE$DEI))+
   ylim(min(DE$DPI), max(DE$DPI))+
   xlab(expression(DE~intake~(kj/kg^0.75/day)))+
-  ylab(expression(DP~intake~(g/kg^0.75/day)))+
+  ylab(expression(DCP~intake~(g/kg^0.75/day)))+
   labs(title = "B)")+
   themerails)
 
@@ -162,7 +152,7 @@ reqDP <- effs_lmDP[predicted_round == 0.2, return(as.numeric(x))]
     geom_line(aes(x = x, y = predicted), linewidth = 1, data = effs_lmDP)+
     geom_abline(intercept = 0, slope = 0, linetype = 2)+
     ylab("Weight change (%/day)")+
-    xlab(expression(DP~intake~(g/kg^0.75/day)))+
+    xlab(expression(DCP~intake~(g/kg^0.75/day)))+
     labs(title = "B")+
     themerails)
 
