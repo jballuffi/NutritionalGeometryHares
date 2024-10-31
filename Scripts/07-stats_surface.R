@@ -86,7 +86,7 @@ dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
   scale_linetype_manual(values = dietlines, guide = NULL)+
   xlim(min(CE$DMI_energy_bw), max(CE$DMI_energy_bw))+
   ylim(min(CE$DMI_CP_bw), max(CE$DMI_CP_bw))+
-  xlab(expression(GE~intake~(kj/kg^0.75/day)))+
+  xlab(expression(GE~intake~(kJ/kg^0.75/day)))+
   ylab(expression(CP~intake~(g/kg^0.75/day)))+
   labs(title = "A)")+
   themerails)
@@ -99,7 +99,7 @@ dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
   scale_linetype_manual(values = dietlines)+
   xlim(min(DE$DEI), max(DE$DEI))+
   ylim(min(DE$DPI), max(DE$DPI))+
-  xlab(expression(DE~intake~(kj/kg^0.75/day)))+
+  xlab(expression(DE~intake~(kJ/kg^0.75/day)))+
   ylab(expression(DCP~intake~(g/kg^0.75/day)))+
   labs(title = "B)")+
   themerails)
@@ -127,7 +127,7 @@ reqDE <- effs_lmDE[predicted_round == 0.0, return(as.numeric(x))]
     geom_line(aes(x = x, y = predicted), linewidth = 1, data = effs_lmDE)+
     geom_abline(intercept = 0, slope = 0, linetype = 2)+
     ylab("Weight change (%/day)")+
-    xlab(expression(DE~intake~(kj/kg^0.75/day)))+
+    xlab(expression(DE~intake~(kJ/kg^0.75/day)))+
     labs(title = "A")+
     themerails)
 
