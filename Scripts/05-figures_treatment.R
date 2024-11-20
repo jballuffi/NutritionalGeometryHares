@@ -8,7 +8,7 @@ trials <- readRDS("Output/data/trialresultscleaned.rds")
 day <- readRDS("Output/data/dailyresultscleaned.rds")
 
 #read in data for diet nutritional rails
-rails <- fread("Output/data/dietrails.rds")
+rails <- fread("Output/data/dietdigestionrails.rds")
 
 #read in full multichoice results
 MC <- readRDS("Output/data/multichoiceresults.rds")
@@ -42,16 +42,29 @@ dietlabs <- rails[, .(max_CP = max(CP_IR), max_CE = max(CE_IR), max_NDF = max(ND
     theme(axis.ticks.x = element_blank()))
 
 #rail plot for target intake according to naiive multi choice trials
-(Mrail <-
+(MGrail <-
     ggplot()+
     geom_line(aes(x = CE_IR, y = CP_IR, group = Diet), data = rails)+
-    geom_point(aes(x = DMI_energy_bw, y = DMI_CP_bw), shape = 1, size = 2, data = sums)+
-    geom_point(aes(x = mean(DMI_energy_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sums)+
+    geom_point(aes(x = DMI_GE_bw, y = DMI_CP_bw), shape = 1, size = 2, data = sums)+
+    geom_point(aes(x = mean(DMI_GE_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sums)+
     geom_text(aes(x = max_CE + 50, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
     ylab(expression(CP~intake~(gDM/kg^0.75/day)))+
     xlab(expression(CE~intake~(kJ/kg^0.75/day)))+
     ggtitle("Multi-choice", subtitle = "B")+
     themerails)
+
+(MDrail <-
+    ggplot()+
+    geom_line(aes(x = DE_IR, y = DP_IR, group = Diet), data = rails)+
+    geom_point(aes(x = DMI_DEI_bw, y = DMI_DP_bw), shape = 1, size = 2, data = sums)+
+    geom_point(aes(x = mean(DMI_DEI_bw), y = mean(DMI_DP_bw)), shape = 12, size = 3, data = sums)+
+    #geom_text(aes(x = max_CE + 50, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
+    ylab(expression(CP~intake~(gDM/kg^0.75/day)))+
+    xlab(expression(CE~intake~(kJ/kg^0.75/day)))+
+    ggtitle("Multi-choice", subtitle = "B")+
+    themerails)
+
+
 
 
 #calculate mean intakes in single choice trials
