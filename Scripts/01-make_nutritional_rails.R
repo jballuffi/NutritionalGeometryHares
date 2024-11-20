@@ -21,7 +21,7 @@ diets <- diets[, .(DM_diet = mean(DM, na.rm = TRUE),
                    ADF_diet = mean(ADF_diet/100, na.rm = TRUE), 
                    ADL_diet = mean(ADL_diet/100, na.rm = TRUE),
                    C_diet = mean(C_diet/100, na.rm = TRUE), 
-                   Energy_diet = mean(Energy_diet, na.rm = TRUE)/1000), Sample]
+                   GE_diet = mean(Energy_diet, na.rm = TRUE)/1000), Sample]
 
 setnames(diets, "Sample", "Diet")
 
@@ -34,25 +34,25 @@ dietintakes<- list(
   data.table(IR = seq(1, 120, by = 1), 
                 CP = diets[Diet == "A", return(CP_diet)],
                 NDF = diets[Diet == "A", return(NDF_diet)],
-                CE = diets[Diet == "A", return(Energy_diet)],
+                GE = diets[Diet == "A", return(GE_diet)],
                 Diet = "A"),
 #diet B
   data.table(IR = seq(1, 120, by = 1), 
                 CP = diets[Diet == "B", return(CP_diet)],
                 NDF = diets[Diet == "B", return(NDF_diet)],
-                CE = diets[Diet == "B", return(Energy_diet)],
+                GE = diets[Diet == "B", return(GE_diet)],
                 Diet = "B"),
 #diet c
   data.table(IR = seq(1, 120, by = 1), 
                 CP = diets[Diet == "C", return(CP_diet)],
                 NDF = diets[Diet == "C", return(NDF_diet)],
-                CE = diets[Diet == "C", return(Energy_diet)],
+                GE = diets[Diet == "C", return(GE_diet)],
                 Diet = "C"),
 #diet D
   data.table(IR = seq(1, 120, by = 1), 
                 CP = diets[Diet == "D", return(CP_diet)],
                 NDF = diets[Diet == "D", return(NDF_diet)],
-                CE = diets[Diet == "D", return(Energy_diet)],
+                GE = diets[Diet == "D", return(GE_diet)],
                 Diet = "D")
 )
 
@@ -60,7 +60,7 @@ dietintakes<- list(
 dietrails <- rbindlist(dietintakes)
 
 #calculate the intake rates of CP and NDF
-dietrails[, c("CP_IR", "NDF_IR", "CE_IR") := .(IR*CP, IR*NDF, IR*CE)] #CE intake is kJ
+dietrails[, c("CPI", "NDFI", "GEI") := .(IR*CP, IR*NDF, IR*GE)] #GE intake is kJ
 
 #create columnn indicating that this is a diet
 dietrails[, Type := "Diet"]
@@ -71,8 +71,7 @@ dietrails[, Type := "Diet"]
 # make natural forage rails ------------------------------------------------------------
 
 #collect avg nutritional compositions by species
-wp_means <- wp[, .((mean(CP_DM))/100,(mean(NDF_DM))/100), by = Species]
-names(wp_means) <- c("Species", "CP", "NDF")
+wp_means <- wp[, .(CP = mean(CP_DM)/100, NDF = mean(NDF_DM)/100), by = Species]
 
 #create list of intake rates and nutritional values for each species
 forageintakes <- list(
@@ -98,7 +97,7 @@ data.table(IR = seq(1, 120, by = 1),
 foragerails <- rbindlist(forageintakes)
 
 #calculate the intake rates of CP and NDF
-foragerails[, c("CP_IR", "NDF_IR") := .(IR*CP, IR*NDF)]
+foragerails[, c("CPI", "NDFI") := .(IR*CP, IR*NDF)]
 
 #create column indicating that this is values from natural browse
 foragerails[, Type := "Forage"]
@@ -112,8 +111,8 @@ allrails <- rbind(foragerails, dietrails, fill = TRUE)
 
 #get label locations for diets and forage. 
 #Using the max intake rates so labels can be placed at the end of rails
-dietlabs <- dietrails[, .(max_CP = max(CP_IR), max_CE = max(CE_IR), max_NDF = max(NDF_IR)), Diet]
-foragelabs <- foragerails[, .(max_CP = max(CP_IR), max_NDF = max(NDF_IR)), Diet]
+dietlabs <- dietrails[, .(max_CP = max(CPI), max_GE = max(GEI), max_NDF = max(NDFI)), Diet]
+foragelabs <- foragerails[, .(max_CP = max(CPI), max_NDF = max(NDFI)), Diet]
 
 #rename species codes as species names
 foragelabs[Diet == "BEGL", Diet := "B. glandulosa"][Diet == "PIGL", Diet := "P. glauca"][Diet == "SASP", Diet := "Salix spp."]
@@ -121,7 +120,7 @@ foragelabs[Diet == "BEGL", Diet := "B. glandulosa"][Diet == "PIGL", Diet := "P. 
 #plot just the diet rails in NDF and CP
 (dietrailNDF <-
   ggplot()+
-  geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet), data = dietrails)+
+  geom_line(aes(x = NDFI, y = CPI, group = Diet), data = dietrails)+
   geom_text(aes(x = max_NDF + 2, y = max_CP + 1, label = Diet), family = "serif", data = dietlabs)+
   labs(y = "CP Intake (g DM/day)", x = "NDF Intake (g DM/day)")+
   themerails)
@@ -129,15 +128,15 @@ foragelabs[Diet == "BEGL", Diet := "B. glandulosa"][Diet == "PIGL", Diet := "P. 
 #plot just diet rails in CE and CP
 (dietrailCE <- 
     ggplot()+
-    geom_line(aes(x = CE_IR, y = CP_IR, group = Diet), data = dietrails)+
-    geom_text(aes(x = max_CE + 70, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
+    geom_line(aes(x = GEI, y = CPI, group = Diet), data = dietrails)+
+    geom_text(aes(x = max_GE + 70, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
     labs(y = "CP Intake (g DM/day)", x = "GE Intake (kJ/day)", title = "B")+
     themerails)
 
 #plot diet and forage rails in NDF and CP
 (foragerailplot <- 
     ggplot()+
-    geom_line(aes(x = NDF_IR, y = CP_IR, group = Diet, linetype = Type), data = allrails)+
+    geom_line(aes(x = NDFI, y = CPI, group = Diet, linetype = Type), data = allrails)+
     geom_text(aes(x = max_NDF + 2, y = max_CP + 1, label = Diet), family = "serif", data = dietlabs)+
     geom_text(aes(x = max_NDF + 9, y = max_CP + 1, label = Diet), angle = 19, size = 2.6, family = "serif", fontface = 3, data = foragelabs)+
     scale_linetype_manual(values = c("Diet" = 1, "Forage" = 2), guide = NULL)+
