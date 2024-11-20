@@ -24,6 +24,10 @@ spill <- fread("Input/Daily_food_remainders.csv")
 #read in fecal response data
 feces <- fread("Input/Results_feces.csv")
 
+#temp logger data
+temp2022 <- fread("Input/temperatures_SW_2022.csv")
+temp2023 <- fread("Input/temperature_SW_2023.csv")
+
 
 
 # Melt feeding trial data into individual days-------------------------------------------------
@@ -200,7 +204,7 @@ DT[, DP_diet := CP_diet*DP]
 
 #caclulate digestibilities by diet (use in table 1)
 #dry matter digestibility, gross energy digestibility, crude protein digestibility
-diet_digest <- DT[, .(DMD = mean(DMD), GED = mean(DE), CPD = mean(DP_diet)), Diet]
+diet_digest <- DT[, .(DMD_diet = mean(DMD), GED_diet = mean(DE), CPD_diet = mean(DP_diet)), Diet]
 
 
 # Calculate digestibility intake ------------------------------------------
@@ -281,4 +285,6 @@ trials[, Weight_change := (((Weight_end - Weight_start)/Weight_start)*100)/3]
 saveRDS(Dailyresults, "Output/data/dailyresultscleaned.rds")
 #save trial format of results
 saveRDS(trials, "Output/data/trialresultscleaned.rds")
+#save average digestibilities
+saveRDS(diet_digest, "Output/data/diet_digestibilities.rds")
 
