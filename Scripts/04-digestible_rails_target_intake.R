@@ -83,26 +83,14 @@ dietrails[, Type := "Diet"]
 
 
 
-# Add digestibility to multi-choice ----------------------------------------
-
-MC <- merge(dig, MC, by = "Diet", all.y = TRUE)
-
-#these intake rates are on a kg^.75 basis
-MC[, DPI := DP*DMI_CP_bw]       #digestible protein intake (g/kg.75)
-MC[, DNDFI := DNDF*DMI_NDF_bw]  #digestible NDF intake (g/kg.75)
-MC[, DEI := DE_diet*DMI_bw] #digestible energy intake (kj/kg.75)
-
-
-
 # Sum nutrient intakes in multi-choice trials by individual------------------------------------------------------------
 
 #calculate total protein and fibre consumed from all diets in one day
 totals <- MC[, .(DMI_bw = sum(DMI_bw), 
                  DMI_CP_bw = sum(DMI_CP_bw), 
                  DMI_NDF_bw = sum(DMI_NDF_bw),
-                 DMI_energy_bw = sum(DMI_energy_bw),
+                 DMI_GE_bw = sum(DMI_GE_bw),
                  DMI_DP_bw = sum(DPI),
-                 DMI_DNDF_bw = sum(DNDFI),
                  DMI_DEI_bw = sum(DEI)), by = ID]
 
 
