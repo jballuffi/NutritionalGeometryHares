@@ -24,10 +24,6 @@ spill <- fread("Input/Daily_food_remainders.csv")
 #read in fecal response data
 feces <- fread("Input/Results_feces.csv")
 
-#read in temp data
-temp2022 <- fread("Input/temperatures_SW_2022.csv")
-temp2023 <- fread("Input/temperature_SW_2023.csv")
-
 
 
 # Melt feeding trial data into individual days-------------------------------------------------
@@ -201,8 +197,10 @@ DT[, DE := DMD*Energy_diet] #digestible energy (kj/g)
 
 #calculate total digestible protein in diets
 DT[, DP_diet := CP_diet*DP]
+
 #caclulate digestibilities by diet (use in table 1)
-DT[, .(DMD = mean(DMD), DE = mean(DE), DP = mean(DP_diet)), Diet]
+#dry matter digestibility, gross energy digestibility, crude protein digestibility
+diet_digest <- DT[, .(DMD = mean(DMD), GED = mean(DE), CPD = mean(DP_diet)), Diet]
 
 
 # Calculate digestibility intake ------------------------------------------
