@@ -8,7 +8,7 @@ trials <- readRDS("Output/data/trialresultscleaned.rds")
 day <- readRDS("Output/data/dailyresultscleaned.rds")
 
 #read in data for diet nutritional rails
-rails <- fread("Output/data/dietdigestionrails.rds")
+rails <- fread("Output/data/dietdigestibilityrails.rds")
 
 #read in full multichoice results
 MC <- readRDS("Output/data/multichoiceresults.rds")
@@ -25,7 +25,7 @@ Multimeans <- MC[, .(mean(DMI_bw), sd(DMI_bw)/sqrt(.N)), by = Diet]
 names(Multimeans) <-  c("Diet", "Intake_mean", "Intake_SD")
 
 #make position for diet labels. Take max intakes so that labels are placed at the end of rails
-dietlabs <- rails[, .(max_CP = max(CP_IR), max_CE = max(CE_IR), max_NDF = max(NDF_IR)), Diet]
+dietlabs <- rails[, .(max_CP = max(CP_IR), max_GE = max(GE_IR), max_NDF = max(NDF_IR)), Diet]
 
 
 #bar graph
@@ -44,23 +44,23 @@ dietlabs <- rails[, .(max_CP = max(CP_IR), max_CE = max(CE_IR), max_NDF = max(ND
 #rail plot for target intake according to naiive multi choice trials
 (MGrail <-
     ggplot()+
-    geom_line(aes(x = CE_IR, y = CP_IR, group = Diet), data = rails)+
-    geom_point(aes(x = DMI_GE_bw, y = DMI_CP_bw), shape = 1, size = 2, data = sums)+
-    geom_point(aes(x = mean(DMI_GE_bw), y = mean(DMI_CP_bw)), shape = 12, size = 3, data = sums)+
-    geom_text(aes(x = max_CE + 50, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
+    geom_line(aes(x = GE_IR, y = CP_IR, group = Diet), data = rails)+
+    geom_point(aes(x = GEI_bw, y = CPI_bw), shape = 1, size = 2, data = sums)+
+    geom_point(aes(x = mean(GEI_bw), y = mean(CPI_bw)), shape = 12, size = 3, data = sums)+
+    geom_text(aes(x = max_GE + 50, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
     ylab(expression(CP~intake~(gDM/kg^0.75/day)))+
-    xlab(expression(CE~intake~(kJ/kg^0.75/day)))+
+    xlab(expression(GE~intake~(kJ/kg^0.75/day)))+
     ggtitle("Multi-choice", subtitle = "B")+
     themerails)
 
 (MDrail <-
     ggplot()+
     geom_line(aes(x = DE_IR, y = DP_IR, group = Diet), data = rails)+
-    geom_point(aes(x = DMI_DEI_bw, y = DMI_DP_bw), shape = 1, size = 2, data = sums)+
-    geom_point(aes(x = mean(DMI_DEI_bw), y = mean(DMI_DP_bw)), shape = 12, size = 3, data = sums)+
+    geom_point(aes(x = DEI_bw, y = DPI_bw), shape = 1, size = 2, data = sums)+
+    geom_point(aes(x = mean(DEI_bw), y = mean(DPI_bw)), shape = 12, size = 3, data = sums)+
     #geom_text(aes(x = max_CE + 50, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
-    ylab(expression(CP~intake~(gDM/kg^0.75/day)))+
-    xlab(expression(CE~intake~(kJ/kg^0.75/day)))+
+    ylab(expression(DP~intake~(gDM/kg^0.75/day)))+
+    xlab(expression(DE~intake~(kJ/kg^0.75/day)))+
     ggtitle("Multi-choice", subtitle = "B")+
     themerails)
 
@@ -140,7 +140,7 @@ Intake <- ggarrange(Mbar, Mrail, Sbar, Srail, nrow = 2, ncol = 2)
 #protein digestibility in response to diet
 (DPplot <- 
     ggplot(day)+
-    geom_boxplot(aes(x = Diet, y = DP*100), outlier.shape = NA)+
+    geom_boxplot(aes(x = Diet, y = CPD*100), outlier.shape = NA)+
     geom_text(aes(x = 1, y = 70, label = "B, C, D"), family = "serif")+
     geom_text(aes(x = 2, y = 81, label = "A, C, D"), family = "serif")+
     geom_text(aes(x = 3, y = 85, label = "A, B, D"), family = "serif")+

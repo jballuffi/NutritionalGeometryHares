@@ -8,7 +8,7 @@ library(tidymv)
 trials <- readRDS("Output/data/trialresultscleaned.rds")
   
 #nutritional rails
-rails <- fread("Output/data/dietdigestionrails.rds")
+rails <- fread("Output/data/dietdigestibilityrails.rds")
   
 #target intake rates
 MCsums <- readRDS("Output/data/multichoicesums.rds")
