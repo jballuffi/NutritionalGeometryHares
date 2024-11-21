@@ -238,6 +238,6 @@ trials[, Weight_change := (((Weight_end - Weight_start)/Weight_start)*100)/3]
 saveRDS(Dailyresults, "Output/data/dailyresultscleaned.rds")
 #save trial format of results
 saveRDS(trials, "Output/data/trialresultscleaned.rds")
-#save average digestibilities
+#save average digestibility
 saveRDS(diet_digest, "Output/data/diet_digestibilities.rds")
 
