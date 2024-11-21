@@ -75,9 +75,9 @@ DT[, DMI := OfferDM - EndDM]
 DT[DMI < 0, DMI := 0]
 
 #calculate intake rates of each nutrient
-DT[, DMI_CP := DMI*CP_diet]
-DT[, DMI_NDF := DMI*NDF_diet]
-DT[, DMI_GE := DMI*Energy_diet]
+DT[, CPI := DMI*CP_diet] # crude protein intake (g DM/day)
+DT[, NDFI := DMI*NDF_diet] # NDF intake (g DM/day)
+DT[, GEI := DMI*GE_diet] # gross energy intake (kJ/day)
 
 
 
@@ -87,24 +87,29 @@ DT[, DMI_GE := DMI*Energy_diet]
 DT[, Weight_start := Weight_start/1000]
 
 #calculate dry matter intakes by kg^.75
-DT[, DMI_bw := DMI/(Weight_start^.75)]
-DT[, DMI_CP_bw := DMI_CP/(Weight_start^.75)]
-DT[, DMI_NDF_bw := DMI_NDF/(Weight_start^.75)]
-DT[, DMI_GE_bw := DMI_GE/(Weight_start^.75)]
+DT[, DMI_bw := DMI/(Weight_start^.75)] # total dry matter intake (g/day/kg^.75)
+DT[, CPI_bw := CPI/(Weight_start^.75)] # crude protein intake (g/day/kg^.75)
+DT[, NDFI_bw := NDFI/(Weight_start^.75)] # NDF intake (g/day/kg^.75)
+DT[, GEI_bw := GEI/(Weight_start^.75)] # gross energy intake (kJ/day/kg^.75)
 
 
 
 # Digestible intake rates by weight ---------------------------------------
 
 DT[, DMDI := DMD_diet*DMI_bw]        #digestible dry matter intake (g/kg.75)
-DT[, DPI := CPD_diet*DMI_CP_bw]       #digestible protein intake (g/kg.75)
+DT[, DPI := CPD_diet*CPI_bw]       #digestible protein intake (g/kg.75)
 DT[, DEI := GED_diet*DMI_bw]              #digestible energy intake (kj/kg.75)
 
 
 # remove food strikers ----------------------------------------------------
 
+#sum total intake rate by individual
 totals <- DT[, .(DMI_bw = sum(DMI_bw)), by = ID] 
+
+#ist individuals that had a total intake of less than 20 g
 strikers <- totals[DMI_bw < 20, ID]
+
+#remove that list of individuals
 DT <- DT[!ID %in% strikers]
 
 
