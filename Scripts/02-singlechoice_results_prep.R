@@ -123,31 +123,26 @@ feces <- merge(IDdiet, feces, all = TRUE)
 
 #average compositions by diet. This is for filling in gaps in data for now
 avg <- feces[, .(mNDF = mean(NDF_F, na.rm = TRUE),
-                 mADF = mean(ADF_F, na.rm = TRUE),
-                 mADL = mean(ADL_F, na.rm = TRUE), 
-                 mCP = mean(CP_F, na.rm = TRUE),
-                 mC = mean(C_F, na.rm = TRUE)), Diet]
+                 mCP = mean(CP_F, na.rm = TRUE)), Diet]
 
 #merge averages with full feces data
 feces <- merge(feces, avg, by = "Diet", all.x = TRUE)
 
 #replace NA's with the averages
-feces[is.na(NDF_F), NDF_F := mNDF][is.na(ADF_F), ADF_F := mADF][is.na(ADL_F), ADL_F := mADL]
-feces[is.na(CP_F), CP_F := mCP][is.na(C_F), C_F := mC]
+feces[is.na(NDF_F), NDF_F := mNDF]
+feces[is.na(CP_F), CP_F := mCP]
 mDM <- feces[, mean(DM, na.rm = TRUE)]
 feces[is.na(DM), DM := mDM]
 
-#calculate excretion rates for each nutrient (g/day)
-feces[, DMF := Total_dried*DM] #total dry matter
-feces[, DMF_NDF := DMF*(NDF_F/100)] #total NDF on DM basis (g)
-feces[, DMF_ADF := DMF*(ADF_F/100)] #total ADF on DM basis (g)
-feces[, DMF_ADL := DMF*(ADL_F/100)] #total ADF on DM basis (g)
-feces[, DMF_CP := DMF*(CP_F/100)] #total CP on DM basis (g)
+#calculate output rates for each nutrient (g/day)
+feces[, DMO := Total_dried*DM] #total dry matter output
+feces[, NDFO := DMO*(NDF_F/100)] #total NDF output on DM basis (g)
+feces[, CPO := DMO*(CP_F/100)] #total CP output on DM basis (g)
 
 #cut the fecal data down to just fecal output columns
 fecaloutput <- feces[, .(Sample, 
-                         CP_F, NDF_F, ADF_F, ADL_F,#fecal compositions
-                         DMF, DMF_NDF, DMF_ADF, DMF_ADL, DMF_CP)]  #fecal compositions
+                         CP_F, NDF_F,#fecal compositions
+                         DMO, NDFO, CPO)]  #fecal outputs
 
 #merge intake rates and DMs with fecal output data
 DT <- merge(DT, fecaloutput, by = "Sample", all.x = TRUE)
@@ -164,53 +159,47 @@ DT[, DM_end := (EndWet*DM/100) + DM_spilled] #end weight adds in the dry matter 
 DT[, DMI := DM_offer - DM_end]
 
 #calculate dry matter intake of each currency
-DT[, DMI_CP := DMI*CP_diet]   #dry matter intake protein (g)
-DT[, DMI_NDF := DMI*NDF_diet] #dry matter intake of NDF (g)
-DT[, DMI_ADF := DMI*ADF_diet] #dry matter intake of ADF (g)
-DT[, DMI_ADL := DMI*ADL_diet] #dry matter intake of ADL (g)
-DT[, DMI_C := DMI*C_diet]     #dry matter intake of carbon (g)
-DT[, DMI_energy := DMI*Energy_diet] #intake of energy (kj)
+DT[, CPI := DMI*CP_diet]   #crude protein intake (g DM)
+DT[, NDFI := DMI*NDF_diet] #neutral detergent fibre intake (g DM)
+DT[, GEI := DMI*GE_diet] #gross energy intake (kj)
 
 #convert weights from g to kg
 DT[, Weight_start := Weight_start/1000]
 DT[, Weight_end := Weight_end/1000]
 
-#calculate dry matter intakes by kg^.75
+#calculate dry matter intakes by kg^.75 (bw  stands for bw)
 DT[, DMI_bw := DMI/(Weight_start^.75)]
-DT[, DMI_CP_bw := DMI_CP/(Weight_start^.75)]
-DT[, DMI_NDF_bw := DMI_NDF/(Weight_start^.75)]
-DT[, DMI_ADF_bw := DMI_ADF/(Weight_start^.75)]
-DT[, DMI_ADL_bw := DMI_ADL/(Weight_start^.75)]
-DT[, DMI_C_bw := DMI_C/(Weight_start^.75)]
-DT[, DMI_energy_bw := DMI_energy/(Weight_start^.75)]
+DT[, CPI_bw := CPI/(Weight_start^.75)]
+DT[, NDFI_bw := NDFI/(Weight_start^.75)]
+DT[, GEI_bw := GEI/(Weight_start^.75)]
 
 
 
 # Calculate digestibility -----------------------------------------------
 
-DT[, DMD := (DMI-DMF)/DMI] #dry matter digestibility (%)
-DT[, DP := (DMI_CP - DMF_CP)/DMI_CP] #digestible protein (%)
-DT[, DNDF := (DMI_NDF - DMF_NDF)/DMI_NDF] #digestible NDF (%)
-DT[, DADF := (DMI_ADF - DMF_ADF)/DMI_ADF] #digestible ADF (%)
-DT[, DADL := (DMI_ADL - DMF_ADL)/DMI_ADL] #digestible ADL (%)
-DT[, DE := DMD*Energy_diet] #digestible energy (kj/g)
+#this DOES NOT use by weight intake rates, just the g/day
+
+DT[, DMD := (DMI-DMO)/DMI] #dry matter digestibility (%)
+DT[, CPD := (CPI - CPO)/CPI] #crude protein digestibility (%)
+DT[, NDFD := (NDFI - NDFO)/NDFI] #NDF digestibility (%)
+DT[, GED := DMD*GE_diet] #gross energy digestibility (kj/g)
 
 #calculate total digestible protein in diets
-DT[, DP_diet := CP_diet*DP]
+DT[, DP_diet := CP_diet*CPD] ###WHAT IS THIS CALCULATION?
 
-#caclulate digestibilities by diet (use in table 1)
+#caclulate digestibility by diet (use in table 1)
 #dry matter digestibility, gross energy digestibility, crude protein digestibility
-diet_digest <- DT[, .(DMD_diet = mean(DMD), GED_diet = mean(DE), CPD_diet = mean(DP_diet)), Diet]
+diet_digest <- DT[, .(DMD_diet = mean(DMD), GED_diet = mean(GED), CPD_diet = mean(DP_diet)), Diet]
 
+###ISSUE WITH USING THE ABOVE TO MAKE DIGESTIBLE LINES> I THNK THE PROBLEM IS DP_diet
 
 # Calculate digestibility intake ------------------------------------------
 
 #these intake rates are on a kg^.75 basis
 DT[, DMDI := DMD*DMI_bw]        #digestible dry matter intake (g/kg.75)
-DT[, DPI := DP*DMI_CP_bw]       #digestible protein intake (g/kg.75)
-DT[, DNDFI := DNDF*DMI_NDF_bw]  #digestible NDF intake (g/kg.75)
-DT[, DADFI := DADF*DMI_ADF_bw]  #digestible ADF intake (g/kg.75)
-DT[, DEI := DE*DMI_bw] #digestible energy intake (kj/kg.75)
+DT[, DPI := CPD*CPI_bw]       #digestible protein intake (g/kg.75)
+DT[, DNDFI := NDFD*NDFI_bw]  #digestible NDF intake (g/kg.75)
+DT[, DEI := GED*DMI_bw] #digestible energy intake (kj/kg.75)
 
 
 
@@ -219,14 +208,14 @@ DT[, DEI := DE*DMI_bw] #digestible energy intake (kj/kg.75)
 
 #cut out a datasheet of just key feeding trial info and results
 Dailyresults <- DT[, c("Diet", "Sample", "ID", "Trial", "Day", "Date_start", "Date_end", "Date", #info
-                       "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "Energy_diet", #diet compositions
-                       "DMI", "DMI_CP", "DMI_NDF", "DMI_ADF", "DMI_ADL", "DMI_energy", #dry matter intakes (g/day)
+                       "CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "GE_diet", #diet compositions
+                       "DMI", "CPI", "NDFI", "GEI", #dry matter intakes (g/day)
                        "Weight_start", "Weight_end", #weights (g)
-                       "DMI_bw", "DMI_CP_bw", "DMI_NDF_bw", "DMI_ADF_bw", "DMI_ADL_bw", "DMI_energy_bw", #dry matter intake by weight (g/kg^.75/day)
-                       "DMF", "DMF_CP", "DMF_NDF", "DMF_ADF", "DMF_ADL", #fecal outputs (g/day) 
-                       "CP_F", "NDF_F", "ADF_F", "ADL_F", #fecal compositions (%)
-                       "DMD", "DP", "DNDF", "DADF", "DADL", "DE",  #digestibility (%)
-                       "DMDI", "DPI", "DNDFI", "DADFI", "DEI" #digestible intake rate (g/kg^.75/day)
+                       "DMI_bw", "CPI_bw", "NDFI_bw", "GEI_bw", #dry matter intake by weight (g/kg^.75/day)
+                       "DMO", "CPO", "NDFO", #fecal outputs (g/day) 
+                       "CP_F", "NDF_F", #fecal compositions (%)
+                       "DMD", "CPD", "NDFD", "GED",  #digestibility (%)
+                       "DMDI", "DPI", "DNDFI", "DEI" #digestible intake rate (g/kg^.75/day)
                        
 )] 
 
