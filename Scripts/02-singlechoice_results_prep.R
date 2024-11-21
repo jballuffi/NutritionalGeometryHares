@@ -179,14 +179,16 @@ DT[, GEI_bw := GEI/(Weight_start^.75)]
 
 #this DOES NOT use by weight intake rates, just the g/day
 
-DT[, DMD := (DMI-DMO)/DMI] #dry matter digestibility (%)
-DT[, CPD := (CPI - CPO)/CPI] #crude protein digestibility (%)
-DT[, NDFD := (NDFI - NDFO)/NDFI] #NDF digestibility (%)
-DT[, GED := DMD*GE_diet] #gross energy digestibility (kj/g)
+DT[, DMD := (DMI-DMO)/DMI] #dry matter digestibility      (% of dry matter that gets digested)
+DT[, CPD := (CPI - CPO)/CPI] #crude protein digestibility (% of protein that gets digested)
+DT[, GED := DMD*GE_diet] #gross energy digestibility      (% of energy that gets digested)
 
-#caclulate digestibility by diet (use in table 1)
+#get total amount of digestible protein in the diet based on protein digestibility and crude protein content
+DT[, DP_diet := CP_diet*CPD] #this is the composition of digestible protein in diet
+
+#calculate digestibility by diet (use in table 1)
 #dry matter digestibility, gross energy digestibility, crude protein digestibility
-diet_digest <- DT[, .(DMD_diet = mean(DMD), GED_diet = mean(GED), CPD_diet = mean(CPD)), Diet]
+diet_digest <- DT[, .(DMD_diet = mean(DMD), GED_diet = mean(GED), DP_diet = mean(DP_diet), CPD_diet = mean(CPD)), Diet]
 
 
 # Calculate digestibility intake ------------------------------------------
@@ -194,9 +196,7 @@ diet_digest <- DT[, .(DMD_diet = mean(DMD), GED_diet = mean(GED), CPD_diet = mea
 #these intake rates are on a kg^.75 basis
 DT[, DMDI := DMD*DMI_bw]        #digestible dry matter intake (g/kg.75)
 DT[, DPI := CPD*CPI_bw]       #digestible protein intake (g/kg.75)
-DT[, DNDFI := NDFD*NDFI_bw]  #digestible NDF intake (g/kg.75)
 DT[, DEI := GED*DMI_bw] #digestible energy intake (kj/kg.75)
-
 
 
 
@@ -210,8 +210,8 @@ Dailyresults <- DT[, c("Diet", "Sample", "ID", "Trial", "Day", "Date_start", "Da
                        "DMI_bw", "CPI_bw", "NDFI_bw", "GEI_bw", #dry matter intake by weight (g/kg^.75/day)
                        "DMO", "CPO", "NDFO", #fecal outputs (g/day) 
                        "CP_F", "NDF_F", #fecal compositions (%)
-                       "DMD", "CPD", "NDFD", "GED",  #digestibility (%)
-                       "DMDI", "DPI", "DNDFI", "DEI" #digestible intake rate (g/kg^.75/day)
+                       "DMD", "CPD", "GED",  #digestibility (%)
+                       "DMDI", "DPI", "DEI" #digestible intake rate (g/kg^.75/day)
                        
 )] 
 
