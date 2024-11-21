@@ -6,7 +6,7 @@ dayvars <- c("CP_diet", "NDF_diet", "ADF_diet", "ADL_diet", "GE_diet", #diet com
              "DMI_bw", "CPI_bw", "NDFI_bw", "GEI_bw", #dry matter intake by weight (g/kg^.75/day)
              "DMO", "CPO", "NDFO", #fecal outputs (g/day) 
              "CP_F", "NDF_F", #fecal compositions (%)
-             "DMD", "CPD", "NDFD", "GED",  #digestibility (%)
-             "DMDI", "DPI", "DNDFI", "DEI" #digestible intake rate (g/kg^.75/day)
+             "DMD", "CPD", "GED",  #digestibility (%)
+             "DMDI", "DPI", "DEI" #digestible intake rate (g/kg^.75/day)
              
 )
