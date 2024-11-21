@@ -20,7 +20,7 @@ diets <- merge(diet, dietdigest, by = "Diet")
 dietintakes<- list(
   
   #diet A
-  data.table(IR = seq(1, 300, by = 1), 
+  data.table(IR = seq(1, 120, by = 1), 
              CP = diets[Diet == "A", return(CP_diet)], #crude protein
              NDF = diets[Diet == "A", return(NDF_diet)], #NDF
              GE = diets[Diet == "A", return(GE_diet)], #crude energy
@@ -28,7 +28,7 @@ dietintakes<- list(
              DE = diets[Diet == "A", return(GED_diet)], #digestible energy
              Diet = "A"),
   #diet B
-  data.table(IR = seq(1, 300, by = 1), 
+  data.table(IR = seq(1, 120, by = 1), 
              CP = diets[Diet == "B", return(CP_diet)], #crude protein
              NDF = diets[Diet == "B", return(NDF_diet)], #NDF
              GE = diets[Diet == "B", return(GE_diet)], #crude energy
@@ -36,7 +36,7 @@ dietintakes<- list(
              DE = diets[Diet == "B", return(GED_diet)], #digestible energy
              Diet = "B"),
   #diet c
-  data.table(IR = seq(1, 300, by = 1), 
+  data.table(IR = seq(1, 120, by = 1), 
              CP = diets[Diet == "C", return(CP_diet)], #crude protein
              NDF = diets[Diet == "C", return(NDF_diet)], #NDF
              GE = diets[Diet == "C", return(GE_diet)], #crude energy
@@ -44,7 +44,7 @@ dietintakes<- list(
              DE = diets[Diet == "C", return(GED_diet)], #digestible energy
              Diet = "C"),
   #diet D
-  data.table(IR = seq(1, 300, by = 1), 
+  data.table(IR = seq(1, 120, by = 1), 
              CP = diets[Diet == "D", return(CP_diet)], #crude protein
              NDF = diets[Diet == "D", return(NDF_diet)], #NDF
              GE = diets[Diet == "D", return(GE_diet)], #crude energy
