@@ -24,7 +24,7 @@ dietintakes<- list(
              CP = diets[Diet == "A", return(CP_diet)], #crude protein
              NDF = diets[Diet == "A", return(NDF_diet)], #NDF
              GE = diets[Diet == "A", return(GE_diet)], #crude energy
-             DP = diets[Diet == "A", return(CPD_diet)], #digestible protein
+             DP = diets[Diet == "A", return(DP_diet)], #digestible protein
              DE = diets[Diet == "A", return(GED_diet)], #digestible energy
              Diet = "A"),
   #diet B
@@ -32,7 +32,7 @@ dietintakes<- list(
              CP = diets[Diet == "B", return(CP_diet)], #crude protein
              NDF = diets[Diet == "B", return(NDF_diet)], #NDF
              GE = diets[Diet == "B", return(GE_diet)], #crude energy
-             DP = diets[Diet == "B", return(CPD_diet)], #digestible protein
+             DP = diets[Diet == "B", return(DP_diet)], #digestible protein
              DE = diets[Diet == "B", return(GED_diet)], #digestible energy
              Diet = "B"),
   #diet c
@@ -40,7 +40,7 @@ dietintakes<- list(
              CP = diets[Diet == "C", return(CP_diet)], #crude protein
              NDF = diets[Diet == "C", return(NDF_diet)], #NDF
              GE = diets[Diet == "C", return(GE_diet)], #crude energy
-             DP = diets[Diet == "C", return(CPD_diet)], #digestible protein
+             DP = diets[Diet == "C", return(DP_diet)], #digestible protein
              DE = diets[Diet == "C", return(GED_diet)], #digestible energy
              Diet = "C"),
   #diet D
@@ -48,7 +48,7 @@ dietintakes<- list(
              CP = diets[Diet == "D", return(CP_diet)], #crude protein
              NDF = diets[Diet == "D", return(NDF_diet)], #NDF
              GE = diets[Diet == "D", return(GE_diet)], #crude energy
-             DP = diets[Diet == "D", return(CPD_diet)], #digestible protein
+             DP = diets[Diet == "D", return(DP_diet)], #digestible protein
              DE = diets[Diet == "D", return(GED_diet)], #digestible energy
              Diet = "D")
 )
