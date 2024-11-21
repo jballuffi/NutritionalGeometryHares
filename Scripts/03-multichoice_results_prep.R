@@ -114,5 +114,19 @@ DT <- DT[!ID %in% strikers]
 
 
 
-saveRDS(DT, "Output/data/multichoiceresults.rds")
+# Get target intake rates -------------------------------------------------
 
+#calculate total protein and fibre consumed from all diets in one day
+totals <- DT[, .(DMI_bw = sum(DMI_bw), 
+                 CPI_bw = sum(CPI_bw), 
+                 NDFI_bw = sum(NDFI_bw),
+                 GEI_bw = sum(GEI_bw),
+                 DPI_bw = sum(DPI),
+                 DEI_bw = sum(DEI)), by = ID]
+
+
+
+# Save --------------------------------------------------------------------
+
+saveRDS(DT, "Output/data/multichoiceresults.rds")
+saveRDS(totals, "Output/data/multichoicesums.rds")
