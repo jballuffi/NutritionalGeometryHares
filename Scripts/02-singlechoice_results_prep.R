@@ -184,14 +184,10 @@ DT[, CPD := (CPI - CPO)/CPI] #crude protein digestibility (%)
 DT[, NDFD := (NDFI - NDFO)/NDFI] #NDF digestibility (%)
 DT[, GED := DMD*GE_diet] #gross energy digestibility (kj/g)
 
-#calculate total digestible protein in diets
-DT[, DP_diet := CP_diet*CPD] ###WHAT IS THIS CALCULATION?
-
 #caclulate digestibility by diet (use in table 1)
 #dry matter digestibility, gross energy digestibility, crude protein digestibility
-diet_digest <- DT[, .(DMD_diet = mean(DMD), GED_diet = mean(GED), CPD_diet = mean(DP_diet)), Diet]
+diet_digest <- DT[, .(DMD_diet = mean(DMD), GED_diet = mean(GED), CPD_diet = mean(CPD)), Diet]
 
-###ISSUE WITH USING THE ABOVE TO MAKE DIGESTIBLE LINES> I THNK THE PROBLEM IS DP_diet
 
 # Calculate digestibility intake ------------------------------------------
 
@@ -223,11 +219,6 @@ Dailyresults <- DT[, c("Diet", "Sample", "ID", "Trial", "Day", "Date_start", "Da
 #remove two random duplicates. 
 Dailyresults <- Dailyresults[!duplicated(Sample)==TRUE]
 
-
-#cut out three samples with weirdly negative NDF digestion
-#Dailyresults <- Dailyresults[!DNDF < -.10]
-
-    ## ^^^ look into this in the lab
 
 
 # create trial results ----------------------------------------------------
