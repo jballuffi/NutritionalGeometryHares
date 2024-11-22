@@ -7,8 +7,8 @@ library(tidymv)
 #read in results
 trials <- readRDS("Output/data/trialresultscleaned.rds")
   
-#nutritional rails
-rails <- fread("Output/data/dietdigestibilityrails.rds")
+#nutritional rails (long version)
+rails <- fread("Output/data/digestibilerails_long.rds")
   
 #target intake rates
 MCsums <- readRDS("Output/data/multichoicesums.rds")
@@ -18,7 +18,7 @@ MCsums <- readRDS("Output/data/multichoicesums.rds")
 # model weight change ~ crude energy --------------------
 
 #bodyCE <- gam(Weight_change ~ s(DMI_energy_bw, DMI_CP_bw), data = trials)
-bodyCE <- gam(Weight_change ~ s(DMI_energy_bw) + s(DMI_CP_bw) + s(DMI_energy_bw, DMI_CP_bw), data = trials)
+bodyCE <- gam(Weight_change ~ s(GEI_bw) + s(CPI_bw) + s(GEI_bw, CPI_bw), data = trials)
 
 #save summary of model
 sumCE <- summary(bodyCE)
@@ -68,37 +68,37 @@ summarytable <- allsums %>% mutate_if(is.numeric, round, digits = 2)
 # make surface heat maps for each model --------------------------------
 
 #create predictive datasets based on gams
-CE <- as.data.table(predict_gam(bodyCE))
-DE <- as.data.table(predict_gam(bodyDE))
+crude <- as.data.table(predict_gam(bodyCE))
+digestible <- as.data.table(predict_gam(bodyDE))
 
 #remove cases with high standard error
-CE <- CE[`se.fit` < 0.4]
-DE <- DE[`se.fit` < 0.4]
+crude <- crude[`se.fit` < 0.4]
+digestible <- digestible[`se.fit` < 0.4]
 
 #set line types for diets
 dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
 
 (a <- ggplot()+
-  geom_raster(aes(x = DMI_energy_bw, y = DMI_CP_bw, z = fit, fill = fit), data = CE)+
-  geom_contour(aes(x = DMI_energy_bw, y = DMI_CP_bw, z = fit), bins = 5, colour = "grey90", data = CE)+
+  geom_raster(aes(x = GEI_bw, y = CPI_bw, z = fit, fill = fit), data = crude)+
+  geom_contour(aes(x = GEI_bw, y = CPI_bw, z = fit), bins = 5, colour = "grey90", data = crude)+
   scale_fill_continuous(name = "%/day", type = "viridis")+
-  geom_line(aes(x = CE_IR, y = CP_IR, group = Diet, linetype = Diet), size = .8, data = rails)+
+  geom_line(aes(x = GE_IR, y = CP_IR, group = Diet, linetype = Diet), size = .8, data = rails)+
   scale_linetype_manual(values = dietlines, guide = NULL)+
-  xlim(min(CE$DMI_energy_bw), max(CE$DMI_energy_bw))+
-  ylim(min(CE$DMI_CP_bw), max(CE$DMI_CP_bw))+
+  xlim(min(crude$GEI_bw), max(crude$GEI_bw))+
+  ylim(min(crude$CPI_bw), max(crude$CPI_bw))+
   xlab(expression(GE~intake~(kJ/kg^0.75/day)))+
   ylab(expression(CP~intake~(g/kg^0.75/day)))+
   labs(title = "A)")+
   themerails)
 
 (b <- ggplot()+
-  geom_raster(aes(x = DEI, y = DPI, z = fit, fill = fit), data = DE)+
-  geom_contour(aes(x = DEI, y = DPI, z = fit), bins = 5, colour = "white", data = DE)+
+  geom_raster(aes(x = DEI, y = DPI, z = fit, fill = fit), data = digestible)+
+  geom_contour(aes(x = DEI, y = DPI, z = fit), bins = 5, colour = "white", data = digestible)+
   scale_fill_continuous(name = "%/day", type = "viridis", guide = NULL)+
   geom_line(aes(x = DE_IR, y = DP_IR, group = Diet, linetype = Diet), size = .8, data = rails)+
   scale_linetype_manual(values = dietlines)+
-  xlim(min(DE$DEI), max(DE$DEI))+
-  ylim(min(DE$DPI), max(DE$DPI))+
+  xlim(min(digestible$DEI), max(digestible$DEI))+
+  ylim(min(digestible$DPI), max(digestible$DPI))+
   xlab(expression(DE~intake~(kJ/kg^0.75/day)))+
   ylab(expression(DCP~intake~(g/kg^0.75/day)))+
   labs(title = "B)")+
@@ -108,80 +108,9 @@ surfaceplot <- ggarrange(a, b, ncol = 1, nrow = 2)
 
 
 
-# Linear relationship between DEI and weight change --------------------------------------------------------------------
-
-#run linear model and make prediction table
-lmDE <- lm(Weight_change ~ DEI, trials)
-effs_lmDE <- as.data.table(ggpredict(lmDE, terms = c("DEI")))
-
-#create rounded predictions
-effs_lmDE[, predicted_round := round(predicted, digits = 1)]
-
-#get predicted Energy intake for body maintanence
-reqDE <- effs_lmDE[predicted_round == 0.0, return(as.numeric(x))]
-
-(DEintake <-
-    ggplot()+
-    geom_point(aes(x = DEI, y = Weight_change), shape = 1, data = trials)+
-    geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), colour = "grey80", alpha = .3, data = effs_lmDE)+
-    geom_line(aes(x = x, y = predicted), linewidth = 1, data = effs_lmDE)+
-    geom_abline(intercept = 0, slope = 0, linetype = 2)+
-    ylab("Weight change (%/day)")+
-    xlab(expression(DE~intake~(kJ/kg^0.75/day)))+
-    labs(title = "A")+
-    themerails)
-
-
-
-# Linear relationship beween DPI and weight change -------------------------
-
-#run linear model and make prediction table
-lmDP <- lm(Weight_change ~ DPI, trials)
-effs_lmDP <- as.data.table(ggpredict(lmDP, terms = c("DPI")))
-
-#create rounded predictions
-effs_lmDP[, predicted_round := round(predicted, digits = 1)]
-
-#get predicted Energy intake for body maintanence
-reqDP <- effs_lmDP[predicted_round == 0.2, return(as.numeric(x))]
-
-(DPintake <-
-    ggplot()+
-    geom_point(aes(x = DPI, y = Weight_change), shape = 1, data = trials)+
-    geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), colour = "grey80", alpha = .3, data = effs_lmDP)+
-    geom_line(aes(x = x, y = predicted), linewidth = 1, data = effs_lmDP)+
-    geom_abline(intercept = 0, slope = 0, linetype = 2)+
-    ylab("Weight change (%/day)")+
-    xlab(expression(DCP~intake~(g/kg^0.75/day)))+
-    labs(title = "B")+
-    themerails)
-
-weight <- ggarrange(DEintake, DPintake,  ncol = 1, nrow =2)
-
-
-
-# CE and CP ---------------------------------------------------------------
-
-#linear model for CPI
-lmCP <- lm(Weight_change ~ DMI_CP_bw, trials)
-effs_lmCP <- as.data.table(ggpredict(lmCP, terms = c("DMI_CP_bw")))
-#create rounded predictions
-effs_lmCP[, predicted_round := round(predicted, digits = 1)]
-#get predicted Energy intake for body maintanence
-reqCP <- effs_lmCP[predicted_round == 0.0, return(as.numeric(x))]
-
-
-
-#linear model for CEI
-lmCE <- lm(Weight_change ~ DMI_energy_bw, trials)
-
-
-
 # Save --------------------------------------------------------------
 
 write.csv(summarytable, "Output/stats/GAMoutputs.csv")
-
-ggsave("Output/figures/weightchangedigestible.jpeg", weight, width = 5, height = 8, unit = "in")
 
 ggsave("Output/figures/surfaceplots.jpeg", surfaceplot, width = 6, height = 10, unit = "in")
         
