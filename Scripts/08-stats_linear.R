@@ -30,7 +30,7 @@ rsq(lmGE)
 #how to get DF, Pvalue, and Fvalues
 almGE <- anova(lmGE)
 almGE$Df[2]
-almGE$`Pr(>F)`[1]
+lmGEpval <- round(almGE$`Pr(>F)`[1], 2)
 almGE$`F value`[1]
 
 
@@ -61,7 +61,7 @@ effs_lmCP <- as.data.table(ggpredict(lmCP, terms = c("CPI_bw")))
 effs_lmCP[, predicted_round := round(predicted, digits = 1)]
 
 #get predicted Energy intake for body maintanence
-reqCP <- effs_lmCP[predicted_round == 0.2, return(as.numeric(x))]
+reqCP <- effs_lmCP[predicted_round == 0.0, return(as.numeric(x))]
 
 
 ###   MODEL FOR DIGESTIBLE PROTEIN
