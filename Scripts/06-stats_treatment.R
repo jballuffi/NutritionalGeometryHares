@@ -21,11 +21,11 @@ day<- readRDS("Output/data/dailyresultscleaned.rds") # by day
 meanDMImc <- round(mean(targets$DMI_bw, na.rm = TRUE), digits = 1)
 seDMImc <- round(sd(targets$DMI_bw, na.rm = TRUE)/sqrt(length(targets)), digits = 1)
 
-meanCPmc <- round(mean(targets$DMI_CP_bw), digits = 1)
-seCPmc <- round(sd(targets$DMI_CP_bw)/sqrt(length(targets)), digits = 1)
+meanCPmc <- round(mean(targets$CPI_bw), digits = 1)
+seCPmc <- round(sd(targets$CPI_bw)/sqrt(length(targets)), digits = 1)
 
-meanCEmc <- round(mean(targets$DMI_energy_bw), digits = 1)
-seCEmc <- round(sd(targets$DMI_energy_bw)/sqrt(length(targets)), digits = 1)
+meanCEmc <- round(mean(targets$GEI_bw), digits = 1)
+seCEmc <- round(sd(targets$GEI_bw)/sqrt(length(targets)), digits = 1)
 
 #ANOVA testing for significance between treatments
 lmMC <- lm(MC$DMI_bw ~ MC$Diet)
@@ -89,14 +89,14 @@ posthocDMD
 # CP digestion for feeding trials -----------------------------------------
 
 #CP digestion by day
-CPdig <- lm(day$DP ~ day$Diet)
+CPdig <- lm(day$CPD ~ day$Diet)
 aCPdig <- anova(CPdig)
 CPdigpval <- round(aCPdig$`Pr(>F)`[1], 5)
 aovCP <- aov(CPdig)
 posthocCP <- TukeyHSD(x = aovCP, 'day$Diet', conf.level = 0.95)
 posthocCP
 
-diffDtoAcp <- round((day[Diet == "D", mean(DP)])/(day[Diet == "A", mean(DP)]), digits = 2)
+diffDtoAcp <- round((day[Diet == "D", mean(CPD)])/(day[Diet == "A", mean(CPD)]), digits = 2)
 
 
 
