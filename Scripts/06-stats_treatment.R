@@ -27,6 +27,13 @@ seCPmc <- round(sd(targets$CPI_bw)/sqrt(length(targets)), digits = 1)
 meanCEmc <- round(mean(targets$GEI_bw), digits = 1)
 seCEmc <- round(sd(targets$GEI_bw)/sqrt(length(targets)), digits = 1)
 
+meanDPmc <- round(mean(targets$DPI_bw), digits = 1)
+seDPmc <- round(sd(targets$DPI_bw)/sqrt(length(targets)), digits = 1)
+
+meanDEmc <- round(mean(targets$DEI_bw), digits = 1)
+seDEmc <- round(sd(targets$DEI_bw)/sqrt(length(targets)), digits = 1)
+
+
 #ANOVA testing for significance between treatments
 lmMC <- lm(MC$DMI_bw ~ MC$Diet)
 aMC <- anova(lmMC)
