@@ -100,7 +100,7 @@ dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
   xlim(min(digestible$DEI), max(digestible$DEI))+
   ylim(min(digestible$DPI), max(digestible$DPI))+
   xlab(expression(DE~intake~(kJ/kg^0.75/day)))+
-  ylab(expression(DCP~intake~(g/kg^0.75/day)))+
+  ylab(expression(DP~intake~(g/kg^0.75/day)))+
   labs(title = "B)")+
   themerails)
 
