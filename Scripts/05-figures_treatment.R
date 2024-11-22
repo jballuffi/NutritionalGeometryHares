@@ -8,7 +8,7 @@ trials <- readRDS("Output/data/trialresultscleaned.rds")
 day <- readRDS("Output/data/dailyresultscleaned.rds")
 
 #read in data for diet nutritional rails
-rails <- fread("Output/data/dietdigestibilityrails.rds")
+rails <- fread("Output/data/digestibilerails_short.rds")
 
 #read in full multichoice results
 MC <- readRDS("Output/data/multichoiceresults.rds")
@@ -52,7 +52,7 @@ dietlabs <- rails[, .(max_CP = max(CP_IR),
     geom_text(aes(x = max_GE + 50, y = max_CP, label = Diet), family = "serif", data = dietlabs)+
     ylab(expression(CP~intake~(gDM/kg^0.75/day)))+
     xlab(expression(GE~intake~(kJ/kg^0.75/day)))+
-    ggtitle("Multi-choice", subtitle = "B")+
+    ggtitle("Multi-choice", subtitle = "C")+
     themerails)
 
 #rail plot for digestible intake rates
@@ -64,7 +64,7 @@ dietlabs <- rails[, .(max_CP = max(CP_IR),
     geom_text(aes(x = max_DE + 50, y = max_DP, label = Diet), family = "serif", data = dietlabs)+
     ylab(expression(DP~intake~(gDM/kg^0.75/day)))+
     xlab(expression(DE~intake~(kJ/kg^0.75/day)))+
-    ggtitle("Multi-choice", subtitle = "B")+
+    ggtitle("Multi-choice", subtitle = "E")+
     themerails)
 
 
@@ -98,7 +98,7 @@ Singlemeans <- day[, .(DMI_mean = mean(DMI_bw),
     geom_text(aes(x = 4, y = 100, label = "A"), family = "serif")+
     ylab(expression(Daily~intake~(gDM/kg^0.75/day)))+
     xlab(expression(Diet))+
-    ggtitle("No-choice", subtitle = "C")+
+    ggtitle("No-choice", subtitle = "B")+
     themerails)
 
 #rail plot for crude/gross intakes
@@ -126,7 +126,7 @@ Singlemeans <- day[, .(DMI_mean = mean(DMI_bw),
     geom_text(aes(x = max_DE + 50, y = max_DP, label = Diet), family = "serif", data = dietlabs)+
     ylab(expression(DP~intake~(gDM/kg^0.75/day)))+
     xlab(expression(DE~intake~(kJ/kg^0.75/day)))+
-    ggtitle("No-choice", subtitle = "D")+
+    ggtitle("No-choice", subtitle = "F")+
     themerails)
 
 
