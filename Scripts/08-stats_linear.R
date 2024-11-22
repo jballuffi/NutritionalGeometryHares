@@ -24,6 +24,15 @@ effs_lmGE[, predicted_round := round(predicted, digits = 1)]
 #get predicted Energy intake for body maintanence
 reqGE <- effs_lmGE[predicted_round == 0.0, return(as.numeric(x))]
 
+#how to get R2
+rsq(lmGE)
+
+#how to get DF, Pvalue, and Fvalues
+almGE <- anova(lmGE)
+almGE$Df[2]
+almGE$`Pr(>F)`[1]
+almGE$`F value`[1]
+
 
 ###    MODEL FOR DIGESTIBLE ENERGY 
 
@@ -80,6 +89,7 @@ reqDP <- effs_lmDP[predicted_round == 0.2, return(as.numeric(x))]
    geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), colour = "grey80", alpha = .3, data = effs_lmGE)+
    geom_line(aes(x = x, y = predicted), linewidth = 1, data = effs_lmGE)+
    geom_abline(intercept = 0, slope = 0, linetype = 2)+
+   geom_text(aes(x = min(trials$GEI_bw + 70), y = 1, label = paste0("R2", " ", "=", " ", round(rsq(lmGE), 2)) ), family = "serif")+
    ylab("Weight change (%/day)")+
    xlab(expression(GE~intake~(kJ/kg^0.75/day)))+
    labs(title = "A) Gross Energy")+
@@ -91,6 +101,7 @@ reqDP <- effs_lmDP[predicted_round == 0.2, return(as.numeric(x))]
     geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), colour = "grey80", alpha = .3, data = effs_lmDE)+
     geom_line(aes(x = x, y = predicted), linewidth = 1, data = effs_lmDE)+
     geom_abline(intercept = 0, slope = 0, linetype = 2)+
+    geom_text(aes(x = min(trials$DEI + 30), y = 1, label = paste0("R2", " ", "=", " ", round(rsq(lmDE), 2)) ), family = "serif")+
     ylab("Weight change (%/day)")+
     xlab(expression(DE~intake~(kJ/kg^0.75/day)))+
     labs(title = "B) Digestible Energy")+
@@ -102,6 +113,7 @@ reqDP <- effs_lmDP[predicted_round == 0.2, return(as.numeric(x))]
     geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), colour = "grey80", alpha = .3, data = effs_lmCP)+
     geom_line(aes(x = x, y = predicted), linewidth = 1, data = effs_lmCP)+
     geom_abline(intercept = 0, slope = 0, linetype = 2)+
+    geom_text(aes(x = min(trials$CPI_bw), y = 1, label = paste0("R2", " ", "=", " ", round(rsq(lmCP), 2)) ), family = "serif")+
     ylab("Weight change (%/day)")+
     xlab(expression(CP~intake~(g/kg^0.75/day)))+
     labs(title = "C) Crude Protein")+
@@ -113,6 +125,7 @@ reqDP <- effs_lmDP[predicted_round == 0.2, return(as.numeric(x))]
     geom_ribbon(aes(x = x, ymin = conf.low, ymax = conf.high), colour = "grey80", alpha = .3, data = effs_lmDP)+
     geom_line(aes(x = x, y = predicted), linewidth = 1, data = effs_lmDP)+
     geom_abline(intercept = 0, slope = 0, linetype = 2)+
+    geom_text(aes(x = min(trials$DPI - .5), y = 1, label = paste0("R2", " ", "=", " ", round(rsq(lmDP), 2)) ), family = "serif")+
     ylab("Weight change (%/day)")+
     xlab(expression(DCP~intake~(g/kg^0.75/day)))+
     labs(title = "D) Digestible Protein")+
