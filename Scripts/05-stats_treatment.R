@@ -91,6 +91,13 @@ aovDMD <- aov(DMD)
 posthocDMD <- TukeyHSD(x = aovDMD, 'day$Diet', conf.level = 0.95)
 posthocDMD
 
+DMDdiff <- round(day[Diet == "B" | Diet == "C" | Diet == "D", mean(DMD)] - day[Diet == "A", mean(DMD)], 2)*100
+
+DMDdiffBtoD <- round((day[Diet == "D", mean(DMD)] - day[Diet == "B", mean(DMD)])*100, 1)
+
+DMDd <- round(day[Diet == "D", mean(DMD)], 3)*100
+
+DMDa <- round(day[Diet == "A", mean(DMD)], 3)*100
 
 
 # CP digestion for feeding trials -----------------------------------------
@@ -103,9 +110,11 @@ aovCP <- aov(CPdig)
 posthocCP <- TukeyHSD(x = aovCP, 'day$Diet', conf.level = 0.95)
 posthocCP
 
-diffDtoAcp <- round((day[Diet == "D", mean(CPD)])/(day[Diet == "A", mean(CPD)]), digits = 2)
 
+CPdiga <- round(day[Diet == "A", mean(CPD)], 3)*100
+CPdigd <- round(day[Diet == "D", mean(CPD)], 3)*100
 
+diffDtoAcp <- round(CPdigd/CPdiga, digits = 2)
 
 
 # collect model outputs into one table ------------------------------------
