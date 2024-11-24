@@ -28,11 +28,11 @@ nuts <- nuts[, .(Species, Height, Grid, Loc, CP_F, NDF_F, ADF_F, ADL_F)]
 nuts <- nuts[!CP_F < 2]
 nuts <- nuts[!CP_F > 9]
 
-nuts[CP_F > 6.5, Quality := "good"]
-nuts[CP_F < 6.5, Quality := "poor"]
+nuts[CP_F > 6.5, Quality := "fair quality"]
+nuts[CP_F < 6.5, Quality := "poor quality"]
 
 
-qualcols <- c("poor" = "grey90", "good" = "grey40")
+qualcols <- c("poor quality" = "grey90", "fair quality" = "grey40")
 
 
 (hist <- ggplot(nuts)+
