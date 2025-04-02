@@ -89,7 +89,7 @@ dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
   xlab(expression(GE~intake~(kJ/kg^0.75/day)))+
   ylab(expression(CP~intake~(g/kg^0.75/day)))+
   labs(title = "A)")+
-  themerails)
+  themethesisright)
 
 (b <- ggplot()+
   geom_raster(aes(x = DEI, y = DPI, z = fit, fill = fit), data = digestible)+
@@ -102,7 +102,7 @@ dietlines <- c("A" = "solid", "B" = "longdash", "C" = "dotdash", "D" = "dotted")
   xlab(expression(DE~intake~(kJ/kg^0.75/day)))+
   ylab(expression(DP~intake~(g/kg^0.75/day)))+
   labs(title = "B)")+
-  themerails)
+  themethesisright)
 
 surfaceplot <- ggarrange(a, b, ncol = 1, nrow = 2)
 
