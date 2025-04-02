@@ -52,20 +52,17 @@ fullfig <- ggarrange(total, protein, NDF, ADF, ncol = 2, nrow = 2)
 
 # nutrient intake and excretion compositions (%) --------------------------
 
-
-
 (Proteinintake <-  ggplot(days)+
-  geom_jitter(aes(x = CP_diet*100, y = CP_F), shape = 1, width = .5)+
   geom_smooth(aes(x = CP_diet*100, y = CP_F), color = "black")+
   labs(x = "Diet crude protein (%)", y = "Fecal crude protein (%)")+
-  theme_minimal(base_size = 15))
+  theme_pubr(base_size = 16))
 
-Proteinweight <- ggplot(trials)+
+(Proteinweight <- ggplot(trials)+
   geom_abline(intercept = 0, slope = 0, linetype = 2)+
-  geom_jitter(aes(x = CP_F, y = Weight_change), width = .5, shape = 1)+
+  #geom_jitter(aes(x = CP_F, y = Weight_change), width = .5, shape = 1)+
   geom_smooth(aes(x = CP_F, y = Weight_change), method = "lm", color = "black")+
   labs(x = "Fecal crude protein (%)", y = "Weight change (%)")+
-  theme_minimal(base_size = 15)
+  theme_pubr(base_size = 16))
 
 
 
