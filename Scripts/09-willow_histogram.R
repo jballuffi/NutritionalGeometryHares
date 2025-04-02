@@ -40,7 +40,7 @@ qualcols <- c("poor quality" = "grey90", "fair quality" = "grey40")
   scale_fill_manual(values = qualcols)+
   labs(x = "CP composition (%)", y = "Count")+
   facet_wrap(~Species, nrow = 2, ncol = 1)+
-  themepoints)
+  themethesistop)
 
 sum <- nuts[, .N, by = .(Quality, Species)]
 sum[, total := sum(N), Species]
