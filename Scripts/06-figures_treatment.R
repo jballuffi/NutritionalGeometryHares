@@ -42,8 +42,7 @@ dietlabs <- rails[, .(max_CP = max(CP_IR),
     ylab(expression(Daily~intake~(gDM/kg^0.75/day)))+
     xlab(expression(Diet))+
     ggtitle("Multi-choice", subtitle = "A")+
-    themerails+
-    theme(axis.ticks.x = element_blank()))
+    themethesisright)
 
 #rail plot for crude/gross intake rates
 (MGrail <-
@@ -55,7 +54,7 @@ dietlabs <- rails[, .(max_CP = max(CP_IR),
     ylab(expression(CP~intake~(gDM/kg^0.75/day)))+
     xlab(expression(GE~intake~(kJ/kg^0.75/day)))+
     ggtitle("", subtitle = "B")+
-    themerails)
+    themethesisright)
 
 #rail plot for digestible intake rates
 (MDrail <-
@@ -67,7 +66,7 @@ dietlabs <- rails[, .(max_CP = max(CP_IR),
     ylab(expression(DP~intake~(gDM/kg^0.75/day)))+
     xlab(expression(DE~intake~(kJ/kg^0.75/day)))+
     ggtitle("", subtitle = "C")+
-    themerails)
+    themethesisright)
 
 multichoice <- ggarrange(Mbar, MGrail, MDrail, nrow = 3, ncol = 1)
 
@@ -102,7 +101,7 @@ Singlemeans <- day[, .(DMI_mean = mean(DMI_bw),
     ylab(expression(Daily~intake~(gDM/kg^0.75/day)))+
     xlab(expression(Diet))+
     ggtitle("No-choice", subtitle = "A")+
-    themerails)
+    themethesisright)
 
 #rail plot for crude/gross intakes
 (SGrail <-
@@ -116,7 +115,7 @@ Singlemeans <- day[, .(DMI_mean = mean(DMI_bw),
     ylab(expression(CP~intake~(gDM/kg^0.75/day)))+
     xlab(expression(GE~intake~(kJ/kg^0.75/day)))+
     ggtitle("", subtitle = "B")+
-    themerails)
+    themethesisright)
 
 #rail plot for digestible intake rates
 (SDrail <-
@@ -130,7 +129,7 @@ Singlemeans <- day[, .(DMI_mean = mean(DMI_bw),
     ylab(expression(DP~intake~(gDM/kg^0.75/day)))+
     xlab(expression(DE~intake~(kJ/kg^0.75/day)))+
     ggtitle("", subtitle = "C")+
-    themerails)
+    themethesisright)
 
 
 nochoice <- ggarrange(Sbar, SGrail,SDrail, nrow = 3, ncol = 1)
@@ -150,7 +149,7 @@ nochoice <- ggarrange(Sbar, SGrail,SDrail, nrow = 3, ncol = 1)
    geom_text(aes(x = 4, y = 1.4, label = "b"), family = "serif")+
    labs(y = "Weight change (%/Day)")+
    ylim(-2.5, 1.7)+
-   themerails)
+   themethesisright)
 
 
 
@@ -165,8 +164,7 @@ nochoice <- ggarrange(Sbar, SGrail,SDrail, nrow = 3, ncol = 1)
     geom_text(aes(x = 3, y = 70, label = "bc"), family = "serif")+
     geom_text(aes(x = 4, y = 70, label = "c"), family = "serif")+
     labs(y = "Apparent digestibility (%)", x = "", title = "A) Dry matter")+
-    themerails+
-    theme(strip.background = element_blank()))
+    themethesisright)
 
 #protein digestibility in response to diet
 (DPplot <- 
@@ -177,8 +175,7 @@ nochoice <- ggarrange(Sbar, SGrail,SDrail, nrow = 3, ncol = 1)
     geom_text(aes(x = 3, y = 85, label = "c"), family = "serif")+
     geom_text(aes(x = 4, y = 93, label = "d"), family = "serif")+
     labs(y = "Apparent digestibility (%)", x = "Diet", title = "B) Protein")+
-    themerails+
-    theme(strip.background = element_blank()))
+    themethesisright)
 
 dietdigest <- ggarrange(DMDplot, DPplot, ncol = 1, nrow = 2)
 
